@@ -1,0 +1,14 @@
+[devshell]
+name = "prometheus-golang"
+motd = """{106}NixOS Prometheus development shell{reset}\n
+\n REMEMBER TO RUN {200}destroy{reset} when leaving the shell
+"""
+
+packages = [
+    "prometheus",
+    "gotools",
+    "tmux"
+]
+
+#startup.prometheus.text = "tmux new -s prometheus -d 'prometheus --config.file=$(dirname $0)/prometheus.yml'"
+startup.kill_services.text = "alias destroy='tmux kill-session'"
