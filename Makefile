@@ -20,11 +20,12 @@ GO_BUILD:=go build $(GOFLAGS)
 # include files with the `// +build mock` annotation
 TEST_TAGS:=-tags mock -coverprofile cover.out
 
-.PHONY: build generate test vet lint run stop build-all-platforms clean install-tools
+.PHONY: build generate test vet lint run stop build-all-platforms clean install-tools licenses
 
 install-tools:
 	go install github.com/swaggo/swag/cmd/swag@v1.8.7
 	go install github.com/matryer/moq@v0.2.7
+	go install github.com/google/go-licenses@c781b427440f8ea100841eefdd308e660d26d121
 
 build:
 	cd $(ROOT_DIR) && $(GO_BUILD) -o builds/$(BIN_NAME) .
@@ -56,3 +57,7 @@ build-all-platforms:
 clean:
 	cd $(ROOT_DIR) && \
 	rm -rf ./builds
+
+licenses:
+	rm -r kodata
+	go-licenses save . --save_path="kodata/licenses"

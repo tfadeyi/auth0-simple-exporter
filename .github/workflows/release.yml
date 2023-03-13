@@ -41,6 +41,7 @@ jobs:
       contents: read
     env:
       KO_DOCKER_REPO: ghcr.io/${{ github.repository }}
+      KO_DATA_PATH: /usr/share/doc/${{ github.repository }}/
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -57,6 +58,12 @@ jobs:
       - name: Install cosign
         uses: sigstore/cosign-installer@v3.0.1
 
+      - name: Install tools
+        run: make install-tools
+
+      - name: Licenses
+        run: make licenses
+
       - name: Login to ghcr.io
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
@@ -69,7 +76,7 @@ jobs:
           ko build \
             --bare \
             -t latest \
-            -t auth0-exporter \
+            -t ${{ github.ref_name }} \
             --platform=linux/amd64,linux/arm64,linux/arm \
             --sbom=cyclonedx \
             --image-refs image-refs.txt
