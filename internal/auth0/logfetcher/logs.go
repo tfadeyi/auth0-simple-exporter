@@ -34,8 +34,6 @@ func (c *LogFetcher) FetchAll(ctx context.Context) (interface{}, error) {
 		}
 		i++
 	}
-
-	return allLogs, nil
 }
 
 // NewFetcherWithOpts creates a new instance of the LogFetcher using the given options

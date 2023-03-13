@@ -12,7 +12,7 @@ import (
 func serveExporterCmd() *cobra.Command {
 	opts := options.New()
 	cmd := &cobra.Command{
-		Use:           "run",
+		Use:           "export",
 		Short:         "Start serving the auth0 metrics",
 		Long:          `This starts the exporter HTTP server on the given port.`,
 		SilenceErrors: true,

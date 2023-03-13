@@ -1,12 +1,13 @@
 [devshell]
 name = "prometheus-golang"
-motd = """{106}NixOS Prometheus development shell{reset}\n
+motd = """{106}NixOS Prometheus exporter development shell{reset}
 \n REMEMBER TO RUN {200}destroy{reset} when leaving the shell
 """
 
 packages = [
     "prometheus",
     "gotools",
+    "cobra-cli",
     "goreleaser",
     "golangci-lint",
     "tmux"
