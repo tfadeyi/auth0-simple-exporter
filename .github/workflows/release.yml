@@ -69,7 +69,7 @@ jobs:
           ko build \
             --bare \
             -t latest \
-            -t ${{ github.ref_name }} \
+            -t auth0-exporter \
             --platform=linux/amd64,linux/arm64,linux/arm \
             --sbom=cyclonedx \
             --image-refs image-refs.txt
