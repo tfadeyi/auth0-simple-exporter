@@ -59,5 +59,5 @@ clean:
 	rm -rf ./builds
 
 licenses:
-	rm -r kodata
+	rm -rf kodata
 	go-licenses save . --save_path="kodata/licenses"

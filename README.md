@@ -1,4 +1,4 @@
-[![CI](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/image_scan.yml/badge.svg)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/golangci-lint.yml)
+[![CI](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/golangci-lint.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-yellow.svg)](https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE)
 [![Language](https://img.shields.io/badge/language-Go-blue.svg)](https://github.com/tfadeyi/auth0-simple-exporter)
 [![GitHub release](https://img.shields.io/badge/release-0.0.2-green.svg)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
