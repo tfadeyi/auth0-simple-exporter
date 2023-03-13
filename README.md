@@ -4,7 +4,7 @@ Exports Prometheus metrics of Auth0 Log Events.
 
 ## Usage
 
-```shell
+```
 Usage:
   exporter export [flags]
 
