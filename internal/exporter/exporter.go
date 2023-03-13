@@ -107,6 +107,7 @@ func (e *exporter) metrics() http.HandlerFunc {
 		ctx := r.Context()
 		log := logging.LoggerFromContext(ctx)
 
+		e.totalScrapes.Inc()
 		if _, ok := ctx.Value(registryKey).(*prometheus.Registry); !ok {
 			log.Error(errors.New("prometheus registry is missing from the request context"), "Error in the exporter metricsMiddleware")
 			http.Error(w, "error in the exporter metricsMiddleware, missing prometheus registry", http.StatusInternalServerError)
@@ -119,13 +120,14 @@ func (e *exporter) metrics() http.HandlerFunc {
 			operations.LogoutOperationsEventHandler)
 		if err != nil {
 			log.Error(err, "Error collecting event logs metrics from the selected Auth0 tenant")
+			e.targetScrapeRequestErrors.Inc()
 		}
 
 		promhttp.HandlerFor(registryFromContext(ctx), promhttp.HandlerOpts{}).ServeHTTP(w, r)
 	}
 }
 
-func (e *exporter) scrape() http.HandlerFunc {
+func (e *exporter) probe() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		promhttp.Handler().ServeHTTP(writer, request)
 	}

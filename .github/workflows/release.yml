@@ -38,7 +38,6 @@ jobs:
       contents: read
     env:
       KO_DOCKER_REPO: ghcr.io/${{ github.repository }}
-#      COSIGN_EXPERIMENTAL: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -52,8 +51,8 @@ jobs:
       - name: Setup ko
         uses: imjasonh/setup-ko@ace48d793556083a76f1e3e6068850c1f4a369aa
 
-#      - name: Install cosign
-#        uses: sigstore/cosign-installer@9becc617647dfa20ae7b1151972e9b3a2c338a2b
+      - name: Install cosign
+        uses: sigstore/cosign-installer@9becc617647dfa20ae7b1151972e9b3a2c338a2b
 
       - name: Login to ghcr.io
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
@@ -71,4 +70,4 @@ jobs:
             --platform=linux/amd64,linux/arm64,linux/arm \
             --sbom=cyclonedx \
             --image-refs image-refs.txt
- #         cosign sign $(cat image-refs.txt)
+          cosign sign $(cat image-refs.txt)

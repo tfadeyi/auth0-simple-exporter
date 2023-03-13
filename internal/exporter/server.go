@@ -36,6 +36,7 @@ func (e *exporter) Export() error {
 	// configure and start sever
 	router := chi.NewRouter()
 	router.Use(logging.Middleware)
+	router.Use(chiMiddleware.Heartbeat("/ping"))
 
 	// home path route. It will always return a static html with guide on how to use the exporter
 	router.With(chiMiddleware.AllowContentType("text/html")).Route("/", func(r chi.Router) {
@@ -60,11 +61,12 @@ func (e *exporter) Export() error {
 	router.With(metricsMiddleware).Route(fmt.Sprintf("/%s", e.metricsAddr), func(r chi.Router) {
 		r.Get("/", e.metrics())
 	})
-	router.Get("/scrape", e.scrape())
+	router.Get("/probe", e.probe())
 
-	log.Info("starting the exporter",
+	log.Info("starting exporter",
 		"port", e.hostPort,
-		"address", e.metricsAddr)
+		"metrics-address", e.metricsAddr,
+		"probe-address", "probe")
 
 	// start server with the router with setup before
 	server := &http.Server{
