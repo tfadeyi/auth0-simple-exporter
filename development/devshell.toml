@@ -7,6 +7,8 @@ motd = """{106}NixOS Prometheus development shell{reset}\n
 packages = [
     "prometheus",
     "gotools",
+    "goreleaser",
+    "golangci-lint",
     "tmux"
 ]
 
