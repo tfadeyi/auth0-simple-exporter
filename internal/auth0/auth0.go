@@ -5,7 +5,7 @@ import (
 )
 
 //go:generate rm -f ./mock.go
-//go:generate moq -out mock.go . Client
+//go:generate moq -out mock.go . Fetcher
 
 type (
 	Fetcher interface {

@@ -20,18 +20,20 @@ GO_BUILD:=go build $(GOFLAGS)
 # include files with the `// +build mock` annotation
 TEST_TAGS:=-tags mock -coverprofile cover.out
 
-.PHONY: build generate test vet lint run stop build-all-platforms clean install-tools licenses
+.PHONY: build generate test vet lint run stop build-all-platforms clean install-tools licenses generate
 
 install-tools:
 	go install github.com/swaggo/swag/cmd/swag@v1.8.7
 	go install github.com/matryer/moq@v0.2.7
 	go install github.com/google/go-licenses@c781b427440f8ea100841eefdd308e660d26d121
+	go install github.com/norwoodj/helm-docs/cmd/helm-docs@v1.11.0
 
 build:
 	cd $(ROOT_DIR) && $(GO_BUILD) -o builds/$(BIN_NAME) .
 
 generate:
-	cd $(ROOT_DIR) && go generate ./...
+	cd $(ROOT_DIR) && go generate ./... && \
+	helm-docs --chart-search-root=deploy/charts/
 
 test: build
 	cd $(ROOT_DIR) &&  go test $(GOFLAGS) $(TEST_TAGS) ./...

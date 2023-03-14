@@ -5,38 +5,31 @@ package auth0
 
 import (
 	"context"
-	"github.com/auth0/go-auth0/management"
 	"sync"
 )
 
-// Ensure, that ClientMock does implement Fetcher.
+// Ensure, that FetcherMock does implement Fetcher.
 // If this is not the case, regenerate this file with moq.
-var _ Fetcher = &ClientMock{}
+var _ Fetcher = &FetcherMock{}
 
-// ClientMock is a mock implementation of Fetcher.
+// FetcherMock is a mock implementation of Fetcher.
 //
-//	func TestSomethingThatUsesClient(t *testing.T) {
+//	func TestSomethingThatUsesFetcher(t *testing.T) {
 //
 //		// make and configure a mocked Fetcher
-//		mockedClient := &ClientMock{
+//		mockedFetcher := &FetcherMock{
 //			FetchAllFunc: func(ctx context.Context) (interface{}, error) {
 //				panic("mock out the FetchAll method")
 //			},
-//			ListFunc: func(opts ...management.RequestOption) (interface{}, error) {
-//				panic("mock out the List method")
-//			},
 //		}
 //
-//		// use mockedClient in code that requires Fetcher
+//		// use mockedFetcher in code that requires Fetcher
 //		// and then make assertions.
 //
 //	}
-type ClientMock struct {
+type FetcherMock struct {
 	// FetchAllFunc mocks the FetchAll method.
 	FetchAllFunc func(ctx context.Context) (interface{}, error)
-
-	// ListFunc mocks the List method.
-	ListFunc func(opts ...management.RequestOption) (interface{}, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -45,20 +38,14 @@ type ClientMock struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 		}
-		// List holds details about calls to the List method.
-		List []struct {
-			// Opts is the opts argument value.
-			Opts []management.RequestOption
-		}
 	}
 	lockFetchAll sync.RWMutex
-	lockList     sync.RWMutex
 }
 
 // FetchAll calls FetchAllFunc.
-func (mock *ClientMock) FetchAll(ctx context.Context) (interface{}, error) {
+func (mock *FetcherMock) FetchAll(ctx context.Context) (interface{}, error) {
 	if mock.FetchAllFunc == nil {
-		panic("ClientMock.FetchAllFunc: method is nil but Fetcher.FetchAll was just called")
+		panic("FetcherMock.FetchAllFunc: method is nil but Fetcher.FetchAll was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
@@ -74,8 +61,8 @@ func (mock *ClientMock) FetchAll(ctx context.Context) (interface{}, error) {
 // FetchAllCalls gets all the calls that were made to FetchAll.
 // Check the length with:
 //
-//	len(mockedClient.FetchAllCalls())
-func (mock *ClientMock) FetchAllCalls() []struct {
+//	len(mockedFetcher.FetchAllCalls())
+func (mock *FetcherMock) FetchAllCalls() []struct {
 	Ctx context.Context
 } {
 	var calls []struct {
@@ -84,37 +71,5 @@ func (mock *ClientMock) FetchAllCalls() []struct {
 	mock.lockFetchAll.RLock()
 	calls = mock.calls.FetchAll
 	mock.lockFetchAll.RUnlock()
-	return calls
-}
-
-// List calls ListFunc.
-func (mock *ClientMock) List(opts ...management.RequestOption) (interface{}, error) {
-	if mock.ListFunc == nil {
-		panic("ClientMock.ListFunc: method is nil but Fetcher.List was just called")
-	}
-	callInfo := struct {
-		Opts []management.RequestOption
-	}{
-		Opts: opts,
-	}
-	mock.lockList.Lock()
-	mock.calls.List = append(mock.calls.List, callInfo)
-	mock.lockList.Unlock()
-	return mock.ListFunc(opts...)
-}
-
-// ListCalls gets all the calls that were made to List.
-// Check the length with:
-//
-//	len(mockedClient.ListCalls())
-func (mock *ClientMock) ListCalls() []struct {
-	Opts []management.RequestOption
-} {
-	var calls []struct {
-		Opts []management.RequestOption
-	}
-	mock.lockList.RLock()
-	calls = mock.calls.List
-	mock.lockList.RUnlock()
 	return calls
 }
