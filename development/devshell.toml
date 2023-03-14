@@ -1,7 +1,8 @@
 [devshell]
 name = "prometheus-golang"
 motd = """{106}NixOS Prometheus exporter development shell{reset}
-\n REMEMBER TO RUN {200}destroy{reset} when leaving the shell
+\n REMEMBER TO RUN {200}destroy{reset} before leaving the shell
+\n Use CTRL-D to leave the shell
 """
 
 packages = [
