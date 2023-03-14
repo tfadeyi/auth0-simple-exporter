@@ -28,3 +28,9 @@ Flags:
 
 ## Example queries
 
+
+## Development
+
+```shell
+source env-dev.sh && develop
+```
