@@ -14,18 +14,18 @@ const (
 	successfulLoginCode              = "s"
 	failedLoginWithIncorrectPassword = "fp"
 
-	TenantLoginsOperations = CtxKey("tenant_login_operations_total")
+	TenantSignInOperations = CtxKey("tenant_sign_in_operations_total")
 )
 
-func NewLoginOperationsMetric(namespace, subsystem string) *prometheus.CounterVec {
+func NewSignInOperationsMetric(namespace, subsystem string) *prometheus.CounterVec {
 	return prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(TenantLoginsOperations)),
+			Name: prometheus.BuildFQName(namespace, subsystem, string(TenantSignInOperations)),
 			Help: "The number of login operations. (codes: f,s,fp)",
 		}, []string{"status", "type"})
 }
 
-func LoginOperationsEventHandler(ctx context.Context, log *management.Log) error {
+func SignInOperationsEventHandler(ctx context.Context, log *management.Log) error {
 	if ctx == nil {
 		return errInvalidContext
 	}
@@ -38,11 +38,11 @@ func LoginOperationsEventHandler(ctx context.Context, log *management.Log) error
 	}
 	switch log.GetType() {
 	case failedLoginCode:
-		loginOperations.WithLabelValues(failed, log.GetType()).Inc()
+		loginOperations.WithLabelValues(failed, log.TypeName()).Inc()
 	case successfulLoginCode:
-		loginOperations.WithLabelValues(success, log.GetType()).Inc()
+		loginOperations.WithLabelValues(success, log.TypeName()).Inc()
 	case failedLoginWithIncorrectPassword:
-		loginOperations.WithLabelValues(failed, log.GetType()).Inc()
+		loginOperations.WithLabelValues(failed, log.TypeName()).Inc()
 	default:
 		return errors.Annotate(errInvalidLogEvent, "login event handler can't handle event")
 	}

@@ -20,7 +20,7 @@ func NewLogoutOperationsMetric(namespace, subsystem string) *prometheus.CounterV
 	return prometheus.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: prometheus.BuildFQName(namespace, subsystem, string(TenantLogoutOperations)),
-			Help: "The number of logout operations.",
+			Help: "The number of logout operations. (codes: slo, flo)",
 		}, []string{"status"})
 }
 func LogoutOperationsEventHandler(ctx context.Context, log *management.Log) error {

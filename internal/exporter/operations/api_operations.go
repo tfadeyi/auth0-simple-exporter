@@ -30,7 +30,7 @@ func NewApiOperationsMetric(namespace, subsystem string) *prometheus.CounterVec 
 	return prometheus.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: prometheus.BuildFQName(namespace, subsystem, string(TenantApiOperations)),
-			Help: "The number of API operations on the tenant.",
+			Help: "The number of API operations on the tenant. (codes: fapi, sapi)",
 		}, []string{"status"})
 }
 

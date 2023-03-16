@@ -15,6 +15,7 @@ type (
 		ProfilingEnabled bool
 		MetricsEndpoint  string
 		HostPort         int
+		InsecureSkipTLS  bool
 
 		// Auth0 setup
 		cfg    auth0.Options
@@ -54,6 +55,12 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		"profiling",
 		false,
 		"Enabled pprof profiling on the exporter on port :6060. (help: https://jvns.ca/blog/2017/09/24/profiling-go-with-pprof/)",
+	)
+	fs.BoolVar(
+		&o.InsecureSkipTLS,
+		"insecure-skip-tls",
+		false,
+		"",
 	)
 	fs.StringVar(
 		&o.cfg.Domain,

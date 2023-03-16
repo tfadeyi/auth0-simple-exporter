@@ -1,7 +1,7 @@
 [![CI](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml/badge.svg)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-yellow.svg)](https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE)
 [![Language](https://img.shields.io/badge/language-Go-blue.svg)](https://github.com/tfadeyi/auth0-simple-exporter)
-[![GitHub release](https://img.shields.io/badge/release-0.0.2-green.svg)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
+[![GitHub release](https://img.shields.io/badge/release-0.0.4-green.svg)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
 # Auth0 Simple Log Exporter
 
 Exports Prometheus metrics of Auth0 Log [Events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs).
@@ -23,14 +23,21 @@ Flags:
       --web.metrics-path string      URL Path under which to expose metrics. (default "metrics")
 ```
 
+## Installation
+
 ## Metrics
 
 
 ## Example queries
 
+## SBOM and Cosign
+
+## License
+Apache 2.0, see [LICENSE.md](./LICENSE).
 
 ## Development
 
 ```shell
 source env-dev.sh && develop
 ```
+
