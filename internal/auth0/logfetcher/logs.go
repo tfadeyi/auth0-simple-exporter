@@ -58,8 +58,11 @@ func NewFetcherWithOpts(opts auth0.Options) (*LogFetcher, error) {
 		}
 		client = c
 	}
+	if client == nil {
+		errs = multierr.Append(errs, errors.New("unable to initialize the auth0 client, check the credentials are correct."))
+	}
 
-	if errs != nil || client == nil {
+	if errs != nil {
 		return nil, errs
 	}
 

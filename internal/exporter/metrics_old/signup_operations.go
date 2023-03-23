@@ -1,4 +1,4 @@
-package operations
+package metrics_old
 
 // https://auth0.com/docs/deploy-monitor/logs/log-event-type-codes
 
@@ -14,7 +14,7 @@ const (
 	failedSignupCode     = "fs"
 	successfulSignupCode = "ss"
 
-	TenantSignupOperations = CtxKey("tenant_sign_up_operations_total")
+	TenantSignupOperations = ctxKey("tenant_sign_up_operations_total")
 )
 
 func NewSignupOperationsMetric(namespace, subsystem string) *prometheus.CounterVec {

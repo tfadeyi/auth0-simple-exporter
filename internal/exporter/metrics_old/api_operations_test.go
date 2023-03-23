@@ -1,4 +1,4 @@
-package operations
+package metrics_old
 
 import (
 	"context"
@@ -14,24 +14,24 @@ func TestApiOperations(t *testing.T) {
 	})
 	t.Run("fails on nil log event", func(t *testing.T) {
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, TenantApiOperations, NewApiOperationsMetric("", ""))
+		ctx = context.WithValue(ctx, TenantApiOperations, SapiOperationsMetric("", ""))
 		require.ErrorIs(t, ApiOperationsEventHandler(ctx, nil), errInvalidLogEvent)
 	})
 	t.Run("fails on invalid log type", func(t *testing.T) {
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, TenantApiOperations, NewApiOperationsMetric("", ""))
+		ctx = context.WithValue(ctx, TenantApiOperations, SapiOperationsMetric("", ""))
 		var ty = "random"
 		require.ErrorIs(t, ApiOperationsEventHandler(ctx, &management.Log{Type: &ty}), errInvalidLogEvent)
 	})
 	t.Run("success on failedAPIOperation log type", func(t *testing.T) {
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, TenantApiOperations, NewApiOperationsMetric("", ""))
+		ctx = context.WithValue(ctx, TenantApiOperations, SapiOperationsMetric("", ""))
 		var ty = "fapi"
 		require.NoError(t, ApiOperationsEventHandler(ctx, &management.Log{Type: &ty}))
 	})
 	t.Run("success on successfulAPIOperation log type", func(t *testing.T) {
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, TenantApiOperations, NewApiOperationsMetric("", ""))
+		ctx = context.WithValue(ctx, TenantApiOperations, SapiOperationsMetric("", ""))
 		var ty = "sapi"
 		require.NoError(t, ApiOperationsEventHandler(ctx, &management.Log{Type: &ty}))
 	})

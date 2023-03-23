@@ -66,7 +66,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		&o.cfg.Domain,
 		"auth0.domain",
 		"",
-		"Auth0 tenant's domain.",
+		"Auth0 tenant's domain. (i.e: <tenant_name>.eu.auth0.com)",
 	)
 	fs.StringVar(
 		&o.cfg.Token,
