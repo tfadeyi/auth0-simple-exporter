@@ -12,7 +12,7 @@ const (
 	failedSignupCode     = "fs"
 	successfulSignupCode = "ss"
 
-	tenantSuccessSignup = "tenant_success_sign_up_total"
+	tenantSuccessSignup = "tenant_successful_sign_up_total"
 	tenantFailedSignup = "tenant_failed_sign_up_total"
 )
 

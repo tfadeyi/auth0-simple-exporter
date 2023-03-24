@@ -8,7 +8,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// serveAppCmd represents the serve command for the application server
 func serveExporterCmd() *cobra.Command {
 	opts := options.New()
 	cmd := &cobra.Command{
@@ -25,13 +24,17 @@ func serveExporterCmd() *cobra.Command {
 			log := logging.LoggerFromContext(ctx)
 			log.Info("initialising exporter")
 
-			//go run main.go run --auth0.domain jetstack-stage.eu.auth0.com --profiling
 			e, err := exporter.New(
 				exporter.Context(ctx),
 				exporter.Port(opts.HostPort),
 				exporter.MetricsAddr(opts.MetricsEndpoint),
 				exporter.Profiling(opts.ProfilingEnabled),
-				exporter.Client(opts.Client))
+				exporter.Client(opts.Client),
+				exporter.Namespace(opts.Namespace),
+				exporter.CertFile(opts.CertFile),
+				exporter.DisableTLS(opts.TLSDisabled),
+				exporter.KeyFile(opts.KeyFile),
+				exporter.ManagedTLS(opts.ManagedTLS))
 			if err != nil {
 				return errors.Annotate(err, "failed to initialise the exporter")
 			}

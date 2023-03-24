@@ -11,11 +11,19 @@ import (
 )
 
 type (
+	// Options is the list of options/flag available to the application,
+	// plus the clients needed by the application to function.
 	Options struct {
 		ProfilingEnabled bool
 		MetricsEndpoint  string
-		HostPort         int
-		InsecureSkipTLS  bool
+		HostPort    int
+		TLSDisabled bool
+		ManagedTLS  bool
+		CertFile    string
+		KeyFile          string
+
+		// exporter
+		Namespace string
 
 		// Auth0 setup
 		cfg    auth0.Options
@@ -29,15 +37,19 @@ const (
 	envMgmtToken    = "TOKEN"
 )
 
+// New creates a new instance of the application's options
 func New() *Options {
 	return new(Options)
 }
 
+// Prepare assigns the applications flag/options to the cobra cli
 func (o *Options) Prepare(cmd *cobra.Command) *Options {
 	o.addAppFlags(cmd.Flags())
 	return o
 }
 
+// Complete initialises the components needed for the application to function given the options,
+// like the auth0 client.
 func (o *Options) Complete() error {
 	var err error
 
@@ -52,15 +64,33 @@ func (o *Options) Complete() error {
 func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 	fs.BoolVar(
 		&o.ProfilingEnabled,
-		"profiling",
+		"pprof",
 		false,
 		"Enabled pprof profiling on the exporter on port :6060. (help: https://jvns.ca/blog/2017/09/24/profiling-go-with-pprof/)",
 	)
 	fs.BoolVar(
-		&o.InsecureSkipTLS,
-		"insecure-skip-tls",
+		&o.TLSDisabled,
+		"tls.disabled",
 		false,
 		"",
+	)
+	fs.BoolVar(
+		&o.ManagedTLS,
+		"tls.managed",
+		false,
+		"Allow the exporter manage its own certificates.",
+	)
+	fs.StringVar(
+		&o.CertFile,
+		"tls.cert-file",
+		"",
+		"The certificate file for the exporter.",
+	)
+	fs.StringVar(
+		&o.KeyFile,
+		"tls.key-file",
+		"",
+		"The key file for the exporter.",
 	)
 	fs.StringVar(
 		&o.cfg.Domain,
@@ -85,6 +115,12 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		"auth0.client-secret",
 		os.Getenv(envClientSecret),
 		"Auth0 management api static token.",
+	)
+	fs.StringVar(
+		&o.Namespace,
+		"namespace",
+		"",
+		"Exporter's namespace",
 	)
 	fs.IntVar(
 		&o.HostPort,

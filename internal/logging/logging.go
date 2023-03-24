@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	echolog "github.com/labstack/gommon/log"
 	kitlog "github.com/go-kit/log"
 	"github.com/go-logr/logr"
 	"github.com/prometheus/common/promlog"
@@ -28,6 +29,23 @@ func LoggerFromContext(ctx context.Context) Logger {
 		return NewPromLogger()
 	}
 	return Logger{l}
+}
+
+// ContextWithEchoLogger wraps the logr NewContext function
+func ContextWithEchoLogger(ctx context.Context, l Logger) context.Context {
+	return logr.NewContext(ctx, l.Logger)
+}
+
+func EchoLoggerFromContext(ctx context.Context) Logger {
+	l, err := logr.FromContext(ctx)
+	if err != nil {
+		return NewPromLogger()
+	}
+	return Logger{l}
+}
+// NewEchoLogger wraps the creation of a new gommon production logger
+func NewEchoLogger() *echolog.Logger {
+	return echolog.New("auth0-simple-exporter")
 }
 
 // NewPromLogger wraps the creation of a new prometheus production logger

@@ -3,15 +3,6 @@ SHELL := /bin/bash
 COMMIT:=$(shell git rev-list -1 HEAD)
 VERSION:=$(COMMIT)
 DATE:=$(shell date -uR)
-#GOVERSION:=$(shell go version | awk '{print $$3 " " $$4}')
-
-define LDFLAGS
--X "github.com/jetstack/preflight-platform/backend/cmd.PreflightVersion=$(VERSION)" \
--X "github.com/jetstack/preflight-platform/backend/cmd.Platform=$(GOOS)/$(GOARCH)" \
--X "github.com/jetstack/preflight-platform/backend/cmd.Commit=$(COMMIT)" \
--X "github.com/jetstack/preflight-platform/backend/cmd.BuildDate=$(DATE)" \
--X "github.com/jetstack/preflight-platform/backend/cmd.GoVersion=$(GOVERSION)"
-endef
 
 BIN_NAME:=auth0-exporter
 GOFLAGS:=-mod=readonly
@@ -20,7 +11,7 @@ GO_BUILD:=go build $(GOFLAGS)
 # include files with the `// +build mock` annotation
 TEST_TAGS:=-tags mock -coverprofile cover.out
 
-.PHONY: build generate test vet lint run stop build-all-platforms clean install-tools licenses generate
+.PHONY: build generate test vet build-all-platforms clean install-tools licenses generate
 
 install-tools:
 	go install github.com/swaggo/swag/cmd/swag@v1.8.7
@@ -33,7 +24,7 @@ build:
 
 generate:
 	cd $(ROOT_DIR) && go generate ./... && \
-	helm-docs --chart-search-root=deploy/charts/
+	helm-docs --chart-search-root=charts/
 
 test: build
 	cd $(ROOT_DIR) &&  go test $(GOFLAGS) $(TEST_TAGS) ./...

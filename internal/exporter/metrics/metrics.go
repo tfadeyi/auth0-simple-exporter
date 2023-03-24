@@ -10,7 +10,7 @@ import (
 const (
 	namespaceCtxKey = "metrics-namespace"
 	subsystemCtxKey = "metrics-subsystem"
-	MetricsCtxKey   = "metrics-list"
+	ListCtxKey      = "metrics-list"
 )
 
 var (
@@ -202,11 +202,11 @@ func increaseCounter(m *prometheus.CounterVec, labels ...string) {
 }
 
 // This will push your metrics object into every request context for later use
-func MetricsMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+func Middleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		namespace := c.Get(namespaceCtxKey).(string)
 		subsystem := c.Get(subsystemCtxKey).(string)
-		c.Set(MetricsCtxKey, New(namespace, subsystem))
+		c.Set(ListCtxKey, New(namespace, subsystem))
 		return next(c)
 	}
 }

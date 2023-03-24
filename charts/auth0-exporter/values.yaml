@@ -14,6 +14,18 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+auth0-exporter:
+  pprof: false
+
+  tls:
+    auto: false
+    enabled: false
+    secretName: ""
+    caFile: ""
+    certFile: ""
+    keyFile: ""
+
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true

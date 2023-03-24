@@ -30,7 +30,7 @@ func failLoginCounterMetric(namespace, subsystem string) *prometheus.CounterVec 
 		prometheus.CounterOpts{
 			Name: prometheus.BuildFQName(namespace, subsystem, tenantFailedLogin),
 			Help: "The number of failed login operations. (codes: f,fp,fu)",
-		}, []string{"type"})
+		}, []string{"code"})
 }
 
 func login(m *Metrics, log *management.Log) error {

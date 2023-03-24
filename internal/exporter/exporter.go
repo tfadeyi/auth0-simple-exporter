@@ -17,9 +17,17 @@ type (
 	exporter struct {
 		metricsAddr      string
 		hostPort         int
-		ctx              context.Context
 		profilingEnabled bool
-		client           auth0.Fetcher
+
+		// TLS
+		tlsDisabled bool
+		managedTLS  bool
+		certFile    string
+		keyFile     string
+
+		ctx context.Context
+
+		client auth0.Fetcher
 
 		totalScrapes              prometheus.Counter
 		targetScrapeRequestErrors prometheus.Counter
@@ -30,40 +38,10 @@ type (
 	Option func(e *exporter)
 )
 
-func Context(ctx context.Context) Option {
-	return func(e *exporter) {
-		e.ctx = ctx
-	}
-}
-
-func Client(client auth0.Fetcher) Option {
-	return func(e *exporter) {
-		e.client = client
-	}
-}
-
-func Profiling(p bool) Option {
-	return func(e *exporter) {
-		e.profilingEnabled = p
-	}
-}
-
-func MetricsAddr(addr string) Option {
-	return func(e *exporter) {
-		e.metricsAddr = addr
-	}
-}
-
-func Port(port int) Option {
-	return func(e *exporter) {
-		e.hostPort = port
-	}
-}
-
 func New(opts ...Option) (*exporter, error) {
 	e := &exporter{
-		namespace: "auth0",
-		subsystem: "",
+		namespace: "",
+		subsystem: "auth0",
 		//targetScrapeRequestErrors: prometheus.NewCounter(
 		//	prometheus.CounterOpts{
 		//		Namespace: namespace,
@@ -121,7 +99,7 @@ func New(opts ...Option) (*exporter, error) {
 func (e *exporter) metrics() echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		log := ctx.Logger()
-		metrics := ctx.Get(metrics.MetricsCtxKey).(*metrics.Metrics)
+		metrics := ctx.Get(metrics.ListCtxKey).(*metrics.Metrics)
 		registry := prometheus.NewRegistry()
 		registry.MustRegister(metrics.List()...)
 
