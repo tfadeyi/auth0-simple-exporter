@@ -11,13 +11,14 @@ GO_BUILD:=go build $(GOFLAGS)
 # include files with the `// +build mock` annotation
 TEST_TAGS:=-tags mock -coverprofile cover.out
 
-.PHONY: build generate test vet build-all-platforms clean install-tools licenses generate
+.PHONY: build generate test vet build-all-platforms clean install-tools licenses generate docker-build
 
 install-tools:
 	go install github.com/swaggo/swag/cmd/swag@v1.8.7
 	go install github.com/matryer/moq@v0.2.7
 	go install github.com/google/go-licenses@c781b427440f8ea100841eefdd308e660d26d121
 	go install github.com/norwoodj/helm-docs/cmd/helm-docs@v1.11.0
+	go install github.com/google/ko@latest
 
 build:
 	cd $(ROOT_DIR) && $(GO_BUILD) -o builds/$(BIN_NAME) .
@@ -46,6 +47,10 @@ build-all-platforms:
 	$(MAKE) GOOS=linux   GOARCH=amd64 ./builds/$(BIN_NAME)-linux-amd64
 	$(MAKE) GOOS=darwin  GOARCH=amd64 ./builds/$(BIN_NAME)-darwin-amd64
 	$(MAKE) GOOS=windows GOARCH=amd64 ./builds/$(BIN_NAME)-windows-amd64
+
+docker-build:
+	ko build -t latest -t $COMMIT \
+	--platform=linux/amd64
 
 clean:
 	cd $(ROOT_DIR) && \

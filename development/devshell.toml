@@ -13,7 +13,8 @@ packages = [
     "goreleaser",
     "golangci-lint",
     "tmux",
-    "helm-docs"
+    "helm-docs",
+    "ko"
 ]
 
 #startup.prometheus.text = "tmux new -s prometheus -d 'prometheus --config.file=$(dirname $0)/development/prometheus.yml'"

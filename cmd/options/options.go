@@ -19,10 +19,10 @@ type (
 		HostPort         int
 		// TLS
 		TLSDisabled      bool
-		ManagedTLS       bool
+		AutoTLS       bool
 		CertFile         string
-		KeyFile          string
-		TLSHost string
+		KeyFile  string
+		TLSHosts []string
 
 		// exporter
 		Namespace string
@@ -68,61 +68,62 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		&o.ProfilingEnabled,
 		"pprof",
 		false,
-		"Enabled pprof profiling on the exporter on port :6060. (help: https://jvns.ca/blog/2017/09/24/profiling-go-with-pprof/)",
+		"Enabled pprof profiling on the exporter on port :6060. (help: https://jvns.ca/blog/2017/09/24/profiling-go-with-pprof/).",
 	)
 	fs.BoolVar(
 		&o.TLSDisabled,
 		"tls.disabled",
 		false,
-		"",
+		"Run exporter without TLS.",
 	)
 	fs.BoolVar(
-		&o.ManagedTLS,
-		"tls.managed",
+		&o.AutoTLS,
+		"tls.auto",
 		true,
-		"Allow the exporter manage its own certificates.",
+		`Allow the exporter to use autocert to renew its certificates with letsencrypt.
+(Can only be used if the exporter is publicly accessible by the internet)`,
 	)
 	fs.StringVar(
 		&o.CertFile,
 		"tls.cert-file",
 		"",
-		"The certificate file for the exporter.",
+		"The certificate file for the exporter TLS connection.",
 	)
 	fs.StringVar(
 		&o.KeyFile,
 		"tls.key-file",
 		"",
-		"The key file for the exporter.",
+		"The key file for the exporter TLS connection.",
 	)
-	fs.StringVar(
-		&o.TLSHost,
-		"tls.host",
-		"",
-		"TLS Host.",
+	fs.StringSliceVar(
+		&o.TLSHosts,
+		"tls.hosts",
+		[]string{},
+		"The different allowed hosts for the exporter. Only works when --tls.auto has been enabled.",
 	)
 	fs.StringVar(
 		&o.cfg.Domain,
 		"auth0.domain",
 		"",
-		"Auth0 tenant's domain. (i.e: <tenant_name>.eu.auth0.com)",
+		"Auth0 tenant's domain. (i.e: <tenant_name>.eu.auth0.com).",
 	)
 	fs.StringVar(
 		&o.cfg.Token,
 		"auth0.token",
 		os.Getenv(envMgmtToken),
-		"Auth0 management api static token",
+		"Auth0 management api static token. (the token can be used instead of client credentials).",
 	)
 	fs.StringVar(
 		&o.cfg.ClientID,
 		"auth0.client-id",
 		os.Getenv(envClientID),
-		"Auth0 management api client-id",
+		"Auth0 management api client-id.",
 	)
 	fs.StringVar(
 		&o.cfg.ClientSecret,
 		"auth0.client-secret",
 		os.Getenv(envClientSecret),
-		"Auth0 management api static token.",
+		"Auth0 management api client-secret.",
 	)
 	fs.StringVar(
 		&o.Namespace,
@@ -140,6 +141,6 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		&o.MetricsEndpoint,
 		"web.metrics-path",
 		"metrics",
-		"URL Path under which to expose metrics.",
+		"URL Path under which to expose the collected auth0 metrics.",
 	)
 }

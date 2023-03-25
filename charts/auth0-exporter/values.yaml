@@ -4,47 +4,67 @@
 
 replicaCount: 1
 
+# -- image settings
 image:
   repository: ghcr.io/tfadeyi/auth0-simple-exporter
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v0.0.5"
+  tag: "v0.0.6"
 
+# -- specify credentials if pulling from a customer registry
 imagePullSecrets: []
+# -- Helm default setting to override release name, leave blank
 nameOverride: ""
+# -- Helm default setting, use this to shorten install name
 fullnameOverride: ""
 
+# -- Exporter's Auth0 client configuration
 auth0:
   createSecret: true
   secretName: exporter-credentials
+  # -- Auth0 tenant's domain. (i.e: <tenant_name>.eu.auth0.com)
   domain: "<change_me>.eu.auth0.com"
+  # -- Auth0 management api static token. (the token can be used instead of client credentials)
   token: ""
+  # -- Auth0 management api client-id.
   clientId: ""
+  # -- Auth0 management api client-secret.
   clientSecret: ""
 
+# -- Exporter's configuration
 exporter:
+  # -- Enabled pprof profiling on the exporter on port :6060. (help: https://jvns.ca/blog/2017/09/24/profiling-go-with-pprof/)
   pprof: false
   namespace: ""
+  # -- URL Path under which to expose the collected auth0 metrics.
   metricsEndpoint: "metrics"
-  port: 443
+  # -- Port where the server will listen.
+  port: 9301
   logLevel: 1
 
+  # -- Exporter's TLS configuration
   tls:
-    managed: true
+    # -- Allow the exporter to use autocert to renew its certificates with letsencrypt.
+    # (Can only be used if the exporter is publicly accessible by the internet)
+    auto: false
+    # -- Run exporter without TLS.
     disabled: false
-    host: "auth0-exporter.default.pod.cluster.local"
+    # -- The different allowed hosts for the exporter. Only works when --tls.auto has been enabled.
+    hosts: []
     createSecret: false
     secretKey: ""
     secretName: ""
+    # -- The certificate file for the exporter TLS connection.
     certFile: ""
+    # -- The key file for the exporter TLS connection.
     keyFile: ""
 
 labels: {}
 
 serviceAccount:
-  # Specifies whether a service account should be created
+  # -- Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
+  # -- Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
@@ -65,7 +85,7 @@ securityContext:
 
 service:
   type: ClusterIP
-  port: 443
+  port: 9301
 
 
 resources:

@@ -21,10 +21,10 @@ type (
 
 		// TLS
 		tlsDisabled bool
-		managedTLS  bool
+		autoTLS     bool
 		certFile    string
-		keyFile     string
-		tlsHost     string
+		keyFile  string
+		tlsHosts []string
 
 		ctx context.Context
 

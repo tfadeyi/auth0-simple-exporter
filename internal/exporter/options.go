@@ -6,11 +6,7 @@ import (
 	"github.com/auth0-simple-exporter/internal/auth0"
 )
 
-func TLSHost(host string) Option {
-	return func(e *exporter) {
-		e.tlsHost = host
-	}
-}
+
 func Context(ctx context.Context) Option {
 	return func(e *exporter) {
 		e.ctx = ctx
@@ -47,9 +43,9 @@ func Namespace(namespace string) Option {
 	}
 }
 
-func ManagedTLS(t bool) Option {
+func AutoTLS(t bool) Option {
 	return func(e *exporter) {
-		e.managedTLS = t
+		e.autoTLS = t
 	}
 }
 
@@ -68,5 +64,11 @@ func KeyFile(filename string) Option {
 func DisableTLS(t bool) Option {
 	return func(e *exporter) {
 		e.tlsDisabled = t
+	}
+}
+
+func TLSHosts(hosts []string) Option {
+	return func(e *exporter) {
+		e.tlsHosts = hosts
 	}
 }

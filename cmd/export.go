@@ -1,9 +1,9 @@
 package cmd
 
 import (
+	"github.com/labstack/gommon/log"
 	"github.com/auth0-simple-exporter/cmd/options"
 	"github.com/auth0-simple-exporter/internal/exporter"
-	"github.com/auth0-simple-exporter/internal/logging"
 	"github.com/juju/errors"
 	"github.com/spf13/cobra"
 )
@@ -21,7 +21,7 @@ func serveExporterCmd() *cobra.Command {
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			log := logging.LoggerFromContext(ctx)
+			//log := logging.LoggerFromContext(ctx)
 			log.Info("initialising exporter")
 
 			e, err := exporter.New(
@@ -34,8 +34,8 @@ func serveExporterCmd() *cobra.Command {
 				exporter.CertFile(opts.CertFile),
 				exporter.DisableTLS(opts.TLSDisabled),
 				exporter.KeyFile(opts.KeyFile),
-				exporter.ManagedTLS(opts.ManagedTLS),
-				exporter.TLSHost(opts.TLSHost))
+				exporter.AutoTLS(opts.AutoTLS),
+				exporter.TLSHosts(opts.TLSHosts))
 			if err != nil {
 				return errors.Annotate(err, "failed to initialise the exporter")
 			}

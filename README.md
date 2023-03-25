@@ -1,15 +1,10 @@
 [![CI](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml/badge.svg)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-yellow.svg)](https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE)
 [![Language](https://img.shields.io/badge/language-Go-blue.svg)](https://github.com/tfadeyi/auth0-simple-exporter)
-[![GitHub release](https://img.shields.io/badge/release-0.0.4-green.svg)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
+[![GitHub release](https://img.shields.io/badge/release-0.0.6-green.svg)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
 # Auth0 Simple Log Exporter
 
 Exports Prometheus metrics of Auth0 Log [Events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs).
-
-## Dependency
-
-* [Prometheus](https://prometheus.io/)
-* [Golang](https://golang.org/)
 
 ## Pre-Requisites
 
@@ -31,7 +26,6 @@ $ docker pull ghcr.io/tfadeyi/auth0-simple-exporter:[TAG]
 
 ## Helm
 
-## Kustomize
 
 ## Usage
 
@@ -50,7 +44,7 @@ Flags:
       --tls.cert-file string         The certificate file for the exporter.
       --tls.disabled
       --tls.key-file string          The key file for the exporter.
-      --tls.managed                  Allow the exporter manage its own certificates.
+      --tls.auto                  Allow the exporter manage its own certificates.
       --web.listen-address int       Port where the server will listen. (default 8081)
       --web.metrics-path string      URL Path under which to expose metrics. (default "metrics")
 ```

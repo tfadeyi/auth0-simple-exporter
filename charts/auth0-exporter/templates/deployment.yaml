@@ -66,10 +66,10 @@ spec:
             {{- end }}
             {{- if .Values.exporter.tls.disabled }}
             - "--tls.disabled"
-            {{- else if .Values.exporter.tls.managed }}
-            - "--tls.managed"
-            - "--tls.host"
-            - {{- .Values.exporter.tls.host}}
+            {{- else if .Values.exporter.tls.auto }}
+            - "--tls.auto"
+            - "--tls.hosts"
+            - "{{- .Values.exporter.tls.hosts}}"
             {{- else if (not .Values.exporter.tls.managed) }}
             - "--tls.cert-file=/etc/tls-certs/cert-file"
             - "--tls.key-file=/etc/tls-certs/key-file"
