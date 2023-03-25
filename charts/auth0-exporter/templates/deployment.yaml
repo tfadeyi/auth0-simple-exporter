@@ -5,9 +5,7 @@ metadata:
   labels:
     {{- include "auth0-exporter.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "auth0-exporter.selectorLabels" . | nindent 6 }}
@@ -33,6 +31,12 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "export"
+            {{- if .Values.auth0Exporter.auth0.domain }}
+            - "--auth0.domain"
+            - {{ .Values.auth0Exporter.auth0.domain }}
+            {{- end }}
           ports:
             - name: http
               containerPort: 80

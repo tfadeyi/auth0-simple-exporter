@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: auth0-simple-exporter
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -14,17 +14,28 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-auth0-exporter:
+auth0Exporter:
   pprof: false
 
+  auth0:
+    createSecret: true
+    secretName: exporter-credentials
+    secretKey: credentials.json
+    domain: ""
+    token: ""
+    clientId: ""
+    clientSecret: ""
+
   tls:
-    auto: false
-    enabled: false
+    managed: true
+    disabled: false
+    createSecret: false
+    secretKey: ""
     secretName: ""
-    caFile: ""
     certFile: ""
     keyFile: ""
 
+labels: {}
 
 serviceAccount:
   # Specifies whether a service account should be created

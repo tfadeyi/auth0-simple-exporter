@@ -11,6 +11,10 @@ Exports Prometheus metrics of Auth0 Log [Events](https://auth0.com/docs/api/mana
 * [Prometheus](https://prometheus.io/)
 * [Golang](https://golang.org/)
 
+## Pre-Requisites
+
+* Auth0 tenant account.
+
 ## Download
 
 Binary can be downloaded from [Releases](https://github.com/tfadeyi/auth0-simple-exporter/releases) page.
@@ -23,13 +27,6 @@ $ docker pull ghcr.io/tfadeyi/auth0-simple-exporter:latest
 To use a specific version, you can pull a versioned tag.
 ```shell
 $ docker pull ghcr.io/tfadeyi/auth0-simple-exporter:[TAG]
-```
-
-If you wish, you can also build the image yourself by cloning the repository, changing to the directory containing the Dockerfile and executing the docker build command.
-```shell
-$ git clone https://github.com/tfadeyi/auth0-simple-exporter.git
-$ cd auth0-simple-exporter
-$ make build
 ```
 
 ## Helm
