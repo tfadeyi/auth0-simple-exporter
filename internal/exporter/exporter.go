@@ -24,6 +24,7 @@ type (
 		managedTLS  bool
 		certFile    string
 		keyFile     string
+		tlsHost     string
 
 		ctx context.Context
 

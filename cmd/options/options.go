@@ -16,11 +16,13 @@ type (
 	Options struct {
 		ProfilingEnabled bool
 		MetricsEndpoint  string
-		HostPort    int
-		TLSDisabled bool
-		ManagedTLS  bool
-		CertFile    string
+		HostPort         int
+		// TLS
+		TLSDisabled      bool
+		ManagedTLS       bool
+		CertFile         string
 		KeyFile          string
+		TLSHost string
 
 		// exporter
 		Namespace string
@@ -77,7 +79,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 	fs.BoolVar(
 		&o.ManagedTLS,
 		"tls.managed",
-		false,
+		true,
 		"Allow the exporter manage its own certificates.",
 	)
 	fs.StringVar(
@@ -91,6 +93,12 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		"tls.key-file",
 		"",
 		"The key file for the exporter.",
+	)
+	fs.StringVar(
+		&o.TLSHost,
+		"tls.host",
+		"",
+		"TLS Host.",
 	)
 	fs.StringVar(
 		&o.cfg.Domain,

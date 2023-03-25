@@ -5,30 +5,34 @@
 replicaCount: 1
 
 image:
-  repository: auth0-simple-exporter
+  repository: ghcr.io/tfadeyi/auth0-simple-exporter
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "v0.0.5"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-auth0Exporter:
-  pprof: false
+auth0:
+  createSecret: true
+  secretName: exporter-credentials
+  domain: "<change_me>.eu.auth0.com"
+  token: ""
+  clientId: ""
+  clientSecret: ""
 
-  auth0:
-    createSecret: true
-    secretName: exporter-credentials
-    secretKey: credentials.json
-    domain: ""
-    token: ""
-    clientId: ""
-    clientSecret: ""
+exporter:
+  pprof: false
+  namespace: ""
+  metricsEndpoint: "metrics"
+  port: 443
+  logLevel: 1
 
   tls:
     managed: true
     disabled: false
+    host: "auth0-exporter.default.pod.cluster.local"
     createSecret: false
     secretKey: ""
     secretName: ""
@@ -51,30 +55,30 @@ podAnnotations: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
 
 service:
   type: ClusterIP
-  port: 80
+  port: 443
 
 
-resources: {}
+resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+  limits:
+   cpu: 100m
+   memory: 128Mi
+  requests:
+   cpu: 100m
+   memory: 128Mi
 
 nodeSelector: {}
 

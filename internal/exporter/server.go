@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/labstack/echo/v4/middleware"
-	"golang.org/x/crypto/acme/autocert"
 	"github.com/auth0-simple-exporter/internal/exporter/metrics"
 	"github.com/auth0-simple-exporter/internal/logging"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"golang.org/x/crypto/acme/autocert"
 	"golang.org/x/sync/errgroup"
 	_ "net/http/pprof"
 )
@@ -52,13 +52,16 @@ func (e *exporter) Export() error {
 	grp, ctx := errgroup.WithContext(e.ctx)
 	switch {
 	case !e.tlsDisabled && !e.managedTLS:
+		log.Info("Using exporter's given certificates")
 		// start server using the given certs
 		grp.Go(func() error {
 			return server.StartTLS(fmt.Sprintf(":%d", e.hostPort), e.certFile, e.keyFile)
 		})
 	case !e.tlsDisabled && e.managedTLS:
+		log.Info("Using exporter's managed TLS option")
 		// start server using managed certs
 		// Cache certificates to avoid issues with rate limits (https://letsencrypt.org/docs/rate-limits)
+		server.AutoTLSManager.HostPolicy = autocert.HostWhitelist(e.tlsHost)
 		server.AutoTLSManager.Cache = autocert.DirCache("/var/www/.cache")
 		grp.Go(func() error {
 			return server.StartAutoTLS(fmt.Sprintf(":%d", e.hostPort))

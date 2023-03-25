@@ -31,24 +31,59 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default "credentials" .Values.auth0.secretName }}
+                  key: token
+{{/*            - name: CLIENT_ID*/}}
+{{/*              valueFrom:*/}}
+{{/*                secretKeyRef:*/}}
+{{/*                  name: {{ default "credentials" .Values.auth0.secretName }}*/}}
+{{/*                  key: clientId*/}}
+{{/*            - name: CLIENT_SECRET*/}}
+{{/*              valueFrom:*/}}
+{{/*                secretKeyRef:*/}}
+{{/*                  name: {{ default "credentials" .Values.auth0.secretName }}*/}}
+{{/*                  key: clientSecret*/}}
           args:
             - "export"
-            {{- if .Values.auth0Exporter.auth0.domain }}
+            {{- if .Values.auth0.domain }}
             - "--auth0.domain"
-            - {{ .Values.auth0Exporter.auth0.domain }}
+            - {{ .Values.auth0.domain }}
+            {{- end }}
+            {{- if .Values.exporter.pprof }}
+            - "--profiling"
+            {{- end}}
+            {{- if .Values.exporter.namespace }}
+            - "--namespace"
+            - {{- .Values.exporter.namespace }}
+            {{- end }}
+            {{- if .Values.exporter.port }}
+            - "--web.listen-address"
+            - "{{- .Values.exporter.port }}"
+            {{- end }}
+            {{- if .Values.exporter.tls.disabled }}
+            - "--tls.disabled"
+            {{- else if .Values.exporter.tls.managed }}
+            - "--tls.managed"
+            - "--tls.host"
+            - {{- .Values.exporter.tls.host}}
+            {{- else if (not .Values.exporter.tls.managed) }}
+            - "--tls.cert-file=/etc/tls-certs/cert-file"
+            - "--tls.key-file=/etc/tls-certs/key-file"
             {{- end }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ int .Values.exporter.port }}
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+          {{- if and (not .Values.exporter.tls.disabled) (not .Values.exporter.tls.managed) }}
+          volumeMounts:
+          - name: tls-certs
+            mountPath: "/etc/tls-certs/"
+            readOnly: true
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -62,4 +97,10 @@ spec:
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if and (not .Values.exporter.tls.disabled) (not .Values.exporter.tls.managed) }}
+      volumes:
+        - name: tls-certs
+          secret:
+            secretName: {{ include "auth0-exporter.fullname" . }}
       {{- end }}

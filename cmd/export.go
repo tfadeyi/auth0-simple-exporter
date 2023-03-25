@@ -34,7 +34,8 @@ func serveExporterCmd() *cobra.Command {
 				exporter.CertFile(opts.CertFile),
 				exporter.DisableTLS(opts.TLSDisabled),
 				exporter.KeyFile(opts.KeyFile),
-				exporter.ManagedTLS(opts.ManagedTLS))
+				exporter.ManagedTLS(opts.ManagedTLS),
+				exporter.TLSHost(opts.TLSHost))
 			if err != nil {
 				return errors.Annotate(err, "failed to initialise the exporter")
 			}

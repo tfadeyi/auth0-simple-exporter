@@ -6,6 +6,11 @@ import (
 	"github.com/auth0-simple-exporter/internal/auth0"
 )
 
+func TLSHost(host string) Option {
+	return func(e *exporter) {
+		e.tlsHost = host
+	}
+}
 func Context(ctx context.Context) Option {
 	return func(e *exporter) {
 		e.ctx = ctx
