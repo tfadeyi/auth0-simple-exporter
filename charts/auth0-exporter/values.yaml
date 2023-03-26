@@ -9,7 +9,7 @@ image:
   repository: ghcr.io/tfadeyi/auth0-simple-exporter
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v0.0.6"
+  tag: "v0.0.7"
 
 # -- specify credentials if pulling from a customer registry
 imagePullSecrets: []
@@ -26,9 +26,9 @@ auth0:
   domain: "<change_me>.eu.auth0.com"
   # -- Auth0 management api static token. (the token can be used instead of client credentials)
   token: ""
-  # -- Auth0 management api client-id.
+  # -- Auth0 management api client-id. (do not set if static token is already set)
   clientId: ""
-  # -- Auth0 management api client-secret.
+  # -- Auth0 management api client-secret. (do not set if static token is already set)
   clientSecret: ""
 
 # -- Exporter's configuration
@@ -45,7 +45,7 @@ exporter:
   # -- Exporter's TLS configuration
   tls:
     # -- Allow the exporter to use autocert to renew its certificates with letsencrypt.
-    # (Can only be used if the exporter is publicly accessible by the internet)
+    # (can only be used if the exporter is publicly accessible by the internet)
     auto: false
     # -- Run exporter without TLS.
     disabled: false

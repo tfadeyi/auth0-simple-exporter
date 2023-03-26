@@ -70,7 +70,7 @@ spec:
             - "--tls.auto"
             - "--tls.hosts"
             - "{{- .Values.exporter.tls.hosts}}"
-            {{- else if (not .Values.exporter.tls.managed) }}
+            {{- else if (not .Values.exporter.tls.auto) }}
             - "--tls.cert-file=/etc/tls-certs/cert-file"
             - "--tls.key-file=/etc/tls-certs/key-file"
             {{- end }}
@@ -78,7 +78,7 @@ spec:
             - name: http
               containerPort: {{ int .Values.exporter.port }}
               protocol: TCP
-          {{- if and (not .Values.exporter.tls.disabled) (not .Values.exporter.tls.managed) }}
+          {{- if and (not .Values.exporter.tls.disabled) (not .Values.exporter.tls.auto) }}
           volumeMounts:
           - name: tls-certs
             mountPath: "/etc/tls-certs/"
@@ -98,7 +98,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if and (not .Values.exporter.tls.disabled) (not .Values.exporter.tls.managed) }}
+      {{- if and (not .Values.exporter.tls.disabled) (not .Values.exporter.tls.auto) }}
       volumes:
         - name: tls-certs
           secret:

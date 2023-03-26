@@ -18,11 +18,11 @@ type (
 		MetricsEndpoint  string
 		HostPort         int
 		// TLS
-		TLSDisabled      bool
-		AutoTLS       bool
-		CertFile         string
-		KeyFile  string
-		TLSHosts []string
+		TLSDisabled bool
+		AutoTLS     bool
+		CertFile    string
+		KeyFile     string
+		TLSHosts    []string
 
 		// exporter
 		Namespace string
@@ -37,6 +37,7 @@ const (
 	envClientSecret = "CLIENT_SECRET"
 	envClientID     = "CLIENT_ID"
 	envMgmtToken    = "TOKEN"
+	envDomainToken  = "DOMAIN"
 )
 
 // New creates a new instance of the application's options
@@ -104,7 +105,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 	fs.StringVar(
 		&o.cfg.Domain,
 		"auth0.domain",
-		"",
+		os.Getenv(envDomainToken),
 		"Auth0 tenant's domain. (i.e: <tenant_name>.eu.auth0.com).",
 	)
 	fs.StringVar(

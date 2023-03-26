@@ -4,15 +4,26 @@
 [![GitHub release](https://img.shields.io/badge/release-0.0.6-green.svg)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
 # Auth0 Simple Log Exporter
 
-Exports Prometheus metrics of Auth0 Log [Events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs).
+A simple Prometheus exporter for Auth0 log [Events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs), to allow
+you to monitor of Auth0 in your Prometheus monitoring stack.
+
+> Development is in progress.
 
 ## Pre-Requisites
 
-* Auth0 tenant account.
+* Auth0 tenant [management API](https://auth0.com/docs/api#management-api) client credentials.
+* (Optional) Auth0 tenant management API [static token](https://auth0.com/docs/secure/tokens/access-tokens/management-api-access-tokens).
 
-## Download
+More info on how to get the credentials can be found [here](./docs/auth0.md).
 
-Binary can be downloaded from [Releases](https://github.com/tfadeyi/auth0-simple-exporter/releases) page.
+## TL;DR
+Run exporter's container with TLS disabled.
+
+```shell
+$ export TOKEN="< mgmt static token >"
+$ export DOMAIN="< auth0 tenant domain >"
+$ docker run --network host -u $(id -u):$(id -g) -e TOKEN="$TOKEN" -e DOMAIN="$DOMAIN" ghcr.io/tfadeyi/auth0-simple-exporter:latest export --tls.disabled
+```
 
 ## Get this image
 The recommended way to get the Docker Image is to pull the prebuilt image from the project's Github Container Registry.
@@ -24,8 +35,25 @@ To use a specific version, you can pull a versioned tag.
 $ docker pull ghcr.io/tfadeyi/auth0-simple-exporter:[TAG]
 ```
 
-## Helm
+## Download
 
+Binary can be downloaded from [Releases](https://github.com/tfadeyi/auth0-simple-exporter/releases) page.
+
+## Helm
+This is loading the secret obtained from create-service-account step 
+`export HELM_SECRET="$(cat credentials.json)"`
+
+Run exporter with TLS disabled.
+
+```console
+# Installing by passing in secret directly
+helm upgrade --install --create-namespace -n jetstack-secure jetstack-agent \
+  oci://eu.gcr.io/jetstack-secure-enterprise/charts/jetstack-agent \
+  --set config.organisation="strange-jones" --set config.cluster="<CLUSTER_NAME>" \
+  --set authentication.createSecret=true --set authentication.secretValue="$HELM_SECRET"
+```
+
+More info on the helm deployment can be found [here](./charts/auth0-exporter/README.md).
 
 ## Usage
 
@@ -49,10 +77,11 @@ Flags:
       --web.metrics-path string      URL Path under which to expose metrics. (default "metrics")
 ```
 
-Environment variables available: 
-* TOKEN, mgmt api static token.
-* CLIENT_SECRET, mgmt api client-secret.
-* CLIENT_ID, mgmt api client-id.
+Environment variables: 
+* TOKEN, Auth0 management API static token.
+* CLIENT_SECRET, Auth0 management API client-secret.
+* CLIENT_ID, Auth0 management API client-id.
+* DOMAIN, Auth0 tenant domain.
 
 ## Metrics
 
@@ -68,6 +97,10 @@ Environment variables available:
 
 Retrieve the percentage of successful logins:
 
+## Known Issues
+
+When the Prometheus scraping job interval is too low the exporter might encounter api-rate limit from Auth0.
+To mitigate this try increasing the scraping interval for the job.  
 
 ## Development
 
