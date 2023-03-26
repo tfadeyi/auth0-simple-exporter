@@ -1,5 +1,7 @@
 <div align="center">
 
+# Auth0 Simple Log Exporter
+
 [![CI](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml/badge.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-yellowgreen.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE)
 [![Language](https://img.shields.io/badge/language-Go-blue.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter)
@@ -7,7 +9,7 @@
 
 </div>
 
-# Auth0 Simple Log Exporter
+---
 
 A simple Prometheus exporter for Auth0 log [Events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs), for a simple
 way to monitor Auth0 from a Prometheus monitoring stack.
