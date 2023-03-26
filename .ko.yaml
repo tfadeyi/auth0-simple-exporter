@@ -1,10 +1,11 @@
 defaultBaseImage: gcr.io/distroless/base:nonroot
 
-maintener: Oluwole Fadeyi <16049411+tfadeyi@users.noreply.github.com>
-labels:
-  org.opencontainers.image.source: https://github.com/tfadeyi/auth0-simple-exporter
-  org.opencontainers.image.description: "Simple Prometheus exporter for Auth0 log events"
-  org.opencontainers.image.licenses: APACHE
-  org.opencontainers.image.title: "Auth0 Exporter"
-  org.opencontainers.image.vendor: ""
-  org.opencontainers.image.authors: "Oluwole Fadeyi"
+defaultImageConfig:
+  maintainer: Oluwole Fadeyi <16049411+tfadeyi@users.noreply.github.com>
+  labels:
+    org.opencontainers.image.source: https://github.com/tfadeyi/auth0-simple-exporter
+    org.opencontainers.image.description: "Simple Prometheus exporter for Auth0 log events"
+    org.opencontainers.image.licenses: APACHE
+    org.opencontainers.image.title: "Auth0 Exporter"
+    org.opencontainers.image.vendor: ""
+    org.opencontainers.image.authors: "Oluwole Fadeyi"

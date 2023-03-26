@@ -1,7 +1,12 @@
-[![CI](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml/badge.svg)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml)
-[![License](https://img.shields.io/badge/License-Apache_2.0-yellow.svg)](https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE)
-[![Language](https://img.shields.io/badge/language-Go-blue.svg)](https://github.com/tfadeyi/auth0-simple-exporter)
-[![GitHub release](https://img.shields.io/badge/release-0.0.6-green.svg)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
+<div align="center">
+
+[![CI](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml/badge.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/License-Apache_2.0-yellowgreen.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE)
+[![Language](https://img.shields.io/badge/language-Go-blue.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter)
+[![GitHub release](https://img.shields.io/badge/release-0.0.10-green.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
+
+</div>
+
 # Auth0 Simple Log Exporter
 
 A simple Prometheus exporter for Auth0 log [Events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs), for a simple
@@ -103,6 +108,7 @@ When the Prometheus scraping job interval is too low the exporter might encounte
 To mitigate this try increasing the scraping interval for the job.  
 
 ## Development
+
 
 #### Nix
 To start the development environment:
