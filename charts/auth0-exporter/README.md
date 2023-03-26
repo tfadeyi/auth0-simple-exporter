@@ -2,7 +2,7 @@
 
 Auth0 Prometheus exporter
 
-![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.6](https://img.shields.io/badge/AppVersion-0.0.4-informational?style=flat-square)
+![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.7](https://img.shields.io/badge/AppVersion-0.0.7-informational?style=flat-square)
 
 ## Additional Information
 
@@ -13,7 +13,7 @@ on the `/metrics` endpoint.
 
 ### Deploying the chart
 
-Once credentials are obtained, there are two ways to install the chart:
+There are two ways to install the chart:
 
 #### Method 1: create secret manually
 
@@ -45,9 +45,9 @@ helm upgrade --install --create-namespace -n jetstack-secure jetstack-agent \
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
-| auth0 | object | `{"clientId":"","clientSecret":"","createSecret":true,"domain":"<change_me>.eu.auth0.com","secretName":"exporter-credentials","token":""}` | Exporter's Auth0 client configuration |
-| auth0.clientId | string | `""` | Auth0 management api client-id. |
-| auth0.clientSecret | string | `""` | Auth0 management api client-secret. |
+| auth0 | object | `{"clientId":"","clientSecret":"","createSecret":true,"domain":"<change_me>.eu.auth0.com","secretName":"auth0-credentials","token":""}` | Exporter's Auth0 client configuration |
+| auth0.clientId | string | `""` | Auth0 management api client-id. (do not set if static token is already set) |
+| auth0.clientSecret | string | `""` | Auth0 management api client-secret. (do not set if static token is already set) |
 | auth0.domain | string | `"<change_me>.eu.auth0.com"` | Auth0 tenant's domain. (i.e: <tenant_name>.eu.auth0.com) |
 | auth0.token | string | `""` | Auth0 management api static token. (the token can be used instead of client credentials) |
 | exporter | object | `{"logLevel":1,"metricsEndpoint":"metrics","namespace":"","port":9301,"pprof":false,"tls":{"auto":false,"certFile":"","createSecret":false,"disabled":false,"hosts":[],"keyFile":"","secretKey":"","secretName":""}}` | Exporter's configuration |
@@ -55,12 +55,12 @@ helm upgrade --install --create-namespace -n jetstack-secure jetstack-agent \
 | exporter.port | int | `9301` | Port where the server will listen. |
 | exporter.pprof | bool | `false` | Enabled pprof profiling on the exporter on port :6060. (help: https://jvns.ca/blog/2017/09/24/profiling-go-with-pprof/) |
 | exporter.tls | object | `{"auto":false,"certFile":"","createSecret":false,"disabled":false,"hosts":[],"keyFile":"","secretKey":"","secretName":""}` | Exporter's TLS configuration |
-| exporter.tls.auto | bool | `false` | Allow the exporter to use autocert to renew its certificates with letsencrypt. (Can only be used if the exporter is publicly accessible by the internet) |
+| exporter.tls.auto | bool | `false` | Allow the exporter to use autocert to renew its certificates with letsencrypt. (can only be used if the exporter is publicly accessible by the internet) |
 | exporter.tls.certFile | string | `""` | The certificate file for the exporter TLS connection. |
 | exporter.tls.disabled | bool | `false` | Run exporter without TLS. |
 | exporter.tls.keyFile | string | `""` | The key file for the exporter TLS connection. |
 | fullnameOverride | string | `""` | Helm default setting, use this to shorten install name |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/tfadeyi/auth0-simple-exporter","tag":"v0.0.6"}` | image settings |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/tfadeyi/auth0-simple-exporter","tag":"v0.0.7"}` | image settings |
 | imagePullSecrets | list | `[]` | specify credentials if pulling from a customer registry |
 | labels | object | `{}` |  |
 | nameOverride | string | `""` | Helm default setting to override release name, leave blank |

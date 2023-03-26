@@ -2,10 +2,10 @@ package exporter
 
 import (
 	"context"
+	"time"
 
 	"github.com/auth0-simple-exporter/internal/auth0"
 )
-
 
 func Context(ctx context.Context) Option {
 	return func(e *exporter) {
@@ -70,5 +70,29 @@ func DisableTLS(t bool) Option {
 func TLSHosts(hosts []string) Option {
 	return func(e *exporter) {
 		e.tlsHosts = hosts
+	}
+}
+
+func ProbePort(port int) Option {
+	return func(e *exporter) {
+		e.probePort = port
+	}
+}
+
+func ProbeAddr(addr string) Option {
+	return func(e *exporter) {
+		e.probeAddr = addr
+	}
+}
+
+func ProfilingPort(port int) Option {
+	return func(e *exporter) {
+		e.profilingPort = port
+	}
+}
+
+func StartTime(time time.Time) Option {
+	return func(e *exporter) {
+		e.startTime = time
 	}
 }

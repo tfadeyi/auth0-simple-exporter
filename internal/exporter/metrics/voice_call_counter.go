@@ -38,7 +38,6 @@ func sendVoiceCall(m *Metrics, log *management.Log) error {
 	if log == nil {
 		return errInvalidLogEvent
 	}
-
 	switch log.GetType() {
 	case failedMfaSendVoiceCall:
 		increaseCounter(m.failedVoiceCallCounter)

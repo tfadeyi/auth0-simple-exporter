@@ -2,6 +2,7 @@ package auth0
 
 import (
 	"context"
+	"time"
 )
 
 //go:generate rm -f ./mock.go
@@ -10,7 +11,7 @@ import (
 type (
 	Fetcher interface {
 		// FetchAll returns all resources of a specif type
-		FetchAll(ctx context.Context) (interface{}, error)
+		FetchAll(ctx context.Context, startTime time.Time) (interface{}, error)
 	}
 
 	// Options to configure the Fetcher

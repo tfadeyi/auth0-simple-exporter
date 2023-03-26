@@ -2,6 +2,9 @@ package logfetcher
 
 import (
 	"context"
+	"fmt"
+	"time"
+
 	"github.com/auth0-simple-exporter/internal/auth0"
 	"github.com/auth0/go-auth0/management"
 	"github.com/juju/errors"
@@ -15,15 +18,16 @@ type (
 	}
 )
 
-func (c *LogFetcher) FetchAll(ctx context.Context) (interface{}, error) {
+func (c *LogFetcher) FetchAll(ctx context.Context, startTime time.Time) (interface{}, error) {
 	var allLogs []*management.Log
 	i := 0
 	for {
 		logs, err := c.client.Log.List(
 			management.Context(ctx),
-			management.IncludeFields("type", "log_id"),
+			management.IncludeFields("type", "log_id", "date"),
 			management.Page(i),
 			management.PerPage(100),
+			management.Query(fmt.Sprintf("date:[%s TO *]", startTime.Format("2006-01-02"))),
 		)
 		if err != nil {
 			return nil, err
@@ -40,7 +44,6 @@ func (c *LogFetcher) FetchAll(ctx context.Context) (interface{}, error) {
 func NewFetcherWithOpts(opts auth0.Options) (*LogFetcher, error) {
 	var errs error
 	var client *management.Management
-
 	if opts.Domain == "" {
 		errs = multierr.Append(errs, errors.New("missing auth0 domain"))
 	}

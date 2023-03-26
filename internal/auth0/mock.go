@@ -6,6 +6,7 @@ package auth0
 import (
 	"context"
 	"sync"
+	"time"
 )
 
 // Ensure, that FetcherMock does implement Fetcher.
@@ -18,7 +19,7 @@ var _ Fetcher = &FetcherMock{}
 //
 //		// make and configure a mocked Fetcher
 //		mockedFetcher := &FetcherMock{
-//			FetchAllFunc: func(ctx context.Context) (interface{}, error) {
+//			FetchAllFunc: func(ctx context.Context, startTime time.Time) (interface{}, error) {
 //				panic("mock out the FetchAll method")
 //			},
 //		}
@@ -29,7 +30,7 @@ var _ Fetcher = &FetcherMock{}
 //	}
 type FetcherMock struct {
 	// FetchAllFunc mocks the FetchAll method.
-	FetchAllFunc func(ctx context.Context) (interface{}, error)
+	FetchAllFunc func(ctx context.Context, startTime time.Time) (interface{}, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -37,25 +38,29 @@ type FetcherMock struct {
 		FetchAll []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
+			// StartTime is the startTime argument value.
+			StartTime time.Time
 		}
 	}
 	lockFetchAll sync.RWMutex
 }
 
 // FetchAll calls FetchAllFunc.
-func (mock *FetcherMock) FetchAll(ctx context.Context) (interface{}, error) {
+func (mock *FetcherMock) FetchAll(ctx context.Context, startTime time.Time) (interface{}, error) {
 	if mock.FetchAllFunc == nil {
 		panic("FetcherMock.FetchAllFunc: method is nil but Fetcher.FetchAll was just called")
 	}
 	callInfo := struct {
-		Ctx context.Context
+		Ctx       context.Context
+		StartTime time.Time
 	}{
-		Ctx: ctx,
+		Ctx:       ctx,
+		StartTime: startTime,
 	}
 	mock.lockFetchAll.Lock()
 	mock.calls.FetchAll = append(mock.calls.FetchAll, callInfo)
 	mock.lockFetchAll.Unlock()
-	return mock.FetchAllFunc(ctx)
+	return mock.FetchAllFunc(ctx, startTime)
 }
 
 // FetchAllCalls gets all the calls that were made to FetchAll.
@@ -63,10 +68,12 @@ func (mock *FetcherMock) FetchAll(ctx context.Context) (interface{}, error) {
 //
 //	len(mockedFetcher.FetchAllCalls())
 func (mock *FetcherMock) FetchAllCalls() []struct {
-	Ctx context.Context
+	Ctx       context.Context
+	StartTime time.Time
 } {
 	var calls []struct {
-		Ctx context.Context
+		Ctx       context.Context
+		StartTime time.Time
 	}
 	mock.lockFetchAll.RLock()
 	calls = mock.calls.FetchAll

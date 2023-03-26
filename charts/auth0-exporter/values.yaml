@@ -21,7 +21,7 @@ fullnameOverride: ""
 # -- Exporter's Auth0 client configuration
 auth0:
   createSecret: true
-  secretName: exporter-credentials
+  secretName: auth0-credentials
   # -- Auth0 tenant's domain. (i.e: <tenant_name>.eu.auth0.com)
   domain: "<change_me>.eu.auth0.com"
   # -- Auth0 management api static token. (the token can be used instead of client credentials)

@@ -4,8 +4,8 @@
 [![GitHub release](https://img.shields.io/badge/release-0.0.6-green.svg)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
 # Auth0 Simple Log Exporter
 
-A simple Prometheus exporter for Auth0 log [Events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs), to allow
-you to monitor of Auth0 in your Prometheus monitoring stack.
+A simple Prometheus exporter for Auth0 log [Events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs), for a simple
+way to monitor Auth0 from a Prometheus monitoring stack.
 
 > Development is in progress.
 
@@ -20,7 +20,7 @@ More info on how to get the credentials can be found [here](./docs/auth0.md).
 Run exporter's container with TLS disabled.
 
 ```shell
-$ export TOKEN="< mgmt static token >"
+$ export TOKEN="< auth0 management API static static token >"
 $ export DOMAIN="< auth0 tenant domain >"
 $ docker run --network host -u $(id -u):$(id -g) -e TOKEN="$TOKEN" -e DOMAIN="$DOMAIN" ghcr.io/tfadeyi/auth0-simple-exporter:latest export --tls.disabled
 ```

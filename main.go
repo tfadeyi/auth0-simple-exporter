@@ -19,6 +19,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+//go:generate swag fmt
+//go:generate swag init --parseDependency
+
 package main
 
 import (
@@ -28,15 +31,26 @@ import (
 	"syscall"
 
 	"github.com/auth0-simple-exporter/cmd"
-	"github.com/auth0-simple-exporter/internal/logging"
+	"github.com/labstack/gommon/log"
 )
 
+// @title       Auth0 simple exporter
+// @version     0.0.7
+// @description A simple Prometheus exporter for Auth0 log events,(https://auth0.com/docs/api/management/v2#!/Logs/get_logs), for a simple
+//way to monitor Auth0 from a Prometheus monitoring stack.
+
+// @contact.name Oluwole Fadeyi (@tfadeyi)
+
+// @license.name Apache 2.0
+// @license.url  https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE
+
+// @host     localhost:9301
+// @BasePath /
 func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, os.Kill, syscall.SIGTERM)
 	defer cancel()
 
-	log := logging.NewPromLogger()
-	ctx = logging.ContextWithLogger(ctx, log)
+	log.SetPrefix("auth0-exporter")
 
 	cmd.Execute(ctx)
 }

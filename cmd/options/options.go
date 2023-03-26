@@ -15,8 +15,16 @@ type (
 	// plus the clients needed by the application to function.
 	Options struct {
 		ProfilingEnabled bool
+		ProfilingPort    int
 		MetricsEndpoint  string
 		HostPort         int
+		LogLevel        int8
+		StartTimeCheckpoint string
+
+		// probe
+		ProbePort int
+		ProbeAddr string
+
 		// TLS
 		TLSDisabled bool
 		AutoTLS     bool
@@ -61,16 +69,41 @@ func (o *Options) Complete() error {
 		return errors.Annotate(err, "failed to initialise exporter's connection to auth0")
 	}
 
+	if !o.TLSDisabled {
+		// only check cert/key if they don't exist if TLS is not disabled
+		if _, err := os.Stat(o.KeyFile); errors.Is(err, os.ErrNotExist) {
+			return errors.New("failed to find the exporter's private key file. TLS can be disabled with --tls.disabled")
+		}
+
+		if _, err := os.Stat(o.CertFile); errors.Is(err, os.ErrNotExist) {
+			return errors.New("failed to find the exporter's certificate file. TLS can be disabled with --tls.disabled")
+		}
+	}
+
 	return nil
 }
 
 func (o *Options) addAppFlags(fs *pflag.FlagSet) {
+	fs.Int8Var(
+		&o.LogLevel,
+		"log.level",
+		1,
+		"Exporter log level.",
+	)
+
+	fs.IntVar(
+		&o.ProfilingPort,
+		"pprof.listen-address",
+		6060,
+		"Port where the pprof webserver will listen on.",
+	)
 	fs.BoolVar(
 		&o.ProfilingEnabled,
-		"pprof",
+		"pprof.enabled",
 		false,
 		"Enabled pprof profiling on the exporter on port :6060. (help: https://jvns.ca/blog/2017/09/24/profiling-go-with-pprof/).",
 	)
+
 	fs.BoolVar(
 		&o.TLSDisabled,
 		"tls.disabled",
@@ -80,7 +113,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 	fs.BoolVar(
 		&o.AutoTLS,
 		"tls.auto",
-		true,
+		false,
 		`Allow the exporter to use autocert to renew its certificates with letsencrypt.
 (Can only be used if the exporter is publicly accessible by the internet)`,
 	)
@@ -102,6 +135,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		[]string{},
 		"The different allowed hosts for the exporter. Only works when --tls.auto has been enabled.",
 	)
+
 	fs.StringVar(
 		&o.cfg.Domain,
 		"auth0.domain",
@@ -126,6 +160,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		os.Getenv(envClientSecret),
 		"Auth0 management api client-secret.",
 	)
+
 	fs.StringVar(
 		&o.Namespace,
 		"namespace",
@@ -135,13 +170,26 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 	fs.IntVar(
 		&o.HostPort,
 		"web.listen-address",
-		8081,
-		"Port where the server will listen.",
+		8080,
+		"Port where the exporter webserver will listen on.",
 	)
 	fs.StringVar(
 		&o.MetricsEndpoint,
 		"web.metrics-path",
 		"metrics",
 		"URL Path under which to expose the collected auth0 metrics.",
+	)
+
+	fs.IntVar(
+		&o.ProbePort,
+		"probe.listen-address",
+		8081,
+		"Port where the probe webserver will listen on.",
+	)
+	fs.StringVar(
+		&o.ProbeAddr,
+		"probe.metrics-path",
+		"probe",
+		"URL Path under which to expose the probe metrics.",
 	)
 }
