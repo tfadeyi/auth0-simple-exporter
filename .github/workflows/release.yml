@@ -16,6 +16,9 @@ jobs:
       - name: Unshallow
         run: git fetch --prune --unshallow
 
+      - name: Install tools
+        run: make install-tools
+
       - name: Install cosign
         uses: sigstore/cosign-installer@v3.0.1
 
