@@ -16,7 +16,7 @@ way to monitor Auth0 from a Prometheus monitoring stack.
 
 > Development is in progress.
 
-## Pre-Requisites
+## Prerequisites
 
 * Auth0 tenant [management API](https://auth0.com/docs/api#management-api) client credentials.
 * (Optional) Auth0 tenant management API [static token](https://auth0.com/docs/secure/tokens/access-tokens/management-api-access-tokens).
@@ -111,6 +111,7 @@ To mitigate this try increasing the scraping interval for the job.
 
 ## Development
 
+#### Makefile
 
 #### Nix
 To start the development environment:
@@ -128,6 +129,8 @@ To make a new release just create a new git tag, this will trigger a new Github 
 git tag -a v0.1.0 -m "First release"
 git push origin v0.1.0
 ```
+
+> ⚠️ Remember to update the Helm Chart and OpenAPI specification.
 
 ## License
 Apache 2.0, see [LICENSE.md](./LICENSE).

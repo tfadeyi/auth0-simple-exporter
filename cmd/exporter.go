@@ -4,7 +4,6 @@ import (
 	"github.com/auth0-simple-exporter/cmd/options"
 	"github.com/auth0-simple-exporter/internal/exporter"
 	"github.com/auth0-simple-exporter/internal/version"
-	"github.com/juju/errors"
 	"github.com/labstack/gommon/log"
 	"github.com/spf13/cobra"
 )
@@ -25,8 +24,8 @@ func serveExporterCmd() *cobra.Command {
 			log.SetLevel(log.Lvl(opts.LogLevel))
 			log.Infof("initialising exporter: %s", version.BuildInfo())
 
-			e, err := exporter.New(
-				exporter.Context(ctx),
+			e := exporter.New(
+				ctx,
 				exporter.Port(opts.HostPort),
 				exporter.MetricsAddr(opts.MetricsEndpoint),
 				exporter.Profiling(opts.ProfilingEnabled),
@@ -40,9 +39,6 @@ func serveExporterCmd() *cobra.Command {
 				exporter.TLSHosts(opts.TLSHosts),
 				exporter.ProbeAddr(opts.ProbeAddr),
 				exporter.ProbePort(opts.ProbePort))
-			if err != nil {
-				return errors.Annotate(err, "failed to initialise the exporter")
-			}
 			return e.Export()
 		},
 	}

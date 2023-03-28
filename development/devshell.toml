@@ -18,5 +18,6 @@ packages = [
 ]
 
 #startup.prometheus.text = "tmux new -s prometheus -d 'prometheus --config.file=$(dirname $0)/development/prometheus.yml'"
-startup.kill_services.text = "alias destroy='tmux kill-session'"
+startup.kill_services.text = "alias destroy='tmux kill-session -a'"
 startup.test.text = "alias test='make test && golangci-lint run'"
+startup.pprof.text = "alias pprof='go tool pprof'"

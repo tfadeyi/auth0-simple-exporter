@@ -2,6 +2,7 @@ package exporter
 
 import (
 	"context"
+	"net/http"
 	"time"
 
 	"github.com/auth0-simple-exporter/internal/auth0"
@@ -45,15 +46,17 @@ type (
 		probePort                 int
 		totalScrapes              prometheus.Counter
 		targetScrapeRequestErrors prometheus.Counter
+		probeRegistry             *prometheus.Registry
 	}
 	Option func(e *exporter)
 )
 
 // New returns an instance of the exporter
-func New(opts ...Option) (*exporter, error) {
+func New(ctx context.Context, opts ...Option) *exporter {
 	e := &exporter{
-		namespace: "",
-		subsystem: "auth0",
+		namespace: "auth0",
+		subsystem: "",
+		ctx:       ctx,
 		startTime: time.Now(),
 		targetScrapeRequestErrors: prometheus.NewCounter(
 			prometheus.CounterOpts{
@@ -67,16 +70,20 @@ func New(opts ...Option) (*exporter, error) {
 				Name:      "target_scrape_request_total",
 				Help:      "Total requests to the exporter",
 			}),
+		probeRegistry: prometheus.NewRegistry(),
 	}
 	for _, opt := range opts {
 		// apply options
 		opt(e)
 	}
 
-	prometheus.MustRegister(e.targetScrapeRequestErrors)
-	prometheus.MustRegister(e.totalScrapes)
+	if ctx == nil {
+		e.ctx = context.Background()
+	}
 
-	return e, nil
+	e.probeRegistry.MustRegister(e.targetScrapeRequestErrors, e.totalScrapes)
+
+	return e
 }
 
 // metrics godoc
@@ -95,11 +102,15 @@ func (e *exporter) metrics() echo.HandlerFunc {
 
 		e.totalScrapes.Inc()
 		log.Debug("handling request for the auth0 tenant metrics")
-		err := collect(ctx.Request().Context(), metrics, e.client, e.startTime)
-		if err != nil {
-			// TODO check if the error is a rate limit error
+		err := e.collect(ctx.Request().Context(), metrics)
+		switch {
+		case errors.Is(err, auth0.ErrAPIRateLimitReached):
+			log.Errorf("reached the Auth0 rate limit, fetching should resume shortly: %s", err)
+			e.targetScrapeRequestErrors.Inc()
+		case err != nil:
 			log.Errorf("error collecting event logs metrics from the selected Auth0 tenant: %s", err)
 			e.targetScrapeRequestErrors.Inc()
+			return echo.NewHTTPError(http.StatusInternalServerError, "Exporter encountered some issues when collecting logs from Auth0")
 		}
 
 		log.Debug("successfully collected metrics from the auth0 tenant")
@@ -117,21 +128,21 @@ func (e *exporter) metrics() echo.HandlerFunc {
 // @tags        metrics, prometheus
 func (e *exporter) probe() echo.HandlerFunc {
 	return func(ctx echo.Context) error {
-		promhttp.Handler().ServeHTTP(ctx.Response(), ctx.Request())
+		promhttp.HandlerFor(e.probeRegistry, promhttp.HandlerOpts{}).ServeHTTP(ctx.Response(), ctx.Request())
 		return nil
 	}
 }
 
 // collect collects all logs from Auth0 using startTime as the initial checkpoint
-func collect(ctx context.Context, m *metrics.Metrics, client auth0.Fetcher, from time.Time) error {
-	list, err := client.FetchAll(ctx, from)
+func (e *exporter) collect(ctx context.Context, m *metrics.Metrics) error {
+	list, err := e.client.FetchAll(ctx, e.startTime)
 	if err != nil {
 		return errors.Annotate(err, "error fetching the log events from Auth0")
 	}
 
 	tenantLogEvents, ok := list.([]*management.Log)
 	if !ok {
-		return errors.New("log management mismatch")
+		return errors.New("client FetchAll didn't return the expect list types, expected Log type")
 	}
 
 	for _, event := range tenantLogEvents {

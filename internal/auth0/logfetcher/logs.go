@@ -29,7 +29,10 @@ func (c *LogFetcher) FetchAll(ctx context.Context, startTime time.Time) (interfa
 			management.PerPage(100),
 			management.Query(fmt.Sprintf("date:[%s TO *]", startTime.Format("2006-01-02"))),
 		)
-		if err != nil {
+		switch {
+		case errors.IsQuotaLimitExceeded(err):
+			return nil, auth0.ErrAPIRateLimitReached
+		case err != nil:
 			return nil, err
 		}
 		allLogs = append(allLogs, logs...)

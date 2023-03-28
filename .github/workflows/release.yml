@@ -25,6 +25,9 @@ jobs:
           go-version: 1.19.x
           cache: true
 
+      - name: Licenses
+        run: make licenses
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
@@ -32,6 +35,9 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          KO_DOCKER_REPO: "ghcr.io/${{ github.repository }}"
+          KO_DATA_PATH: "/usr/share/doc/${{ github.repository }}/"
+
 
   helm:
     # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
@@ -60,51 +66,51 @@ jobs:
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-  ko:
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      packages: write
-      contents: read
-    env:
-      KO_DOCKER_REPO: ghcr.io/${{ github.repository }}
-      KO_DATA_PATH: /usr/share/doc/${{ github.repository }}/
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: 1.19.x
-          cache: true
-
-      - name: Setup ko
-        uses: imjasonh/setup-ko@ace48d793556083a76f1e3e6068850c1f4a369aa
-
-      - name: Install cosign
-        uses: sigstore/cosign-installer@v3.0.1
-
-      - name: Install tools
-        run: make install-tools
-
-      - name: Licenses
-        run: make licenses
-
-      - name: Login to ghcr.io
-        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ github.token }}
-
-      - name: Build
-        run: |
-          ko build \
-            --bare \
-            -t latest \
-            -t ${{ github.ref_name }} \
-            --platform=linux/amd64,linux/arm64,linux/arm \
-            --sbom=cyclonedx \
-            --image-refs image-refs.txt
-          cosign sign $(cat image-refs.txt)
+#  ko:
+#    runs-on: ubuntu-latest
+#    permissions:
+#      id-token: write
+#      packages: write
+#      contents: read
+#    env:
+#      KO_DOCKER_REPO: ghcr.io/${{ github.repository }}
+#      KO_DATA_PATH: /usr/share/doc/${{ github.repository }}/
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#
+#      - name: Install Go
+#        uses: actions/setup-go@v3
+#        with:
+#          go-version: 1.19.x
+#          cache: true
+#
+#      - name: Setup ko
+#        uses: imjasonh/setup-ko@ace48d793556083a76f1e3e6068850c1f4a369aa
+#
+#      - name: Install cosign
+#        uses: sigstore/cosign-installer@v3.0.1
+#
+#      - name: Install tools
+#        run: make install-tools
+#
+#      - name: Licenses
+#        run: make licenses
+#
+#      - name: Login to ghcr.io
+#        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.repository_owner }}
+#          password: ${{ github.token }}
+#
+#      - name: Build
+#        run: |
+#          ko build \
+#            --bare \
+#            -t latest \
+#            -t ${{ github.ref_name }} \
+#            --platform=linux/amd64,linux/arm64,linux/arm \
+#            --sbom=cyclonedx \
+#            --image-refs image-refs.txt
+#          cosign sign $(cat image-refs.txt)

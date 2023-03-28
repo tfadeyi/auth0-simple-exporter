@@ -2,6 +2,7 @@ package auth0
 
 import (
 	"context"
+	"errors"
 	"time"
 )
 
@@ -21,4 +22,8 @@ type (
 		ClientSecret string
 		ClientID     string
 	}
+)
+
+var (
+	ErrAPIRateLimitReached = errors.New("auth0 api rate limit was reached")
 )

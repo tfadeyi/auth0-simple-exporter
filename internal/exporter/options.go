@@ -1,17 +1,10 @@
 package exporter
 
 import (
-	"context"
 	"time"
 
 	"github.com/auth0-simple-exporter/internal/auth0"
 )
-
-func Context(ctx context.Context) Option {
-	return func(e *exporter) {
-		e.ctx = ctx
-	}
-}
 
 func Client(client auth0.Fetcher) Option {
 	return func(e *exporter) {
@@ -91,8 +84,14 @@ func ProfilingPort(port int) Option {
 	}
 }
 
-func StartTime(time time.Time) Option {
+func From(time time.Time) Option {
 	return func(e *exporter) {
 		e.startTime = time
+	}
+}
+
+func Subsystem(sub string) Option {
+	return func(e *exporter) {
+		e.subsystem = sub
 	}
 }

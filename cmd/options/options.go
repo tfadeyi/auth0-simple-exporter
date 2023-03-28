@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"os"
+	"time"
 
 	"github.com/auth0-simple-exporter/internal/auth0"
 	fetch "github.com/auth0-simple-exporter/internal/auth0/logfetcher"
@@ -14,11 +15,11 @@ type (
 	// Options is the list of options/flag available to the application,
 	// plus the clients needed by the application to function.
 	Options struct {
-		ProfilingEnabled bool
-		ProfilingPort    int
-		MetricsEndpoint  string
-		HostPort         int
-		LogLevel        int8
+		ProfilingEnabled    bool
+		ProfilingPort       int
+		MetricsEndpoint     string
+		HostPort            int
+		LogLevel            int8
 		StartTimeCheckpoint string
 
 		// probe
@@ -34,6 +35,7 @@ type (
 
 		// exporter
 		Namespace string
+		Subsystem string
 
 		// Auth0 setup
 		cfg    auth0.Options
@@ -137,6 +139,12 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 	)
 
 	fs.StringVar(
+		&o.StartTimeCheckpoint,
+		"auth0.checkpoint",
+		time.Now().Format("2006-01-02"),
+		"Point in time from were to start fetching auth0 logs. (format: YYYY-MM-DD)",
+	)
+	fs.StringVar(
 		&o.cfg.Domain,
 		"auth0.domain",
 		os.Getenv(envDomainToken),
@@ -165,8 +173,15 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		&o.Namespace,
 		"namespace",
 		"",
-		"Exporter's namespace",
+		"Exporter's namespace.",
 	)
+	fs.StringVar(
+		&o.Subsystem,
+		"subsystem",
+		"",
+		"Exporter's subsystem.",
+	)
+
 	fs.IntVar(
 		&o.HostPort,
 		"web.listen-address",
@@ -175,7 +190,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 	)
 	fs.StringVar(
 		&o.MetricsEndpoint,
-		"web.metrics-path",
+		"web.path",
 		"metrics",
 		"URL Path under which to expose the collected auth0 metrics.",
 	)
@@ -188,7 +203,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 	)
 	fs.StringVar(
 		&o.ProbeAddr,
-		"probe.metrics-path",
+		"probe.path",
 		"probe",
 		"URL Path under which to expose the probe metrics.",
 	)
