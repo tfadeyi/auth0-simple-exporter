@@ -31,6 +31,13 @@ jobs:
       - name: Licenses
         run: make licenses
 
+      - name: Login to ghcr.io
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
