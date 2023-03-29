@@ -24,7 +24,7 @@ jobs:
         run: make install-tools
 
       - name: Install cosign
-        uses: sigstore/cosign-installer@v3.0.1
+        uses: sigstore/cosign-installer@v2.8.1
 
       - name: Install Go
         uses: actions/setup-go@v3
@@ -49,7 +49,6 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
   helm:
     # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions

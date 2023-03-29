@@ -110,10 +110,9 @@ signs:
 
 docker_signs:
   - cmd: cosign
-    id: "linux"
-#    args:
-#      - "sign"
-#      - "${artifact}"
-#      - "--yes" # needed on cosign 2.0.0+
+    args:
+      - "sign"
+      - "${artifact}"
+      - "--yes"
     artifacts: all
     output: true
