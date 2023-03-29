@@ -106,9 +106,9 @@ docker_signs:
     # defaults to `["sign", "--key=cosign.key", "${artifact}@${digest}", "--yes"]`
     args:
       - "sign"
-      - "${artifact}"
+      - "${artifact}@${digest}"
       - "--yes" # needed on cosign 2.0.0+
-    artifacts: all
+    artifacts: manifests
     # By default, the stdout and stderr of the signing cmd are discarded unless GoReleaser is running with `--debug` set.
     # You can set this to true if you want them to be displayed regardless.
     #
