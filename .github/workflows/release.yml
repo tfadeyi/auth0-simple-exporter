@@ -24,7 +24,10 @@ jobs:
         run: make install-tools
 
       - name: Install cosign
-        uses: sigstore/cosign-installer@v2.8.1
+        uses: sigstore/cosign-installer@v3.0.1
+
+      - name: Setup ko
+        uses: imjasonh/setup-ko@ace48d793556083a76f1e3e6068850c1f4a369aa
 
       - name: Install Go
         uses: actions/setup-go@v3
