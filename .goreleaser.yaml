@@ -108,11 +108,11 @@ signs:
       - "--yes" # needed on cosign 2.0.0+
     artifacts: checksum
 
-docker_signs:
-  - cmd: cosign
-    args:
-      - "sign"
-      - "ghcr.io/tfadeyi/auth0-simple-exporter@${digest}"
-      - "--yes"
-    artifacts: all
-    output: true
+#docker_signs:
+#  - cmd: cosign
+#    args:
+#      - "sign"
+#      - "ghcr.io/tfadeyi/auth0-simple-exporter@${digest}"
+#      - "--yes"
+#    artifacts: all
+#    output: true

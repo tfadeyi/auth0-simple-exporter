@@ -29,6 +29,9 @@ jobs:
       - name: Setup ko
         uses: ko-build/setup-ko@v0.6
 
+      - name: Install Crane
+        uses: imjasonh/setup-crane@e82f1b9a8007d399333baba4d75915558e9fb6a4 # v0.2
+
       - name: Install Go
         uses: actions/setup-go@v3
         with:
@@ -47,11 +50,17 @@ jobs:
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
+        id: run-goreleaser
         with:
           version: latest
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: sign image
+        run: |
+          digest=$(crane digest ghcr.io/${{ github.repository }}:${{ github.sha }})
+          cosign sign --yes --force "ghcr.io/${{ github.repository }}@${digest}"
 
   helm:
     # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
