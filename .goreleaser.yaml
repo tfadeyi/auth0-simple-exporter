@@ -17,6 +17,7 @@ builds:
     goarch:
       - amd64
       - arm64
+      - arm
   - id: "darwin"
     env:
       - CGO_ENABLED=0
@@ -65,52 +66,18 @@ archives:
     builds:
       - "windows"
 
-checksum:
-  name_template: "{{ .ProjectName }}-SHA256SUMS"
-  algorithm: sha256
-release:
-  draft: true
-changelog:
-  use: github-native
-  skip: false
-
-docker_signs:
-  - cmd: cosign
-
-    # Command line templateable arguments for the command
-    #
-    # defaults to `["sign", "--key=cosign.key", "${artifact}@${digest}", "--yes"]`
-    args:
-      - "sign"
-      - "${artifact}@${digest}"
-      - "--yes" # needed on cosign 2.0.0+
-
-    artifacts: all
-
-    # List of environment variables that will be passed to the signing command as well as the templates.
-    #
-    # Defaults to empty
-    env:
-      - FOO=bar
-      - HONK=honkhonk
-
-    # By default, the stdout and stderr of the signing cmd are discarded unless GoReleaser is running with `--debug` set.
-    # You can set this to true if you want them to be displayed regardless.
-    #
-    # Default: false.
-    # Since: v1.2.
-    output: true
-
 kos:
   - working_dir: .
+    id: "linux"
+    build: "linux"
     base_image: gcr.io/distroless/base:nonroot
-#    labels:
-#      org.opencontainers.image.source: https://github.com/tfadeyi/auth0-simple-exporter
-#      org.opencontainers.image.description: "Simple Prometheus exporter for Auth0 log events"
-#      org.opencontainers.image.licenses: APACHE
-#      org.opencontainers.image.title: "Auth0 Exporter"
-#      org.opencontainers.image.vendor: ""
-#      org.opencontainers.image.authors: "Oluwole Fadeyi"
+    #    labels:
+    #      org.opencontainers.image.source: https://github.com/tfadeyi/auth0-simple-exporter
+    #      org.opencontainers.image.description: "Simple Prometheus exporter for Auth0 log events"
+    #      org.opencontainers.image.licenses: APACHE
+    #      org.opencontainers.image.title: "Auth0 Exporter"
+    #      org.opencontainers.image.vendor: ""
+    #      org.opencontainers.image.authors: "Oluwole Fadeyi"
 
     # Platforms to build and publish.
     #
@@ -152,7 +119,42 @@ kos:
     # Defaults to false.
     bare: true
 
-    # Whether to use the base path without the MD5 hash after the repository name.
     #
     # Defaults to false.
     base_import_paths: true
+
+checksum:
+  name_template: "{{ .ProjectName }}-SHA256SUMS"
+  algorithm: sha256
+release:
+  draft: true
+changelog:
+  use: github-native
+  skip: false
+
+#docker_signs:
+#  - cmd: cosign
+#
+#    # Command line templateable arguments for the command
+#    #
+#    # defaults to `["sign", "--key=cosign.key", "${artifact}@${digest}", "--yes"]`
+#    args:
+#      - "sign"
+#      - "${artifact}@${digest}"
+#      - "--yes" # needed on cosign 2.0.0+
+#
+#    artifacts: all
+#
+#    # List of environment variables that will be passed to the signing command as well as the templates.
+#    #
+#    # Defaults to empty
+#    env:
+#      - FOO=bar
+#      - HONK=honkhonk
+#
+#    # By default, the stdout and stderr of the signing cmd are discarded unless GoReleaser is running with `--debug` set.
+#    # You can set this to true if you want them to be displayed regardless.
+#    #
+#    # Default: false.
+#    # Since: v1.2.
+#    output: true
