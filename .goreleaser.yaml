@@ -114,5 +114,5 @@ docker_signs:
       - "sign"
       - "ghcr.io/tfadeyi/auth0-simple-exporter@${digest}"
       - "--yes"
-    artifacts: images
+    artifacts: all
     output: true
