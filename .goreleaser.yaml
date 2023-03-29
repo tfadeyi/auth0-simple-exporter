@@ -82,8 +82,7 @@ docker_signs:
     # defaults to `["sign", "--key=cosign.key", "${artifact}@${digest}", "--yes"]`
     args:
       - "sign"
-      - "--upload=true"
-      - "${artifact}"
+      - "${artifact}@${digest}"
       - "--yes" # needed on cosign 2.0.0+
 
     artifacts: all
@@ -105,18 +104,13 @@ docker_signs:
 kos:
   - working_dir: .
     base_image: gcr.io/distroless/base:nonroot
-
-    # Labels for the image.
-    #
-    # Defaults to null.
-    # Since v1.17.
-    labels:
-      org.opencontainers.image.source: https://github.com/tfadeyi/auth0-simple-exporter
-      org.opencontainers.image.description: "Simple Prometheus exporter for Auth0 log events"
-      org.opencontainers.image.licenses: APACHE
-      org.opencontainers.image.title: "Auth0 Exporter"
-      org.opencontainers.image.vendor: ""
-      org.opencontainers.image.authors: "Oluwole Fadeyi"
+#    labels:
+#      org.opencontainers.image.source: https://github.com/tfadeyi/auth0-simple-exporter
+#      org.opencontainers.image.description: "Simple Prometheus exporter for Auth0 log events"
+#      org.opencontainers.image.licenses: APACHE
+#      org.opencontainers.image.title: "Auth0 Exporter"
+#      org.opencontainers.image.vendor: ""
+#      org.opencontainers.image.authors: "Oluwole Fadeyi"
 
     # Platforms to build and publish.
     #
@@ -138,14 +132,14 @@ kos:
     #
     # Defaults to empty string.
     # Since v1.17.
-    creation_time: '{{.CommitTimestamp}}'
+    #creation_time: '{{.CommitTimestamp}}'
 
     # Creation time given to the files in the kodata directory
     # in seconds since the Unix epoch as a string.
     #
     # Defaults to empty string.
     # Since v1.17.
-    ko_data_creation_time: '{{.CommitTimestamp}}'
+    #ko_data_creation_time: '{{.CommitTimestamp}}'
 
     # SBOM format to use.
     #
