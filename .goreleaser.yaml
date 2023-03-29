@@ -112,7 +112,7 @@ docker_signs:
   - cmd: cosign
     args:
       - "sign"
-      - "${artifact}"
+      - "ghcr.io/tfadeyi/auth0-simple-exporter@${digest}"
       - "--yes"
-    artifacts: all
+    artifacts: images
     output: true
