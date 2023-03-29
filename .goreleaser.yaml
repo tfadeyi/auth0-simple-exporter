@@ -79,48 +79,15 @@ kos:
     #      org.opencontainers.image.vendor: ""
     #      org.opencontainers.image.authors: "Oluwole Fadeyi"
 
-    # Platforms to build and publish.
-    #
-    # Defaults to linux/amd64.
     platforms:
       - linux/amd64
       - linux/arm64
       - linux/arm
-
-    # Tag templates to build and push.
-    #
-    # Defaults to `latest`.
     tags:
       - latest
       - '{{.Tag}}'
-
-    # Creation time given to the image
-    # in seconds since the Unix epoch as a string.
-    #
-    # Defaults to empty string.
-    # Since v1.17.
-    #creation_time: '{{.CommitTimestamp}}'
-
-    # Creation time given to the files in the kodata directory
-    # in seconds since the Unix epoch as a string.
-    #
-    # Defaults to empty string.
-    # Since v1.17.
-    #ko_data_creation_time: '{{.CommitTimestamp}}'
-
-    # SBOM format to use.
-    #
-    # Defaults to spdx.
-    # Valid options are: spdx, cyclonedx, go.version-m and none.
     sbom: cyclonedx
-
-    # Bare uses a tag on the KO_DOCKER_REPO without anything additional.
-    #
-    # Defaults to false.
     bare: true
-
-    #
-    # Defaults to false.
     base_import_paths: true
 
 checksum:
@@ -132,29 +99,19 @@ changelog:
   use: github-native
   skip: false
 
-#docker_signs:
-#  - cmd: cosign
-#
-#    # Command line templateable arguments for the command
-#    #
-#    # defaults to `["sign", "--key=cosign.key", "${artifact}@${digest}", "--yes"]`
-#    args:
-#      - "sign"
-#      - "${artifact}@${digest}"
-#      - "--yes" # needed on cosign 2.0.0+
-#
-#    artifacts: all
-#
-#    # List of environment variables that will be passed to the signing command as well as the templates.
-#    #
-#    # Defaults to empty
-#    env:
-#      - FOO=bar
-#      - HONK=honkhonk
-#
-#    # By default, the stdout and stderr of the signing cmd are discarded unless GoReleaser is running with `--debug` set.
-#    # You can set this to true if you want them to be displayed regardless.
-#    #
-#    # Default: false.
-#    # Since: v1.2.
-#    output: true
+docker_signs:
+  - cmd: cosign
+    # Command line templateable arguments for the command
+    #
+    # defaults to `["sign", "--key=cosign.key", "${artifact}@${digest}", "--yes"]`
+    args:
+      - "sign"
+      - "${artifact}"
+      - "--yes" # needed on cosign 2.0.0+
+    artifacts: all
+    # By default, the stdout and stderr of the signing cmd are discarded unless GoReleaser is running with `--debug` set.
+    # You can set this to true if you want them to be displayed regardless.
+    #
+    # Default: false.
+    # Since: v1.2.
+    output: true
