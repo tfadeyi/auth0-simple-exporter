@@ -104,15 +104,16 @@ signs:
     args:
       - "sign-blob"
       - "${artifact}"
+      - "--output-signature=${signature}"
       - "--yes" # needed on cosign 2.0.0+
     artifacts: checksum
 
 docker_signs:
   - cmd: cosign
     id: "linux"
-    args:
-      - "sign"
-      - "${artifactID}@${digest}"
-      - "--yes" # needed on cosign 2.0.0+
+#    args:
+#      - "sign"
+#      - "${artifact}"
+#      - "--yes" # needed on cosign 2.0.0+
     artifacts: all
     output: true
