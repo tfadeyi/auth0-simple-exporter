@@ -11,7 +11,7 @@ jobs:
       id-token: write
       packages: write
     env:
-      KO_DOCKER_REPO: "ghcr.io/tfadeyi"
+      KO_DOCKER_REPO: "ghcr.io/${{ github.repository_owner }}"
       KO_DATA_PATH: "/usr/share/doc/${{ github.repository }}/"
     steps:
       - name: Checkout
@@ -46,7 +46,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v4
         with:
           version: latest
-          args: release --rm-dist
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
