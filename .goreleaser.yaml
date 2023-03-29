@@ -103,7 +103,7 @@ signs:
   - cmd: cosign
     args:
       - "sign-blob"
-      - "${artifactID}@${digest}"
+      - "${artifact}"
       - "--yes" # needed on cosign 2.0.0+
     artifacts: checksum
 
