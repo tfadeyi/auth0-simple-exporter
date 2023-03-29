@@ -10,6 +10,9 @@ jobs:
       contents: write
       id-token: write
       packages: write
+    env:
+      KO_DOCKER_REPO: "ghcr.io/${{ github.repository }}"
+      KO_DATA_PATH: "/usr/share/doc/${{ github.repository }}/"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -46,7 +49,6 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          KO_DATA_PATH: "/usr/share/doc/${{ github.repository }}/"
 
 
   helm:
