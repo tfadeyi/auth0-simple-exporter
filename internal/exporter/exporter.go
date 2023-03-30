@@ -2,10 +2,11 @@ package exporter
 
 import (
 	"context"
+	"github.com/auth0-simple-exporter/internal/client/logs"
 	"net/http"
 	"time"
 
-	"github.com/auth0-simple-exporter/internal/auth0"
+	"github.com/auth0-simple-exporter/internal/client"
 	"github.com/auth0-simple-exporter/internal/exporter/metrics"
 	"github.com/auth0/go-auth0/management"
 	"github.com/juju/errors"
@@ -39,7 +40,7 @@ type (
 		ctx context.Context
 
 		// auth0
-		client auth0.Fetcher
+		client client.Client
 
 		// probe
 		probeAddr                 string
@@ -104,7 +105,7 @@ func (e *exporter) metrics() echo.HandlerFunc {
 		log.Debug("handling request for the auth0 tenant metrics")
 		err := e.collect(ctx.Request().Context(), metrics)
 		switch {
-		case errors.Is(err, auth0.ErrAPIRateLimitReached):
+		case errors.Is(err, logs.ErrAPIRateLimitReached):
 			log.Errorf("reached the Auth0 rate limit, fetching should resume shortly: %s", err)
 			e.targetScrapeRequestErrors.Inc()
 		case err != nil:
@@ -135,7 +136,7 @@ func (e *exporter) probe() echo.HandlerFunc {
 
 // collect collects all logs from Auth0 using startTime as the initial checkpoint
 func (e *exporter) collect(ctx context.Context, m *metrics.Metrics) error {
-	list, err := e.client.FetchAll(ctx, e.startTime)
+	list, err := e.client.List(ctx, e.startTime)
 	if err != nil {
 		return errors.Annotate(err, "error fetching the log events from Auth0")
 	}

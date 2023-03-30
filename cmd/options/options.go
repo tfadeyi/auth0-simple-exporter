@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/auth0-simple-exporter/internal/auth0"
-	fetch "github.com/auth0-simple-exporter/internal/auth0/logfetcher"
+	"github.com/auth0-simple-exporter/internal/client"
+	auth0client "github.com/auth0-simple-exporter/internal/client"
 )
 
 type (
@@ -38,8 +38,8 @@ type (
 		Subsystem string
 
 		// Auth0 setup
-		cfg    auth0.Options
-		Client auth0.Fetcher
+		cfg    client.Options
+		Client client.Client
 	}
 )
 
@@ -66,7 +66,7 @@ func (o *Options) Prepare(cmd *cobra.Command) *Options {
 func (o *Options) Complete() error {
 	var err error
 
-	o.Client, err = fetch.NewFetcherWithOpts(o.cfg)
+	o.Client, err = auth0client.NewWithOpts(o.cfg)
 	if err != nil {
 		return errors.Annotate(err, "failed to initialise exporter's connection to auth0")
 	}

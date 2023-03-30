@@ -3,10 +3,10 @@ package exporter
 import (
 	"time"
 
-	"github.com/auth0-simple-exporter/internal/auth0"
+	"github.com/auth0-simple-exporter/internal/client"
 )
 
-func Client(client auth0.Fetcher) Option {
+func Client(client client.Client) Option {
 	return func(e *exporter) {
 		e.client = client
 	}

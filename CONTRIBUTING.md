@@ -19,13 +19,16 @@ We encourage everyone to follow them with their best judgement.
 1. Fork the repository on GitHub.
 2. Clone your forked repository to your local machine.
 
-> git clone https://github.com/tfadeyi/auth0-simple-exporter.git
-
+```shell
+ git clone https://github.com/tfadeyi/auth0-simple-exporter.git
+```
 3. Change directory to the cloned repository.
 
-> cd auth0-simple-exporter
-
+```shell
+cd auth0-simple-exporter
+```
 4. Install dependencies.
 
-> go get ./...
-
+```shell
+go get ./...
+```

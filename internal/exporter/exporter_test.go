@@ -2,16 +2,17 @@ package exporter
 
 import (
 	"context"
-	"testing"
-	"time"
+	"github.com/auth0-simple-exporter/internal/client/logs"
 	"net/http"
 	"net/http/httptest"
+	"testing"
+	"time"
 
+	"github.com/auth0-simple-exporter/internal/client"
 	"github.com/auth0-simple-exporter/internal/exporter/metrics"
-	"github.com/labstack/echo/v4"
-	"github.com/auth0-simple-exporter/internal/auth0"
 	"github.com/auth0/go-auth0/management"
 	"github.com/juju/errors"
+	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -83,9 +84,11 @@ func TestExporter(t *testing.T) {
 	})
 	t.Run("fail exporter collect if error occurs in auth0 client", func(t *testing.T) {
 		ctx := context.Background()
-		client := &auth0.FetcherMock{FetchAllFunc: func(ctx context.Context, startTime time.Time) (interface{}, error) {
+		client, err := client.NewWithOpts(client.Options{Client: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
 			return nil, errors.New("some error")
-		}}
+		}}})
+		require.NoError(t, err)
+
 		current := time.Now()
 		e := exporter{
 			startTime: current,
@@ -96,9 +99,10 @@ func TestExporter(t *testing.T) {
 	})
 	t.Run("successful execute exporter collect if auth0 client returns a empty log list", func(t *testing.T) {
 		ctx := context.Background()
-		client := &auth0.FetcherMock{FetchAllFunc: func(ctx context.Context, startTime time.Time) (interface{}, error) {
+		client, err := client.NewWithOpts(client.Options{Client: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
 			return []*management.Log{}, nil
-		}}
+		}}})
+		require.NoError(t, err)
 		current := time.Now()
 		e := exporter{
 			startTime: current,
@@ -109,9 +113,10 @@ func TestExporter(t *testing.T) {
 	})
 	t.Run("fail exporter collect if auth0 client didn't return a list of logs", func(t *testing.T) {
 		ctx := context.Background()
-		client := &auth0.FetcherMock{FetchAllFunc: func(ctx context.Context, startTime time.Time) (interface{}, error) {
+		client, err := client.NewWithOpts(client.Options{Client: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
 			return []string{}, nil
-		}}
+		}}})
+		require.NoError(t, err)
 		current := time.Now()
 		e := exporter{
 			startTime: current,
@@ -127,9 +132,10 @@ func TestExporterHandler(t *testing.T) {
 
 	t.Run("don't fail if API rate limit is reached", func(t *testing.T) {
 		ctx := context.Background()
-		client := &auth0.FetcherMock{FetchAllFunc: func(ctx context.Context, startTime time.Time) (interface{}, error) {
-			return []string{}, auth0.ErrAPIRateLimitReached
-		}}
+		client, err := client.NewWithOpts(client.Options{Client: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
+			return []string{}, logs.ErrAPIRateLimitReached
+		}}})
+		require.NoError(t, err)
 		current := time.Now()
 		exporter := New(ctx, From(current), Client(client))
 
@@ -145,9 +151,10 @@ func TestExporterHandler(t *testing.T) {
 	})
 	t.Run("successful request if the auth0 client returns 0 items", func(t *testing.T) {
 		ctx := context.Background()
-		client := &auth0.FetcherMock{FetchAllFunc: func(ctx context.Context, startTime time.Time) (interface{}, error) {
+		client, err := client.NewWithOpts(client.Options{Client: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
 			return []*management.Log{}, nil
-		}}
+		}}})
+		require.NoError(t, err)
 		current := time.Now()
 		exporter := New(ctx, From(current), Client(client))
 
@@ -163,9 +170,10 @@ func TestExporterHandler(t *testing.T) {
 	})
 	t.Run("fail if Auth0 client errors with an unexpected error", func(t *testing.T) {
 		ctx := context.Background()
-		client := &auth0.FetcherMock{FetchAllFunc: func(ctx context.Context, startTime time.Time) (interface{}, error) {
+		client, err := client.NewWithOpts(client.Options{Client: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
 			return []string{}, errors.New("unexpected error")
-		}}
+		}}})
+		require.NoError(t, err)
 		current := time.Now()
 		exporter := New(ctx, From(current), Client(client))
 
