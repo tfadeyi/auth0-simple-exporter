@@ -1,6 +1,6 @@
 <div align="center">
 
-# Auth0 Simple Log Exporter
+# Prometheus Exporter for Auth0
 
 [![CI](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml/badge.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-yellowgreen.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE)
@@ -11,8 +11,8 @@
 
 ---
 
-A simple Prometheus exporter for Auth0 log [Events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs), for a simple
-way to monitor Auth0 from a Prometheus monitoring stack.
+A simple Prometheus exporter for Auth0 log [events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs),
+which allows you to collect metrics from Auth0 and expose them in a format that can be consumed by Prometheus.
 
 > Development is in progress.
 
@@ -131,6 +131,11 @@ git push origin v0.1.0
 ```
 
 > ⚠️ Remember to update the Helm Chart and OpenAPI specification.
+
+## Contributing
+
+If you'd like to contribute to the exporter, please see CONTRIBUTING.md for information on how to get started.
+
 
 ## License
 Apache 2.0, see [LICENSE.md](./LICENSE).
