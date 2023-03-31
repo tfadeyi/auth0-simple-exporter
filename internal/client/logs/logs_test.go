@@ -64,7 +64,7 @@ func TestClient(t *testing.T) {
 		c := logClient{mgmt: &logManagementMock{
 			ListFunc: func(opts ...management.RequestOption) ([]*management.Log, error) {
 				var result []*management.Log
-				for i, _ := range storedLogs {
+				for i := range storedLogs {
 					index := i + (currentPage * pageSize)
 					if i == pageSize || (index >= len(storedLogs)) {
 						break
