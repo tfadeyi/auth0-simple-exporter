@@ -3,7 +3,7 @@ module github.com/auth0-simple-exporter
 go 1.19
 
 require (
-	github.com/auth0/go-auth0 v0.15.1
+	github.com/auth0/go-auth0 v0.16.0
 	github.com/go-kit/log v0.2.1
 	github.com/go-logr/logr v1.2.3
 	github.com/juju/errors v1.0.0
@@ -43,7 +43,7 @@ require (
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	golang.org/x/net v0.8.0 // indirect
-	golang.org/x/oauth2 v0.4.0 // indirect
+	golang.org/x/oauth2 v0.6.0 // indirect
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/text v0.8.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
