@@ -2,12 +2,12 @@ package exporter
 
 import (
 	"context"
-	"github.com/auth0-simple-exporter/internal/client/logs"
+	"github.com/auth0-simple-exporter/pkg/client/logs"
 	"net/http"
 	"time"
 
-	"github.com/auth0-simple-exporter/internal/client"
-	"github.com/auth0-simple-exporter/internal/exporter/metrics"
+	"github.com/auth0-simple-exporter/pkg/client"
+	"github.com/auth0-simple-exporter/pkg/exporter/metrics"
 	"github.com/auth0/go-auth0/management"
 	"github.com/juju/errors"
 	"github.com/labstack/echo/v4"
@@ -88,12 +88,12 @@ func New(ctx context.Context, opts ...Option) *exporter {
 }
 
 // metrics godoc
-// @Summary     exporter's collected auth0 metrics.
-// @Description Exposes the Auth0 metrics collected by the exporter.
-// @Produce     json
-// @Produce     text/plain; charset=utf-8
-// @Router      /metrics [get]
-// @tags        metrics, auth0
+//
+//	@Summary		Auth0 metrics in Prometheus format.
+//	@Description	Exposes the Auth0 metrics collected by the exporter in a prometheus format.
+//	@Produce		json
+//	@Produce		text/plain; charset=utf-8
+//	@Router			/metrics [get]
 func (e *exporter) metrics() echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		log.Debug("handling request for the auth0 tenant metrics")
@@ -121,12 +121,12 @@ func (e *exporter) metrics() echo.HandlerFunc {
 }
 
 // probe godoc
-// @Summary     exporter's own metrics.
-// @Description Exposes the exporter's own metrics, i.e: target_scrape_request_total.
-// @Produce     json
-// @Produce     text/plain; charset=utf-8
-// @Router      /probe [get]
-// @tags        metrics, prometheus
+//
+//	@Summary		Exporter's own metrics for its operations.
+//	@Description	Exposes the exporter's own metrics, i.e: target_scrape_request_total.
+//	@Produce		json
+//	@Produce		text/plain; charset=utf-8
+//	@Router			/probe [get]
 func (e *exporter) probe() echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		promhttp.HandlerFor(e.probeRegistry, promhttp.HandlerOpts{}).ServeHTTP(ctx.Response(), ctx.Request())

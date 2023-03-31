@@ -1,15 +1,15 @@
 package cmd
 
 import (
-	"github.com/auth0-simple-exporter/cmd/options"
-	"github.com/auth0-simple-exporter/internal/exporter"
-	"github.com/auth0-simple-exporter/internal/version"
+	exporterOptions "github.com/auth0-simple-exporter/cmd/options/exporter"
+	"github.com/auth0-simple-exporter/pkg/exporter"
+	"github.com/auth0-simple-exporter/pkg/version"
 	"github.com/labstack/gommon/log"
 	"github.com/spf13/cobra"
 )
 
 func serveExporterCmd() *cobra.Command {
-	opts := options.New()
+	opts := exporterOptions.New()
 	cmd := &cobra.Command{
 		Use:           "export",
 		Short:         "Start serving the auth0 metrics",

@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/auth0-simple-exporter/internal/logging"
-	"github.com/auth0-simple-exporter/internal/version"
+	"github.com/auth0-simple-exporter/pkg/logging"
+	"github.com/auth0-simple-exporter/pkg/version"
 	"github.com/spf13/cobra"
 )
 

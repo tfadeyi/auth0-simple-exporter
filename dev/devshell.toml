@@ -2,8 +2,12 @@
 name = "prometheus-golang"
 motd = """{106}NixOS Prometheus exporter development shell{reset}
 
-Run \"tmux new -s prometheus -d 'prometheus --config.file=$(dirname $0)/development/prometheus.yml'\"
-\n REMEMBER TO RUN {200}destroy{reset} before leaving the shell
+{250}Links{reset}:
+ * {30}go code{reset}: http://localhost:1313/pkg/github.com/auth0-simple-exporter
+ * {10}swagger{reset}: http://localhost:1314/swagger/index.html
+ * {1}prometheus{reset}: http://localhost:9090/
+
+\n REMEMBER TO RUN {1}off{reset} before leaving the shell
 \n Use CTRL-D to leave the shell
 """
 
@@ -14,10 +18,22 @@ packages = [
     "golangci-lint",
     "tmux",
     "helm-docs",
+    "go-swag",
     "ko"
 ]
 
-#startup.prometheus.text = "tmux new -s prometheus -d 'prometheus --config.file=$(dirname $0)/development/prometheus.yml'"
-startup.kill_services.text = "alias destroy='tmux kill-session -a'"
-startup.test.text = "alias test='make test && golangci-lint run'"
-startup.pprof.text = "alias pprof='go tool pprof'"
+startup.kill.text = "alias off='pkill -f tmux'"
+startup.validate.text = "alias verde='make test && golangci-lint run && goreleaser check'"
+startup.pprof_heap.text = "alias pprof_heap='go tool pprof'"
+
+startup.generatedoc.text = "alias generate='make generate'"
+
+startup.godoc.text = "tmux new -s godoc -d 'godoc -http=:1313'"
+startup.restartgodoc.text = "alias restart_godoc='tmux kill-session -t godoc && tmux new -s godoc -d 'godoc -http=:1313''"
+
+startup.openapi.text = "tmux new -s openapi -d 'go run main.go swagger'"
+
+startup.tmux.text = "alias sessions='tmux list-session'"
+
+#startup.prometheus.text = "tmux new -s prometheus -d 'prometheus --config.file=./dev/prometheus.yml'"
+startup.restartprometheus.text = "alias restart_prometheus='tmux kill-session -t prometheus && tmux new -s prometheus -d 'prometheus --config.file=./dev/prometheus.yml''"

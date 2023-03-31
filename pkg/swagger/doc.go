@@ -19,26 +19,4 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-//go:generate swag fmt
-//go:generate swag init --parseDependency --generalInfo ./pkg/exporter/server.go --output ./pkg/docs
-
-package main
-
-import (
-	"context"
-	"os"
-	"os/signal"
-	"syscall"
-
-	"github.com/auth0-simple-exporter/cmd"
-	"github.com/labstack/gommon/log"
-)
-
-func main() {
-	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, os.Kill, syscall.SIGTERM)
-	defer cancel()
-
-	log.SetPrefix("auth0-exporter")
-
-	cmd.Execute(ctx)
-}
+package swagger

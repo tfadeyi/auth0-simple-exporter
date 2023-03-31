@@ -59,3 +59,6 @@ clean:
 licenses:
 	rm -rf kodata
 	go-licenses save . --save_path="kodata/licenses"
+
+swagger:
+	go run main.go swagger

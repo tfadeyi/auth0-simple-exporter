@@ -1,14 +1,14 @@
-package options
+package exporter
 
 import (
-	"github.com/juju/errors"
-	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 	"os"
 	"time"
 
-	"github.com/auth0-simple-exporter/internal/client"
-	auth0client "github.com/auth0-simple-exporter/internal/client"
+	"github.com/auth0-simple-exporter/pkg/client"
+	auth0client "github.com/auth0-simple-exporter/pkg/client"
+	"github.com/juju/errors"
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
 type (
