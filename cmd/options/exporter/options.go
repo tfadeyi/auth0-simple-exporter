@@ -15,12 +15,13 @@ type (
 	// Options is the list of options/flag available to the application,
 	// plus the clients needed by the application to function.
 	Options struct {
-		ProfilingEnabled    bool
-		ProfilingPort       int
-		MetricsEndpoint     string
-		HostPort            int
-		LogLevel            int8
-		StartTimeCheckpoint string
+		ProfilingEnabled bool
+		ProfilingPort    int
+		MetricsEndpoint  string
+		HostPort         int
+		// LogLevel used by the exporter's logger (debug, info, warn, error)
+		LogLevel      string
+		FromFetchTime string
 
 		// probe
 		ProbePort int
@@ -86,11 +87,11 @@ func (o *Options) Complete() error {
 }
 
 func (o *Options) addAppFlags(fs *pflag.FlagSet) {
-	fs.Int8Var(
+	fs.StringVar(
 		&o.LogLevel,
 		"log.level",
-		1,
-		"Exporter log level.",
+		"info",
+		"Exporter log level (debug, info, warn, error).",
 	)
 
 	fs.IntVar(
@@ -110,7 +111,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		&o.TLSDisabled,
 		"tls.disabled",
 		false,
-		"Run exporter without TLS.",
+		"Run exporter without TLS. TLS is enabled by default.",
 	)
 	fs.BoolVar(
 		&o.AutoTLS,
@@ -123,13 +124,13 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		&o.CertFile,
 		"tls.cert-file",
 		"",
-		"The certificate file for the exporter TLS connection.",
+		"Path to the PEM encoded certificate for the auth0-exporter metrics to serve.",
 	)
 	fs.StringVar(
 		&o.KeyFile,
 		"tls.key-file",
 		"",
-		"The key file for the exporter TLS connection.",
+		"Path to the PEM encoded key for the auth0-exporter metrics server.",
 	)
 	fs.StringSliceVar(
 		&o.TLSHosts,
@@ -139,7 +140,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 	)
 
 	fs.StringVar(
-		&o.StartTimeCheckpoint,
+		&o.FromFetchTime,
 		"auth0.checkpoint",
 		time.Now().Format("2006-01-02"),
 		"Point in time from were to start fetching auth0 logs. (format: YYYY-MM-DD)",

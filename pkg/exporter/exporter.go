@@ -2,12 +2,13 @@ package exporter
 
 import (
 	"context"
-	"github.com/auth0-simple-exporter/pkg/client/logs"
 	"net/http"
 	"time"
 
 	"github.com/auth0-simple-exporter/pkg/client"
+	"github.com/auth0-simple-exporter/pkg/client/logs"
 	"github.com/auth0-simple-exporter/pkg/exporter/metrics"
+	"github.com/auth0-simple-exporter/pkg/logging"
 	"github.com/auth0/go-auth0/management"
 	"github.com/juju/errors"
 	"github.com/labstack/echo/v4"
@@ -37,7 +38,8 @@ type (
 		keyFile     string
 		tlsHosts    []string
 
-		ctx context.Context
+		ctx    context.Context
+		logger logging.Logger
 
 		// auth0
 		client client.Client
@@ -96,25 +98,26 @@ func New(ctx context.Context, opts ...Option) *exporter {
 //	@Router			/metrics [get]
 func (e *exporter) metrics() echo.HandlerFunc {
 	return func(ctx echo.Context) error {
-		log.Debug("handling request for the auth0 tenant metrics")
+		log := logging.LoggerFromEchoContext(ctx)
+		log.Info("handling request for the auth0 tenant metrics")
 		metrics := ctx.Get(metrics.ListCtxKey).(*metrics.Metrics)
 		registry := prometheus.NewRegistry()
 		registry.MustRegister(metrics.List()...)
 
 		e.totalScrapes.Inc()
-		log.Debug("handling request for the auth0 tenant metrics")
+		log.Info("handling request for the auth0 tenant metrics")
 		err := e.collect(ctx.Request().Context(), metrics)
 		switch {
 		case errors.Is(err, logs.ErrAPIRateLimitReached):
-			log.Errorf("reached the Auth0 rate limit, fetching should resume shortly: %s", err)
+			log.Error(err, "reached the Auth0 rate limit, fetching should resume shortly")
 			e.targetScrapeRequestErrors.Inc()
 		case err != nil:
-			log.Errorf("error collecting event logs metrics from the selected Auth0 tenant: %s", err)
+			log.Error(err, "error collecting event logs metrics from the selected Auth0 tenant")
 			e.targetScrapeRequestErrors.Inc()
 			return echo.NewHTTPError(http.StatusInternalServerError, "Exporter encountered some issues when collecting logs from Auth0")
 		}
 
-		log.Debug("successfully collected metrics from the auth0 tenant")
+		log.Info("successfully collected metrics from the auth0 tenant")
 		promhttp.HandlerFor(registry, promhttp.HandlerOpts{}).ServeHTTP(ctx.Response(), ctx.Request())
 		return nil
 	}

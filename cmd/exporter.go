@@ -3,8 +3,7 @@ package cmd
 import (
 	exporterOptions "github.com/auth0-simple-exporter/cmd/options/exporter"
 	"github.com/auth0-simple-exporter/pkg/exporter"
-	"github.com/auth0-simple-exporter/pkg/version"
-	"github.com/labstack/gommon/log"
+	"github.com/auth0-simple-exporter/pkg/logging"
 	"github.com/spf13/cobra"
 )
 
@@ -21,8 +20,8 @@ func serveExporterCmd() *cobra.Command {
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			log.SetLevel(log.Lvl(opts.LogLevel))
-			log.Infof("initialising exporter: %s", version.BuildInfo())
+			log := logging.LoggerFromContext(ctx)
+			ctx = logging.ContextWithLogger(ctx, logging.NewPromLoggerWithOpts(opts.LogLevel))
 
 			e := exporter.New(
 				ctx,
@@ -38,7 +37,9 @@ func serveExporterCmd() *cobra.Command {
 				exporter.AutoTLS(opts.AutoTLS),
 				exporter.TLSHosts(opts.TLSHosts),
 				exporter.ProbeAddr(opts.ProbeAddr),
-				exporter.ProbePort(opts.ProbePort))
+				exporter.ProbePort(opts.ProbePort),
+				exporter.Logger(log),
+			)
 			return e.Export()
 		},
 	}

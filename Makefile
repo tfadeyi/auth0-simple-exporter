@@ -25,7 +25,7 @@ build:
 
 generate:
 	cd $(ROOT_DIR) && go generate ./... && \
-	helm-docs --chart-search-root=charts/
+	helm-docs --chart-search-root=deploy/charts/
 
 test: build
 	cd $(ROOT_DIR) &&  go test $(GOFLAGS) $(TEST_TAGS) ./...

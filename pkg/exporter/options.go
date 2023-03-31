@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/auth0-simple-exporter/pkg/client"
+	"github.com/auth0-simple-exporter/pkg/logging"
 )
 
 func Client(client client.Client) Option {
@@ -93,5 +94,12 @@ func From(time time.Time) Option {
 func Subsystem(sub string) Option {
 	return func(e *exporter) {
 		e.subsystem = sub
+	}
+}
+
+// Logger for the exporter
+func Logger(l logging.Logger) Option {
+	return func(e *exporter) {
+		e.logger = l
 	}
 }

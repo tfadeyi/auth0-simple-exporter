@@ -37,3 +37,5 @@ startup.tmux.text = "alias sessions='tmux list-session'"
 
 #startup.prometheus.text = "tmux new -s prometheus -d 'prometheus --config.file=./dev/prometheus.yml'"
 startup.restartprometheus.text = "alias restart_prometheus='tmux kill-session -t prometheus && tmux new -s prometheus -d 'prometheus --config.file=./dev/prometheus.yml''"
+
+#go run main.go run --auth0.domain jetstack-stage.eu.auth0.com

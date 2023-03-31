@@ -7,9 +7,10 @@ import (
 	_ "net/http/pprof"
 
 	"github.com/auth0-simple-exporter/pkg/exporter/metrics"
+	"github.com/auth0-simple-exporter/pkg/logging"
+	"github.com/auth0-simple-exporter/pkg/version"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/labstack/gommon/log"
 	"golang.org/x/crypto/acme/autocert"
 	"golang.org/x/sync/errgroup"
 )
@@ -29,6 +30,9 @@ import (
 
 // Export configures the exporter Router and starts the server with the given configuration
 func (e *exporter) Export() error {
+	log := logging.LoggerFromContext(e.ctx)
+	log.Info("initialising exporter", "build", version.BuildInfo())
+
 	server := echo.New()
 
 	server.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -39,6 +43,9 @@ func (e *exporter) Export() error {
 	})
 	server.Use(metrics.Middleware)
 	server.Use(middleware.Recover())
+	server.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return logging.Middleware(next, log)
+	})
 	server.HideBanner = true
 	server.HidePort = true
 
@@ -59,7 +66,7 @@ func (e *exporter) Export() error {
 	// Metrics path route
 	server.GET(fmt.Sprintf("/%s", e.metricsAddr), e.metrics())
 
-	log.Infof("starting exporter",
+	log.Info("starting exporter",
 		"port", e.hostPort,
 		"metrics-address", "/"+e.metricsAddr,
 	)
@@ -69,13 +76,13 @@ func (e *exporter) Export() error {
 	grp, ctx := errgroup.WithContext(e.ctx)
 	switch {
 	case !e.tlsDisabled && !e.autoTLS:
-		log.Info("running exporter with TLS connection")
+		e.logger.Info("running exporter with TLS connection")
 		// start server using the given certs
 		grp.Go(func() error {
 			return server.StartTLS(fmt.Sprintf(":%d", e.hostPort), e.certFile, e.keyFile)
 		})
 	case !e.tlsDisabled && e.autoTLS:
-		log.Info("running exporter with auto TLS connection")
+		e.logger.Info("running exporter with auto TLS connection")
 		// start server using managed certs
 		// Cache certificates to avoid issues with rate limits (https://letsencrypt.org/docs/rate-limits)
 		server.AutoTLSManager.HostPolicy = autocert.HostWhitelist(e.tlsHosts...)
@@ -84,7 +91,7 @@ func (e *exporter) Export() error {
 			return server.StartAutoTLS(fmt.Sprintf(":%d", e.hostPort))
 		})
 	default:
-		log.Info("running exporter with insecure connection!")
+		e.logger.Info("running exporter with insecure connection!")
 		grp.Go(func() error {
 			return server.Start(fmt.Sprintf(":%d", e.hostPort))
 		})
@@ -96,9 +103,7 @@ func (e *exporter) Export() error {
 
 	// if profiling is enabled start the pprof server
 	if e.profilingEnabled {
-		log.Infof(
-			"pprof profiling has been activated on port :%d", e.profilingPort,
-		)
+		e.logger.Info("pprof profiling is activate", "port", e.profilingPort)
 		profilingServer := echo.New()
 		grp.Go(func() error {
 			return profilingServer.Start(fmt.Sprintf(":%d", e.profilingPort))
@@ -110,7 +115,7 @@ func (e *exporter) Export() error {
 	}
 
 	// exporter's own metrics
-	log.Infof("starting metrics server on port :%d at /%s", e.probePort, e.probeAddr)
+	e.logger.Info("starting metrics server", "port", e.probePort, "endpoint", e.probeAddr)
 	probeServer := echo.New()
 	probeServer.GET(fmt.Sprintf("/%s", e.probeAddr), e.probe())
 	grp.Go(func() error {

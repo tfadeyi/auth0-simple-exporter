@@ -10,7 +10,7 @@ func serveSwaggerCmd() *cobra.Command {
 	opts := swaggeroptions.New()
 	cmd := &cobra.Command{
 		Use:   "swagger",
-		Short: "Runs swagger docs local server locally.",
+		Short: "Starts a swagger docs local server.",
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			err := opts.Validate()
 			if err != nil {

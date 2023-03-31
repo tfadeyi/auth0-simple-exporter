@@ -31,14 +31,15 @@ import (
 	"syscall"
 
 	"github.com/auth0-simple-exporter/cmd"
-	"github.com/labstack/gommon/log"
+	"github.com/auth0-simple-exporter/pkg/logging"
 )
 
 func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, os.Kill, syscall.SIGTERM)
 	defer cancel()
 
-	log.SetPrefix("auth0-exporter")
+	log := logging.NewPromLogger()
+	ctx = logging.ContextWithLogger(ctx, log)
 
 	cmd.Execute(ctx)
 }

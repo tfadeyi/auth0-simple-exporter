@@ -60,7 +60,7 @@ helm upgrade --install --create-namespace -n jetstack-secure jetstack-agent \
   --set authentication.createSecret=true --set authentication.secretValue="$HELM_SECRET"
 ```
 
-More info on the helm deployment can be found [here](./charts/auth0-exporter/README.md).
+More info on the helm deployment can be found [here](deploy/charts/auth0-exporter/README.md).
 
 ## Usage
 
