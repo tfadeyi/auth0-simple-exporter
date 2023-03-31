@@ -1,1 +1,1 @@
-alias develop='nix develop $(pwd)/development'
+alias develop='nix develop $(pwd)/dev'

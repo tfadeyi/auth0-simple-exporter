@@ -14,8 +14,7 @@ const (
 )
 
 var (
-	errInvalidLogEvent       = errors.New("event handler doesn't accept the event log type")
-	errMissingLogEventMetric = errors.New("couldn't find the prometheus metric for the required log event")
+	errInvalidLogEvent = errors.New("event handler doesn't accept the event log type")
 )
 
 type (
@@ -92,13 +91,13 @@ func New(namespace, subsystem string) *Metrics {
 		successfulChangePhoneNumberCounter: successChangePhoneNumberMetric(namespace, subsystem),
 		failedChangePhoneNumberCounter:     failChangePhoneNumberMetric(namespace, subsystem),
 
-		successfulDeleteUserCounter: successDeleteUserCounterMetric(namespace,subsystem),
+		successfulDeleteUserCounter: successDeleteUserCounterMetric(namespace, subsystem),
 		failedDeleteUserCounter:     failDeleteUserCounterMetric(namespace, subsystem),
 
 		passwordLessCodeLinkCounter: passwordLessSendCodeLinkCounterMetric(namespace, subsystem),
 
 		successfulPostChangePasswordHookCounter: successPostChangePasswordHookCounterMetric(namespace, subsystem),
-		failedPostChangePasswordHookCounter: failPostChangePasswordHookCounterMetric(namespace, subsystem),
+		failedPostChangePasswordHookCounter:     failPostChangePasswordHookCounterMetric(namespace, subsystem),
 
 		successfulPushNotificationCounter: successPushNotificationCounterMetric(namespace, subsystem),
 		failedPushNotificationCounter:     failPushNotificationCounterMetric(namespace, subsystem),
@@ -109,10 +108,10 @@ func New(namespace, subsystem string) *Metrics {
 		failedSendSMSCounter:     failSendSMSOperationsMetric(namespace, subsystem),
 
 		successfulSignupCounter: successSignupCounterMetric(namespace, subsystem),
-		failedSignupCounter: failSignupCounterMetric(namespace, subsystem),
+		failedSignupCounter:     failSignupCounterMetric(namespace, subsystem),
 
 		successfulVoiceCallCounter: successSendVoiceCallCounterMetric(namespace, subsystem),
-		failedVoiceCallCounter: failSendVoiceCallCounterMetric(namespace, subsystem),
+		failedVoiceCallCounter:     failSendVoiceCallCounterMetric(namespace, subsystem),
 
 		successfulChangePasswordRequestCounter: successChangePasswordRequestCounterMetric(namespace, subsystem),
 		failedChangePasswordRequestCounter:     failChangePasswordRequestCounterMetric(namespace, subsystem),
@@ -172,8 +171,8 @@ func (m *Metrics) List() []prometheus.Collector {
 
 		m.successfulSendEmailCounter,
 
-		m.successfulSendSMSCounter ,
-		m.failedSendSMSCounter    ,
+		m.successfulSendSMSCounter,
+		m.failedSendSMSCounter,
 
 		m.successfulSignupCounter,
 		m.failedSignupCounter,

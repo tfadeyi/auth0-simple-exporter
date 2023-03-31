@@ -8,14 +8,14 @@ import (
 
 const (
 	// successExchangePasswordMFA Successful exchange of Password and MFA Recovery code for Access Token
-	successExchangePasswordMFA = "sercft"
-	//failedExchangePasswordMFA Failed Exchange of Password and MFA Recovery code for Access Token
-	failedExchangePasswordMFA = "fercft"
-
-	// failedMfaAuth Multi-factor authentication failed. This could happen due to a wrong code entered for SMS/Voice/Email/TOTP factors, or a system failure.
-	failedMfaAuth = "gd_auth_failed"
-	// successMfaAuth Multi-factor authentication success.
-	successMfaAuth = "gd_auth_succeed"
+	//successExchangePasswordMFA = "sercft"
+	////failedExchangePasswordMFA Failed Exchange of Password and MFA Recovery code for Access Token
+	//failedExchangePasswordMFA = "fercft"
+	//
+	//// failedMfaAuth Multi-factor authentication failed. This could happen due to a wrong code entered for SMS/Voice/Email/TOTP factors, or a system failure.
+	//failedMfaAuth = "gd_auth_failed"
+	//// successMfaAuth Multi-factor authentication success.
+	//successMfaAuth = "gd_auth_succeed"
 
 	// gd_start_auth 	Second factor started 	Second factor authentication event started for MFA.
 	// mfaAuthRejected A user rejected a Multi-factor authentication request via push-notification.

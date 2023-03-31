@@ -88,7 +88,7 @@ func (e *exporter) Export() error {
 		)
 		profilingServer := echo.New()
 		grp.Go(func() error {
-			return profilingServer.Start(fmt.Sprintf(":%d",  e.profilingPort))
+			return profilingServer.Start(fmt.Sprintf(":%d", e.profilingPort))
 		})
 		grp.Go(func() error {
 			<-ctx.Done()

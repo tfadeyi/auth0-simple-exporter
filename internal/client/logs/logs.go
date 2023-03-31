@@ -71,7 +71,7 @@ func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{},
 	i := 0
 	for {
 		var logs []*management.Log
-		var  err error
+		var err error
 
 		if from.IsZero() {
 			logs, err = l.mgmt.List(
@@ -80,7 +80,7 @@ func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{},
 				management.Page(i),
 				management.PerPage(100),
 			)
-		}else {
+		} else {
 			logs, err = l.mgmt.List(
 				management.Context(ctx),
 				management.IncludeFields("type", "log_id", "date"),
@@ -90,7 +90,7 @@ func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{},
 			)
 		}
 		switch {
-		case errors.IsQuotaLimitExceeded(err):
+		case errors.Is(err, errors.QuotaLimitExceeded):
 			return nil, ErrAPIRateLimitReached
 		case err != nil:
 			return nil, err

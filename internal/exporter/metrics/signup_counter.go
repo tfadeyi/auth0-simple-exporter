@@ -13,7 +13,7 @@ const (
 	successfulSignupCode = "ss"
 
 	tenantSuccessSignup = "tenant_successful_sign_up_total"
-	tenantFailedSignup = "tenant_failed_sign_up_total"
+	tenantFailedSignup  = "tenant_failed_sign_up_total"
 )
 
 func successSignupCounterMetric(namespace, subsystem string) *prometheus.CounterVec {

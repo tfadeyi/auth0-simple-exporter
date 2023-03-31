@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	echolog "github.com/labstack/gommon/log"
 	kitlog "github.com/go-kit/log"
 	"github.com/go-logr/logr"
+	echolog "github.com/labstack/gommon/log"
 	"github.com/prometheus/common/promlog"
 	"github.com/tonglil/gokitlogr"
 )
@@ -43,6 +43,7 @@ func EchoLoggerFromContext(ctx context.Context) Logger {
 	}
 	return Logger{l}
 }
+
 // NewEchoLogger wraps the creation of a new gommon production logger
 func NewEchoLogger() *echolog.Logger {
 	return echolog.New("auth0-simple-exporter")

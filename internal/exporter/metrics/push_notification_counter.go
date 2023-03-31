@@ -15,7 +15,7 @@ const (
 	failureMfaPushNotification = "gd_send_pn_failure"
 
 	tenantSuccessPushNotification = "tenant_success_push_notification_total"
-	tenantFailPushNotification = "tenant_fail_push_notification_total"
+	tenantFailPushNotification    = "tenant_fail_push_notification_total"
 )
 
 func successPushNotificationCounterMetric(namespace, subsystem string) *prometheus.CounterVec {

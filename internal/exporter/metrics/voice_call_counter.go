@@ -15,7 +15,7 @@ const (
 	failedMfaSendVoiceCall = "gd_send_voice_failure"
 
 	tenantSuccessSendVoiceCall = "tenant_success_send_voice_call_operations_total"
-	tenantFailedSendVoiceCall = "tenant_failed_send_voice_call_operations_total"
+	tenantFailedSendVoiceCall  = "tenant_failed_send_voice_call_operations_total"
 )
 
 func successSendVoiceCallCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
