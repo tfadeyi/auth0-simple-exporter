@@ -54,7 +54,7 @@ func NewPromLoggerWithOpts(lvl string) Logger {
 func Middleware(next echo.HandlerFunc, loggers ...Logger) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		log := NewPromLogger()
-		if len(loggers) > 0{
+		if len(loggers) > 0 {
 			log = loggers[0]
 		}
 		ctx := EchoContextWithLogger(c, log)

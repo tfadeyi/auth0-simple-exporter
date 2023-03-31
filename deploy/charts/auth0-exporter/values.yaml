@@ -9,7 +9,7 @@ image:
   repository: ghcr.io/tfadeyi/auth0-simple-exporter
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v0.0.7"
+  tag: "v0.0.31"
 
 # -- specify credentials if pulling from a customer registry
 imagePullSecrets: []
@@ -40,7 +40,7 @@ exporter:
   metricsEndpoint: "metrics"
   # -- Port where the server will listen.
   port: 9301
-  logLevel: 1
+  logLevel: info
 
   # -- Exporter's TLS configuration
   tls:

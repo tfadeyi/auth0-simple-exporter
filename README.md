@@ -47,20 +47,34 @@ $ docker pull ghcr.io/tfadeyi/auth0-simple-exporter:[TAG]
 Binary can be downloaded from [Releases](https://github.com/tfadeyi/auth0-simple-exporter/releases) page.
 
 ## Helm
-This is loading the secret obtained from create-service-account step 
-`export HELM_SECRET="$(cat credentials.json)"`
-
-Run exporter with TLS disabled.
-
-```console
+This shows a simple installation of the exporter helm chart, running with TLS disabled.
+```shell
+$ export TOKEN="< auth0 management API static static token >"
+$ export DOMAIN="< auth0 tenant domain >"
+```
+```shell
 # Installing by passing in secret directly
-helm upgrade --install --create-namespace -n jetstack-secure jetstack-agent \
-  oci://eu.gcr.io/jetstack-secure-enterprise/charts/jetstack-agent \
-  --set config.organisation="strange-jones" --set config.cluster="<CLUSTER_NAME>" \
-  --set authentication.createSecret=true --set authentication.secretValue="$HELM_SECRET"
+helm upgrade --install --create-namespace -n auth0-exporter auth0-exporter \
+  https://tfadeyi.github.io/charts \
+  --set auth0.domain="$DOMAIN" --set auth0.token="$TOKEN" \
+  --set exporter.tls.disabled=true
 ```
 
 More info on the helm deployment can be found [here](deploy/charts/auth0-exporter/README.md).
+
+## Example queries
+
+Monitor the percentage of successful logins:
+
+```
+(auth0_tenant_successful_login_operations_total / (on job,instance) (auth0_tenant_successful_login_operations_total + auth0_tenant_failed_login_operations_total)) * 100
+```
+
+Monitor the current logged-in users:
+
+```
+(on job,instance) (auth0_tenant_successful_login_operations_total - auth0_tenant_successful_logout_operations_total)
+```
 
 ## Usage
 
@@ -69,19 +83,27 @@ Usage:
   exporter export [flags]
 
 Flags:
-      --auth0.client-id string       Auth0 management api client-id
-      --auth0.client-secret string   Auth0 management api static token.
-      --auth0.domain string          Auth0 tenant's domain. (i.e: <tenant_name>.eu.auth0.com)
-      --auth0.token string           Auth0 management api static token
+      --auth0.checkpoint string      Point in time from were to start fetching auth0 logs. (format: YYYY-MM-DD) (default "2023-04-01")
+      --auth0.client-id string       Auth0 management api client-id.
+      --auth0.client-secret string   Auth0 management api client-secret.
+      --auth0.domain string          Auth0 tenant's domain. (i.e: <tenant_name>.eu.auth0.com).
+      --auth0.token string           Auth0 management api static token. (the token can be used instead of client credentials).
   -h, --help                         help for export
-      --namespace string             Exporter's namespace
-      --pprof                        Enabled pprof profiling on the exporter on port :6060. (help: https://jvns.ca/blog/2017/09/24/profiling-go-with-pprof/)
-      --tls.cert-file string         The certificate file for the exporter.
-      --tls.disabled
-      --tls.key-file string          The key file for the exporter.
-      --tls.auto                  Allow the exporter manage its own certificates.
-      --web.listen-address int       Port where the server will listen. (default 8081)
-      --web.metrics-path string      URL Path under which to expose metrics. (default "metrics")
+      --log.level string             Exporter log level (debug, info, warn, error). (default "warn")
+      --namespace string             Exporter's namespace.
+      --pprof.enabled                Enabled pprof profiling on the exporter on port :6060. (help: https://jvns.ca/blog/2017/09/24/profiling-go-with-pprof/).
+      --pprof.listen-address int     Port where the pprof webserver will listen on. (default 6060)
+      --probe.listen-address int     Port where the probe webserver will listen on. (default 8081)
+      --probe.path string            URL Path under which to expose the probe metrics. (default "probe")
+      --subsystem string             Exporter's subsystem.
+      --tls.auto                     Allow the exporter to use autocert to renew its certificates with letsencrypt.
+                                     (Can only be used if the exporter is publicly accessible by the internet)
+      --tls.cert-file string         Path to the PEM encoded certificate for the auth0-exporter metrics to serve.
+      --tls.disabled                 Run exporter without TLS. TLS is enabled by default.
+      --tls.hosts strings            The different allowed hosts for the exporter. Only works when --tls.auto has been enabled.
+      --tls.key-file string          Path to the PEM encoded key for the auth0-exporter metrics server.
+      --web.listen-address int       Port where the exporter webserver will listen on. (default 8080)
+      --web.path string              URL Path under which to expose the collected auth0 metrics. (default "metrics")
 ```
 
 Environment variables: 
@@ -92,17 +114,14 @@ Environment variables:
 
 ## Metrics
 
-| Metric                                           | Meaning                                                  | Labels |
-|--------------------------------------------------|----------------------------------------------------------|--------|
-| `auth0_tenant_successful_sign_up_total`             | The number of successful signup operations. (codes: ss)  |        |
-| `auth0_tenant_failed_sign_up_total`              | The number of failed signup operations. (codes: fs)      ||
-| `auth0_tenant_successful_login_operations_total` | The number of successful login operations. (codes: s)    |        |
-| `auth0_tenant_failed_login_operations_total` | The number of failed login operations. (codes: f,fp,fu)  | code   |
-
-
-## Example queries
-
-Retrieve the percentage of successful logins:
+| Metric                                            | Meaning                                                  | Labels |
+|---------------------------------------------------|----------------------------------------------------------|--------|
+| `auth0_tenant_successful_sign_up_total`           | The number of successful signup operations. (codes: ss)  |        |
+| `auth0_tenant_failed_sign_up_total`               | The number of failed signup operations. (codes: fs)      ||
+| `auth0_tenant_successful_login_operations_total`  | The number of successful login operations. (codes: s)    |        |
+| `auth0_tenant_failed_login_operations_total`      | The number of failed login operations. (codes: f,fp,fu)  | code   |
+| `auth0_tenant_successful_logout_operations_total` | The number of successful logout operations. (codes: slo) |        |
+| `auth0_tenant_failed_logout_operations_total`     | The number of failed logout operations. (codes: flo)     |        |
 
 ## Known Issues
 
@@ -110,8 +129,6 @@ When the Prometheus scraping job interval is too low the exporter might encounte
 To mitigate this try increasing the scraping interval for the job.  
 
 ## Development
-
-#### Makefile
 
 #### Nix
 To start the development environment:

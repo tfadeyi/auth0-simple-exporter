@@ -90,7 +90,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 	fs.StringVar(
 		&o.LogLevel,
 		"log.level",
-		"info",
+		"warn",
 		"Exporter log level (debug, info, warn, error).",
 	)
 

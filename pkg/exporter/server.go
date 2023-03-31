@@ -117,6 +117,8 @@ func (e *exporter) Export() error {
 	// exporter's own metrics
 	e.logger.Info("starting metrics server", "port", e.probePort, "endpoint", e.probeAddr)
 	probeServer := echo.New()
+	probeServer.HideBanner = true
+	probeServer.HidePort = true
 	probeServer.GET(fmt.Sprintf("/%s", e.probeAddr), e.probe())
 	grp.Go(func() error {
 		return probeServer.Start(fmt.Sprintf(":%d", e.probePort))
