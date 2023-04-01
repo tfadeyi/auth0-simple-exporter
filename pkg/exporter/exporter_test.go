@@ -2,13 +2,13 @@ package exporter
 
 import (
 	"context"
-	"github.com/auth0-simple-exporter/pkg/client/logs"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
 
 	"github.com/auth0-simple-exporter/pkg/client"
+	"github.com/auth0-simple-exporter/pkg/client/logs"
 	"github.com/auth0-simple-exporter/pkg/exporter/metrics"
 	"github.com/auth0/go-auth0/management"
 	"github.com/juju/errors"

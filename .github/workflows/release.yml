@@ -61,6 +61,8 @@ jobs:
         run: |
           digest=$(crane digest ghcr.io/${{ github.repository }}:${{ github.sha }})
           cosign sign --yes --force "ghcr.io/${{ github.repository }}@${digest}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   helm:
     # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions

@@ -2,30 +2,31 @@ package logs
 
 import (
 	"context"
+	"testing"
+	"time"
+
 	"github.com/auth0/go-auth0/management"
 	"github.com/juju/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
-	"time"
 )
 
 func TestClient(t *testing.T) {
 	t.Parallel()
 
-	t.Run("failed to initialize the log client, if auth0.Domain is missing", func(t *testing.T) {
+	t.Run("failed to initialise the log client, if auth0.Domain is missing", func(t *testing.T) {
 		_, err := New("", "some id", "some secret", "random token")
 		require.Error(t, err)
 	})
-	t.Run("failed to initialize the log client, with invalid client credentials and token secrets", func(t *testing.T) {
+	t.Run("failed to initialise the log client, with invalid client credentials and token secrets", func(t *testing.T) {
 		_, err := New("domain", "some id", "", "")
 		require.Error(t, err)
 	})
-	t.Run("successfully to initialize the log client, if auth0.Token is present and client credentials are missing", func(t *testing.T) {
+	t.Run("successfully to initialise the log client, if auth0.Token is present and client credentials are missing", func(t *testing.T) {
 		_, err := New("domain", "", "", "random token")
 		require.NoError(t, err)
 	})
-	t.Run("successfully to initialize the log client, if auth0 client creds are present and token is missing", func(t *testing.T) {
+	t.Run("successfully to initialise the log client, if auth0 client creds are present and token is missing", func(t *testing.T) {
 		_, err := New("domain", "id", "secret", "")
 		require.NoError(t, err)
 	})
@@ -57,7 +58,7 @@ func TestClient(t *testing.T) {
 		currentPage := 0
 		storedLogs := make([]*management.Log, totalLogNumber)
 		for i := 0; i < totalLogNumber; i++ {
-			var code string = "f"
+			var code = "f"
 			storedLogs[i] = &management.Log{Type: &code}
 		}
 

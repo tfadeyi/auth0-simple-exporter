@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/auth0-simple-exporter/pkg/client"
-	auth0client "github.com/auth0-simple-exporter/pkg/client"
 	"github.com/juju/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -67,7 +66,7 @@ func (o *Options) Prepare(cmd *cobra.Command) *Options {
 func (o *Options) Complete() error {
 	var err error
 
-	o.Client, err = auth0client.NewWithOpts(o.cfg)
+	o.Client, err = client.NewWithOpts(o.cfg)
 	if err != nil {
 		return errors.Annotate(err, "failed to initialise exporter's connection to auth0")
 	}

@@ -49,16 +49,16 @@ spec:
                 secretKeyRef:
                   name: {{ default "credentials" .Values.auth0.secretName }}
                   key: token
-{{/*            - name: CLIENT_ID*/}}
-{{/*              valueFrom:*/}}
-{{/*                secretKeyRef:*/}}
-{{/*                  name: {{ default "credentials" .Values.auth0.secretName }}*/}}
-{{/*                  key: clientId*/}}
-{{/*            - name: CLIENT_SECRET*/}}
-{{/*              valueFrom:*/}}
-{{/*                secretKeyRef:*/}}
-{{/*                  name: {{ default "credentials" .Values.auth0.secretName }}*/}}
-{{/*                  key: clientSecret*/}}
+            - name: CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default "credentials" .Values.auth0.secretName }}
+                  key: clientId
+            - name: CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default "credentials" .Values.auth0.secretName }}
+                  key: clientSecret
           args:
             - "export"
             {{- if .Values.auth0.domain }}

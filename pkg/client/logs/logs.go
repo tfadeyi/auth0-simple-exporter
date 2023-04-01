@@ -47,7 +47,7 @@ func New(domain, clientID, clientSecret, token string) (*logClient, error) {
 		client = c.Log
 	}
 	if client == nil {
-		errs = multierr.Append(errs, errors.New("unable to initialize the auth0 client, check the credentials are correct."))
+		errs = multierr.Append(errs, errors.New("unable to initialise the auth0 client, check the credentials are correct."))
 	}
 
 	if errs != nil {

@@ -12,14 +12,14 @@ const (
 	failAPIOperation    = "fapi"
 	successAPIOperation = "sapi"
 
-	tenantSuccessApiOperations = "tenant_success_api_operations_total"
-	tenantFailedApiOperations  = "tenant_failed_api_operations_total"
+	tenantSuccessAPIOperations = "tenant_success_api_operations_total"
+	tenantFailedAPIOperations  = "tenant_failed_api_operations_total"
 )
 
 func successAPIOperationCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
 	return prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantSuccessApiOperations)),
+			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantSuccessAPIOperations)),
 			Help: "The number of successful API operations on the tenant. (codes: sapi)",
 		}, []string{})
 }
@@ -27,7 +27,7 @@ func successAPIOperationCounterMetric(namespace, subsystem string) *prometheus.C
 func failAPIOperationCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
 	return prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantFailedApiOperations)),
+			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantFailedAPIOperations)),
 			Help: "The number of failed API operations on the tenant. (codes: fapi)",
 		}, []string{})
 }

@@ -3,6 +3,7 @@ package swagger
 import (
 	"context"
 	"fmt"
+
 	_ "github.com/auth0-simple-exporter/pkg/docs"
 	"github.com/auth0-simple-exporter/pkg/logging"
 	"github.com/labstack/echo/v4"

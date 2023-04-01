@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// serveExporterCmd is the entrypoint to the exporter
 func serveExporterCmd() *cobra.Command {
 	opts := exporterOptions.New()
 	cmd := &cobra.Command{
@@ -20,8 +21,7 @@ func serveExporterCmd() *cobra.Command {
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
-			log := logging.LoggerFromContext(ctx)
-			ctx = logging.ContextWithLogger(ctx, logging.NewPromLoggerWithOpts(opts.LogLevel))
+			log := logging.NewPromLoggerWithOpts(opts.LogLevel)
 
 			e := exporter.New(
 				ctx,

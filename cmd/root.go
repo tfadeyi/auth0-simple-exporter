@@ -27,7 +27,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/labstack/gommon/log"
+	"github.com/auth0-simple-exporter/pkg/logging"
 	"github.com/spf13/cobra"
 )
 
@@ -40,13 +40,14 @@ var rootCmd = &cobra.Command{
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute(ctx context.Context) {
+	log := logging.LoggerFromContext(ctx)
 	err := rootCmd.ExecuteContext(ctx)
 	switch {
 	case errors.Is(err, http.ErrServerClosed):
-		log.Error(err)
+		log.Error(err, "exiting gracefully")
 		os.Exit(0)
 	case err != nil:
-		log.Error(err)
+		log.Error(err, err.Error())
 		os.Exit(1)
 	}
 }

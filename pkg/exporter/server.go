@@ -30,7 +30,7 @@ import (
 
 // Export configures the exporter Router and starts the server with the given configuration
 func (e *exporter) Export() error {
-	log := logging.LoggerFromContext(e.ctx)
+	log := e.logger
 	log.Info("initialising exporter", "build", version.BuildInfo())
 
 	server := echo.New()

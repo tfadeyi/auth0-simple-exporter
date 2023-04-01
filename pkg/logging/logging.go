@@ -2,6 +2,7 @@ package logging
 
 import (
 	"context"
+
 	kitlog "github.com/go-kit/log"
 	"github.com/go-logr/logr"
 	"github.com/labstack/echo/v4"
