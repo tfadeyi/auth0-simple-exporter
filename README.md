@@ -1,8 +1,8 @@
 <div align="center">
 
-# Prometheus Exporter for Auth0
+# Auth0 Exporter
 
-[![CI](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml/badge.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml)
+[![Continuous Integration](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml/badge.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-yellowgreen.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE)
 [![Language](https://img.shields.io/badge/language-Go-blue.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter)
 [![GitHub release](https://img.shields.io/badge/release-0.0.10-green.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
@@ -11,15 +11,21 @@
 
 ---
 
-A simple Prometheus exporter for Auth0 log [events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs),
+A simple Prometheus exporter for [Auth0](https://auth0.com/) log [events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs),
 which allows you to collect metrics from Auth0 and expose them in a format that can be consumed by Prometheus.
 
 > Development is in progress.
 
+## Motivation
+
+Monitoring **Auth0** tenant activities using a Prometheus monitoring stack was not as straightforward as with other monitoring platforms,
+such as Datadog.
+This simple Prometheus exporter hopes to help this issue.
+
 ## Prerequisites
 
 * Auth0 tenant [management API](https://auth0.com/docs/api#management-api) client credentials.
-* (Optional) Auth0 tenant management API [static token](https://auth0.com/docs/secure/tokens/access-tokens/management-api-access-tokens).
+* *(Optional)* Auth0 tenant management API [static token](https://auth0.com/docs/secure/tokens/access-tokens/management-api-access-tokens).
 
 More info on how to get the credentials can be found [here](./docs/auth0.md).
 
@@ -32,6 +38,10 @@ $ export DOMAIN="< auth0 tenant domain >"
 $ docker run --network host -u $(id -u):$(id -g) -e TOKEN="$TOKEN" -e DOMAIN="$DOMAIN" ghcr.io/tfadeyi/auth0-simple-exporter:latest export --tls.disabled
 ```
 
+## Download Binaries
+
+Binaries can be downloaded from [Releases](https://github.com/tfadeyi/auth0-simple-exporter/releases) page.
+
 ## Get this image
 The recommended way to get the Docker Image is to pull the prebuilt image from the project's Github Container Registry.
 ```shell
@@ -41,10 +51,6 @@ To use a specific version, you can pull a versioned tag.
 ```shell
 $ docker pull ghcr.io/tfadeyi/auth0-simple-exporter:[TAG]
 ```
-
-## Download
-
-Binary can be downloaded from [Releases](https://github.com/tfadeyi/auth0-simple-exporter/releases) page.
 
 ## Helm
 This shows a simple installation of the exporter helm chart, running with TLS disabled.
@@ -62,20 +68,6 @@ helm upgrade --install --create-namespace -n auth0-exporter auth0-exporter \
 
 More info on the helm deployment can be found [here](deploy/charts/auth0-exporter/README.md).
 
-## Example queries
-
-Monitor the percentage of successful logins:
-
-```
-(auth0_tenant_successful_login_operations_total / (on job,instance) (auth0_tenant_successful_login_operations_total + auth0_tenant_failed_login_operations_total)) * 100
-```
-
-Monitor the current logged-in users:
-
-```
-(on job,instance) (auth0_tenant_successful_login_operations_total - auth0_tenant_successful_logout_operations_total)
-```
-
 ## Usage
 
 ```
@@ -83,10 +75,10 @@ Usage:
   exporter export [flags]
 
 Flags:
-      --auth0.checkpoint string      Point in time from were to start fetching auth0 logs. (format: YYYY-MM-DD) (default "2023-04-01")
       --auth0.client-id string       Auth0 management api client-id.
       --auth0.client-secret string   Auth0 management api client-secret.
       --auth0.domain string          Auth0 tenant's domain. (i.e: <tenant_name>.eu.auth0.com).
+      --auth0.from string            Point in time from were to start fetching auth0 logs. (format: YYYY-MM-DD) (default "2023-04-02")
       --auth0.token string           Auth0 management api static token. (the token can be used instead of client credentials).
   -h, --help                         help for export
       --log.level string             Exporter log level (debug, info, warn, error). (default "warn")
@@ -106,11 +98,25 @@ Flags:
       --web.path string              URL Path under which to expose the collected auth0 metrics. (default "metrics")
 ```
 
-Environment variables: 
-* TOKEN, Auth0 management API static token.
-* CLIENT_SECRET, Auth0 management API client-secret.
-* CLIENT_ID, Auth0 management API client-id.
-* DOMAIN, Auth0 tenant domain.
+#### Environment variables: 
+* ***TOKEN***, Auth0 management API static token.
+* ***DOMAIN***, Auth0 tenant domain.
+* ***CLIENT_SECRET***, Auth0 management API client-secret, (not required if setting the token).
+* ***CLIENT_ID***, Auth0 management API client-id, (not required if setting the token).
+
+## Example queries
+
+Monitor the percentage of successful logins:
+
+```
+(auth0_tenant_successful_login_operations_total / (on job,instance) (auth0_tenant_successful_login_operations_total + auth0_tenant_failed_login_operations_total)) * 100
+```
+
+Monitor the current logged-in users:
+
+```
+(on job,instance) (auth0_tenant_successful_login_operations_total - auth0_tenant_successful_logout_operations_total)
+```
 
 ## Metrics
 
@@ -130,29 +136,24 @@ To mitigate this try increasing the scraping interval for the job.
 
 ## Development
 
+#### Makefile
+
+#### Docker-compose
+
 #### Nix
 To start the development environment:
 ```shell
-source env-dev.sh && develop
+$ source env-dev.sh
+$ develop
 ```
 This will boot up a Nix devshell with a Prometheus instance running in the background,
 `http://localhost:9090`.
 
-## Release
-The repo uses [goreleaser](https://goreleaser.com/) and [ko](https://ko.build/) to release the different artifacts.
-To make a new release just create a new git tag, this will trigger a new Github action release [workflow](https://github.com/tfadeyi/auth0-simple-exporter/blob/main/.github/workflows/release.yml).
-
-```shell
-git tag -a v0.1.0 -m "First release"
-git push origin v0.1.0
-```
-
-> ⚠️ Remember to update the Helm Chart and OpenAPI specification.
-
 ## Contributing
 
-If you'd like to contribute to the exporter, please see CONTRIBUTING.md for information on how to get started.
+**Everyone** is welcomed to contribute to the project, please see [CONTRIBUTING.md](./CONTRIBUTING.md) for information on how to get started.
 
+Feedback is always appreciated, whether it's a bug or feature request feel free to open an issue using one of the templates.
 
 ## License
 Apache 2.0, see [LICENSE.md](./LICENSE).
