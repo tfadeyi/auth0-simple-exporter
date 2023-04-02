@@ -24,10 +24,9 @@ This simple Prometheus exporter hopes to help this issue.
 
 ## Prerequisites
 
+* [Auth0](https://auth0.com/) account.
 * Auth0 tenant [management API](https://auth0.com/docs/api#management-api) client credentials.
 * *(Optional)* Auth0 tenant management API [static token](https://auth0.com/docs/secure/tokens/access-tokens/management-api-access-tokens).
-
-More info on how to get the credentials can be found [here](./docs/auth0.md).
 
 ## TL;DR
 Run exporter's container with TLS disabled.
@@ -38,35 +37,37 @@ $ export DOMAIN="< auth0 tenant domain >"
 $ docker run --network host -u $(id -u):$(id -g) -e TOKEN="$TOKEN" -e DOMAIN="$DOMAIN" ghcr.io/tfadeyi/auth0-simple-exporter:latest export --tls.disabled
 ```
 
-## Download Binaries
+## Installation
 
-Binaries can be downloaded from [Releases](https://github.com/tfadeyi/auth0-simple-exporter/releases) page.
+* ### Download Binaries
 
-## Get this image
-The recommended way to get the Docker Image is to pull the prebuilt image from the project's Github Container Registry.
-```shell
-$ docker pull ghcr.io/tfadeyi/auth0-simple-exporter:latest
-```
-To use a specific version, you can pull a versioned tag.
-```shell
-$ docker pull ghcr.io/tfadeyi/auth0-simple-exporter:[TAG]
-```
+    Binaries can be downloaded from [Releases](https://github.com/tfadeyi/auth0-simple-exporter/releases) page.
 
-## Helm
-This shows a simple installation of the exporter helm chart, running with TLS disabled.
-```shell
-$ export TOKEN="< auth0 management API static static token >"
-$ export DOMAIN="< auth0 tenant domain >"
-```
-```shell
-# Installing by passing in secret directly
-helm upgrade --install --create-namespace -n auth0-exporter auth0-exporter \
-  https://tfadeyi.github.io/charts \
-  --set auth0.domain="$DOMAIN" --set auth0.token="$TOKEN" \
-  --set exporter.tls.disabled=true
-```
+* ### Docker
+    The recommended way to get the Docker Image is to pull the prebuilt image from the project's Github Container Registry.
+    ```shell
+    $ docker pull ghcr.io/tfadeyi/auth0-simple-exporter:latest
+    ```
+    To use a specific version, you can pull a versioned tag.
+    ```shell
+    $ docker pull ghcr.io/tfadeyi/auth0-simple-exporter:[TAG]
+    ```
 
-More info on the helm deployment can be found [here](deploy/charts/auth0-exporter/README.md).
+* ### Helm
+    This shows a simple installation of the exporter helm chart, running with TLS disabled.
+    ```shell
+    $ export TOKEN="< auth0 management API static static token >"
+    $ export DOMAIN="< auth0 tenant domain >"
+    ```
+    ```shell
+    # Installing by passing in secret directly
+    helm upgrade --install --create-namespace -n auth0-exporter auth0-exporter \
+      https://tfadeyi.github.io/charts \
+      --set auth0.domain="$DOMAIN" --set auth0.token="$TOKEN" \
+      --set exporter.tls.disabled=true
+    ```
+
+    More info on the helm deployment can be found [here](deploy/charts/auth0-exporter/README.md).
 
 ## Usage
 
@@ -98,7 +99,7 @@ Flags:
       --web.path string              URL Path under which to expose the collected auth0 metrics. (default "metrics")
 ```
 
-#### Environment variables: 
+### Environment variables:
 * ***TOKEN***, Auth0 management API static token.
 * ***DOMAIN***, Auth0 tenant domain.
 * ***CLIENT_SECRET***, Auth0 management API client-secret, (not required if setting the token).
