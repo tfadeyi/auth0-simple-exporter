@@ -18,9 +18,9 @@ which allows you to collect metrics from Auth0 and expose them in a format that 
 
 ## Motivation
 
-Monitoring **Auth0** tenant activities using a Prometheus monitoring stack was not as straightforward as with other monitoring platforms,
-such as Datadog.
-This simple Prometheus exporter hopes to help this issue.
+It can be difficult to monitor **Auth0** tenant events on a Prometheus stack,
+especially compared to other monitoring systems such as Datadog.
+This Prometheus exporter aims to simplify this, making it easier to expose tenant events.
 
 ## Prerequisites
 
