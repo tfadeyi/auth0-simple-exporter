@@ -152,9 +152,11 @@ This will boot up a Nix devshell with a Prometheus instance running in the backg
 
 ## Contributing
 
-**Everyone** is welcomed to contribute to the project, please see [CONTRIBUTING.md](./CONTRIBUTING.md) for information on how to get started.
+**Everyone** is welcome to contribute to the project.
 
-Feedback is always appreciated, whether it's a bug or feature request feel free to open an issue using one of the templates.
+Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for information on how to get started.
+
+Feedback is always appreciated, whether it's a bug or feature request, feel free to open an issue using one of the templates.
 
 ## License
 Apache 2.0, see [LICENSE.md](./LICENSE).
