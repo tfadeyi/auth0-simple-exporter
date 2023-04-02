@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/auth0/go-auth0 v0.16.0
 	github.com/go-kit/log v0.2.1
-	github.com/go-logr/logr v1.2.3
+	github.com/go-logr/logr v1.2.4
 	github.com/juju/errors v1.0.0
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/labstack/gommon v0.4.0
