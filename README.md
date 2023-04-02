@@ -18,9 +18,9 @@ which allows you to collect metrics from Auth0 and expose them in a format that 
 
 ## Motivation
 
-Monitoring **Auth0** tenant activities using a Prometheus monitoring stack was not as straightforward as with other monitoring platforms,
-such as Datadog.
-This simple Prometheus exporter hopes to help this issue.
+It can be difficult to monitor **Auth0** tenant events on a Prometheus stack,
+especially compared to other monitoring systems such as Datadog.
+This Prometheus exporter aims to simplify this, making it easier to expose tenant events.
 
 ## Prerequisites
 
@@ -152,9 +152,11 @@ This will boot up a Nix devshell with a Prometheus instance running in the backg
 
 ## Contributing
 
-**Everyone** is welcomed to contribute to the project, please see [CONTRIBUTING.md](./CONTRIBUTING.md) for information on how to get started.
+**Everyone** is welcome to contribute to the project.
 
-Feedback is always appreciated, whether it's a bug or feature request feel free to open an issue using one of the templates.
+Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for information on how to get started.
+
+Feedback is always appreciated, whether it's a bug or feature request, feel free to open an issue using one of the templates.
 
 ## License
 Apache 2.0, see [LICENSE.md](./LICENSE).
