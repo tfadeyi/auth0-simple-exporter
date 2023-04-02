@@ -90,7 +90,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		&o.LogLevel,
 		"log.level",
 		"warn",
-		"Exporter log level (debug, info, warn, error).",
+		"Only log messages with the given severity or above. One of: [debug, info, warn, error]",
 	)
 
 	fs.IntVar(
