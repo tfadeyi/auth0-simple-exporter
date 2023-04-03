@@ -13,9 +13,9 @@ body:
     attributes:
       label: What happened?
       description: |
-      Provide a summary of the bug that you've encountered.
-      * What is the current bug behavior?
-      * Give all the context you can, provide relevant logs and/or screenshots.
+        Provide a summary of the bug that you've encountered.
+        * What is the current bug behavior?
+        * Give all the context you can, provide relevant logs and/or screenshots.
     validations:
       required: true
 
