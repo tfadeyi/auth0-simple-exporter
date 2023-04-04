@@ -91,11 +91,11 @@ func New(ctx context.Context, opts ...Option) *exporter {
 
 // metrics godoc
 //
-//	@Summary		Auth0 metrics in Prometheus format.
-//	@Description	Exposes the Auth0 metrics collected by the exporter in a prometheus format.
-//	@Produce		json
-//	@Produce		text/plain; charset=utf-8
-//	@Router			/metrics [get]
+//	@Summary				Auth0 metrics in Prometheus format.
+//	@Description.markdown	metrics.md
+//	@Produce				json
+//	@Produce				text/plain; charset=utf-8
+//	@Router					/metrics [get]
 func (e *exporter) metrics() echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		log := logging.LoggerFromEchoContext(ctx)

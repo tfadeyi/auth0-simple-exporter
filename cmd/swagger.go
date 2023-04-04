@@ -9,8 +9,10 @@ import (
 func serveSwaggerCmd() *cobra.Command {
 	opts := swaggeroptions.New()
 	cmd := &cobra.Command{
-		Use:   "swagger",
-		Short: "Starts a swagger docs local server.",
+		Use:           "swagger",
+		Short:         "Starts a swagger docs local server.",
+		SilenceErrors: true,
+		SilenceUsage:  true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			err := opts.Validate()
 			if err != nil {

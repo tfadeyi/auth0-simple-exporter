@@ -22,7 +22,7 @@ There are two ways to install the chart:
 kubectl create secret -n auth0-exporter "<SOME_SECRET_NAME>" --from-file=credentials.json
 # Install refering to secret
 helm upgrade --install --create-namespace -n auth0-exporter auth0-exporter \
-  oci://eu.gcr.io/jetstack-secure-enterprise/charts/jetstack-agent \
+  https://tfadeyi.github.io/charts \
   --set config.organisation="strange-jones"  --set config.cluster="<CLUSTER_NAME>" \
   --set authentication.secretName="<SOME_SECRET_NAME>"
 ```
@@ -34,8 +34,8 @@ helm upgrade --install --create-namespace -n auth0-exporter auth0-exporter \
 
 ```console
 # Installing by passing in secret directly
-helm upgrade --install --create-namespace -n jetstack-secure jetstack-agent \
-  oci://eu.gcr.io/jetstack-secure-enterprise/charts/jetstack-agent \
+helm upgrade --install --create-namespace -n auth0-exporter auth0-exporter \
+  https://tfadeyi.github.io/charts \
   --set config.organisation="strange-jones" --set config.cluster="<CLUSTER_NAME>" \
   --set authentication.createSecret=true --set authentication.secretValue="$HELM_SECRET"
 ```
@@ -50,7 +50,7 @@ helm upgrade --install --create-namespace -n jetstack-secure jetstack-agent \
 | auth0.clientSecret | string | `""` | Auth0 management api client-secret. (do not set if static token is already set) |
 | auth0.domain | string | `"<change_me>.eu.auth0.com"` | Auth0 tenant's domain. (i.e: <tenant_name>.eu.auth0.com) |
 | auth0.token | string | `""` | Auth0 management api static token. (the token can be used instead of client credentials) |
-| exporter | object | `{"logLevel":1,"metricsEndpoint":"metrics","namespace":"","port":9301,"pprof":false,"tls":{"auto":false,"certFile":"","createSecret":false,"disabled":false,"hosts":[],"keyFile":"","secretKey":"","secretName":""}}` | Exporter's configuration |
+| exporter | object | `{"logLevel":"info","metricsEndpoint":"metrics","namespace":"","port":9301,"pprof":false,"tls":{"auto":false,"certFile":"","createSecret":false,"disabled":false,"hosts":[],"keyFile":"","secretKey":"","secretName":""}}` | Exporter's configuration |
 | exporter.metricsEndpoint | string | `"metrics"` | URL Path under which to expose the collected auth0 metrics. |
 | exporter.port | int | `9301` | Port where the server will listen. |
 | exporter.pprof | bool | `false` | Enabled pprof profiling on the exporter on port :6060. (help: https://jvns.ca/blog/2017/09/24/profiling-go-with-pprof/) |
@@ -60,7 +60,7 @@ helm upgrade --install --create-namespace -n jetstack-secure jetstack-agent \
 | exporter.tls.disabled | bool | `false` | Run exporter without TLS. |
 | exporter.tls.keyFile | string | `""` | The key file for the exporter TLS connection. |
 | fullnameOverride | string | `""` | Helm default setting, use this to shorten install name |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/tfadeyi/auth0-simple-exporter","tag":"v0.0.7"}` | image settings |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/tfadeyi/auth0-simple-exporter","tag":"v0.0.31"}` | image settings |
 | imagePullSecrets | list | `[]` | specify credentials if pulling from a customer registry |
 | labels | object | `{}` |  |
 | nameOverride | string | `""` | Helm default setting to override release name, leave blank |

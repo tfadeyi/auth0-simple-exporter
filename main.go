@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 //go:generate swag fmt
-//go:generate swag init --parseDependency --generalInfo ./pkg/exporter/server.go --output ./pkg/docs
+//go:generate swag init --parseDependency --generalInfo ./pkg/exporter/server.go --output ./pkg/docs --markdownFiles ./docs
 
 package main
 

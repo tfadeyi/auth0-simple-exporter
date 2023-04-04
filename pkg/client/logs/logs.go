@@ -10,7 +10,6 @@ import (
 	"go.uber.org/multierr"
 )
 
-//go:generate rm -f ./logs_mock.go
 //go:generate moq -out logs_mock.go . Client
 
 type (
@@ -28,7 +27,7 @@ var ErrAPIRateLimitReached = errors.New("client reached api rate limit")
 // New returns a new instance of the log fetching client, plus possible errors
 func New(domain, clientID, clientSecret, token string) (*logClient, error) {
 	var errs error
-	var client *management.LogManager
+	var client *management.Management
 	if domain == "" {
 		errs = multierr.Append(errs, errors.New("missing auth0 domain"))
 	}
@@ -37,14 +36,14 @@ func New(domain, clientID, clientSecret, token string) (*logClient, error) {
 		if err != nil {
 			errs = multierr.Append(errs, err)
 		}
-		client = c.Log
+		client = c
 	}
 	if clientID != "" && clientSecret != "" {
 		c, err := management.New(domain, management.WithClientCredentials(clientID, clientSecret))
 		if err != nil {
 			errs = multierr.Append(errs, err)
 		}
-		client = c.Log
+		client = c
 	}
 	if client == nil {
 		errs = multierr.Append(errs, errors.New("unable to initialise the auth0 client, check the credentials are correct."))
@@ -54,7 +53,7 @@ func New(domain, clientID, clientSecret, token string) (*logClient, error) {
 		return nil, errs
 	}
 
-	return &logClient{client}, nil
+	return &logClient{client.Log}, nil
 }
 
 func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{}, error) {

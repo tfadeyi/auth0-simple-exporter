@@ -17,10 +17,8 @@ func Serve(ctx context.Context, port int) error {
 	log.Info("starting swagger server")
 
 	server := echo.New()
+	server.HideBanner = true
 	server.Use(middleware.Recover())
-	server.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-		return logging.Middleware(next, log)
-	})
 
 	server.GET("/swagger/*", echoSwagger.WrapHandler)
 	grp, ctx := errgroup.WithContext(ctx)
