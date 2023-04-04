@@ -10,7 +10,7 @@ info:
     name: Apache 2.0
     url: https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE
   title: Auth0 simple exporter
-  version: 0.0.7
+  version: 0.0.1
 paths:
   /metrics:
     get:

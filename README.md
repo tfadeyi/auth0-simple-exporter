@@ -5,7 +5,7 @@
 [![Continuous Integration](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml/badge.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-yellowgreen.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE)
 [![Language](https://img.shields.io/badge/language-Go-blue.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter)
-[![GitHub release](https://img.shields.io/badge/release-0.0.10-green.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
+[![GitHub release](https://img.shields.io/badge/release-0.0.1-green.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
 
 </div>
 
@@ -132,23 +132,28 @@ Monitor the current logged-in users:
 
 ## Known Issues
 
-When the Prometheus scraping job interval is too low the exporter might encounter api-rate limit from Auth0.
-To mitigate this try increasing the scraping interval for the job.  
+### API Rate Limits
+When the Prometheus scraping job interval is too frequent the exporter might encounter api-rate limit from Auth0.
+To mitigate this try increasing the scraping interval for the job.
+
+### Not all logs/events are available
+Currently, not all logs/events from Auth0 are exposed, if a metric is not exposed, feel free to open a feature request.
+
 
 ## Development
 
 #### Makefile
 
-#### Docker-compose
+Similar to other Golang projects, this projects makes use of make for building and testing the source code.
 
 #### Nix
-To start the development environment:
+Before start development, add your tenant's Auth0 credentials to the `env-dev.sh`, this help when developing using Nix.
+Once the credentials are added, you can start the development environment by:
 ```shell
 $ source env-dev.sh
 $ develop
 ```
-This will boot up a Nix devshell with a Prometheus instance running in the background,
-`http://localhost:9090`.
+This will boot up a Nix devshell with the need tools and information.
 
 ## Contributing
 
