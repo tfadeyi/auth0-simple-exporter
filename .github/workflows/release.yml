@@ -1,0 +1,92 @@
+name: Release
+on:
+  push:
+    tags:
+      - "v*.*.*"
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      packages: write
+    env:
+      KO_DOCKER_REPO: "ghcr.io/${{ github.repository_owner }}"
+      KO_DATA_PATH: "/usr/share/doc/${{ github.repository }}/"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Unshallow
+        run: git fetch --prune --unshallow
+
+      - name: Install tools
+        run: make install-tools
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3.0.1
+
+      - name: Setup ko
+        uses: ko-build/setup-ko@v0.6
+
+      - name: Install Crane
+        uses: imjasonh/setup-crane@v0.3
+
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.19.x
+          cache: true
+
+      - name: Licenses
+        run: make licenses
+
+      - name: Login to ghcr.io
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v4
+        id: run-goreleaser
+        with:
+          version: latest
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: sign image
+        run: |
+          digest=$(crane digest ghcr.io/${{ github.repository }}:${{ github.sha }})
+          cosign sign --yes --force "ghcr.io/${{ github.repository }}@${digest}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  helm:
+    # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
+    # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.19.x
+          cache: true
+
+      - name: Generate helm docs
+        run: make generate
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.5.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

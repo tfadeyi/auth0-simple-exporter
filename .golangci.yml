@@ -1,0 +1,39 @@
+run:
+  timeout: 5m
+  modules-download-mode: readonly
+
+linters-settings:
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+  gofmt:
+    simplify: true
+  goimports:
+    local-prefixes: github.com/tfadeyi/auth0-simple-exporter
+  golint:
+    min-confidence: 0
+  govet:
+    check-shadowing: true
+    enable-all: true
+  misspell:
+    locale: GB
+
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - errcheck
+    - goconst
+    - gocritic
+    - gofmt
+    - goimports
+    - gosimple
+    - ineffassign
+    - misspell
+    - nakedret
+    - staticcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unused
+    - whitespace
