@@ -91,11 +91,11 @@ func New(ctx context.Context, opts ...Option) *exporter {
 
 // metrics godoc
 //
-//	@Summary				Auth0 metrics in Prometheus format.
-//	@Description.markdown	metrics.md
-//	@Produce				json
-//	@Produce				text/plain; charset=utf-8
-//	@Router					/metrics [get]
+// @Summary              Auth0 metrics in Prometheus format.
+// @Description.markdown metrics.md
+// @Produce              json
+// @Produce              text/plain; charset=utf-8
+// @Router               /metrics [get]
 func (e *exporter) metrics() echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		log := logging.LoggerFromEchoContext(ctx)
@@ -125,11 +125,11 @@ func (e *exporter) metrics() echo.HandlerFunc {
 
 // probe godoc
 //
-//	@Summary		Exporter's own metrics for its operations.
-//	@Description	Exposes the exporter's own metrics, i.e: target_scrape_request_total.
-//	@Produce		json
-//	@Produce		text/plain; charset=utf-8
-//	@Router			/probe [get]
+// @Summary     Exporter's own metrics for its operations.
+// @Description Exposes the exporter's own metrics, i.e: target_scrape_request_total.
+// @Produce     json
+// @Produce     text/plain; charset=utf-8
+// @Router      /probe [get]
 func (e *exporter) probe() echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		promhttp.HandlerFor(e.probeRegistry, promhttp.HandlerOpts{}).ServeHTTP(ctx.Response(), ctx.Request())

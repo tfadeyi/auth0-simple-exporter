@@ -9,7 +9,7 @@ image:
   repository: ghcr.io/tfadeyi/auth0-simple-exporter
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v0.0.1"
+  tag: "v0.0.3"
 
 # -- specify credentials if pulling from a customer registry
 imagePullSecrets: []
@@ -97,8 +97,8 @@ resources:
    cpu: 100m
    memory: 128Mi
   requests:
-   cpu: 100m
-   memory: 128Mi
+   cpu: 50m
+   memory: 64Mi
 
 nodeSelector: {}
 

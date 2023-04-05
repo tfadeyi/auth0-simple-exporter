@@ -2,7 +2,7 @@
 
 Auth0 Prometheus exporter
 
-![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.2](https://img.shields.io/badge/AppVersion-0.0.2-informational?style=flat-square)
+![Version: 0.0.3](https://img.shields.io/badge/Version-0.0.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.3](https://img.shields.io/badge/AppVersion-0.0.3-informational?style=flat-square)
 
 ## Additional Information
 
@@ -48,7 +48,7 @@ on the `/metrics` endpoint.
 | exporter.tls.disabled | bool | `false` | Run exporter without TLS. |
 | exporter.tls.keyFile | string | `""` | The key file for the exporter TLS connection. |
 | fullnameOverride | string | `""` | Helm default setting, use this to shorten install name |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/tfadeyi/auth0-simple-exporter","tag":"v0.0.1"}` | image settings |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/tfadeyi/auth0-simple-exporter","tag":"v0.0.3"}` | image settings |
 | imagePullSecrets | list | `[]` | specify credentials if pulling from a customer registry |
 | labels | object | `{}` |  |
 | nameOverride | string | `""` | Helm default setting to override release name, leave blank |
@@ -58,8 +58,8 @@ on the `/metrics` endpoint.
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | string | `"100m"` |  |
 | resources.limits.memory | string | `"128Mi"` |  |
-| resources.requests.cpu | string | `"100m"` |  |
-| resources.requests.memory | string | `"128Mi"` |  |
+| resources.requests.cpu | string | `"50m"` |  |
+| resources.requests.memory | string | `"64Mi"` |  |
 | securityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | securityContext.readOnlyRootFilesystem | bool | `true` |  |
 | securityContext.runAsNonRoot | bool | `true` |  |
