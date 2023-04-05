@@ -6,7 +6,7 @@
 [![Continuous Integration](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml/badge.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-yellowgreen.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE)
 [![Language](https://img.shields.io/badge/language-Go-blue.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter)
-[![GitHub release](https://img.shields.io/badge/release-0.0.2-green.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
+[![GitHub release](https://img.shields.io/badge/release-0.0.3-green.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
 
 </div>
 

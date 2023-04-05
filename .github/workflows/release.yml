@@ -93,6 +93,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Install tools
         run: make install-tools
@@ -109,9 +111,14 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v3
 
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.5.0
         with:
-          charts_dir: deploy/charts
+          charts_dir: ./deploy/charts
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
