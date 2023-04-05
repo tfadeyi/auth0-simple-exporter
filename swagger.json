@@ -1,0 +1,41 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A simple Prometheus exporter for Auth0 log [events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs),\nwhich allows you to collect metrics from Auth0 and expose them in a format that can be consumed by Prometheus.",
+        "title": "Auth0 simple exporter",
+        "contact": {
+            "name": "Oluwole Fadeyi (@tfadeyi)"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE"
+        },
+        "version": "0.0.3"
+    },
+    "host": "localhost:9301",
+    "basePath": "/",
+    "paths": {
+        "/metrics": {
+            "get": {
+                "description": "# Available Metrics\n\nExposes the Auth0 metrics collected by the exporter in a prometheus format.\n\n| Metric                                          | Meaning                                                  | Labels |\n|-------------------------------------------------|----------------------------------------------------------|--------|\n| `auth0_tenant_successful_sign_up_total`         | The number of successful signup operations. (codes: ss)  |        |\n| `auth0_tenant_failed_sign_up_total`             | The number of failed signup operations. (codes: fs)      ||\n| `auth0_tenant_successful_login_operations_total` | The number of successful login operations. (codes: s)    |        |\n| `auth0_tenant_failed_login_operations_total`    | The number of failed login operations. (codes: f,fp,fu)  | code   |\n| `auth0_tenant_successful_logout_operations_total` | The number of successful logout operations. (codes: slo) |        |\n| `auth0_tenant_failed_logout_operations_total`   | The number of failed logout operations. (codes: flo)     |        |\n",
+                "produces": [
+                    "application/json",
+                    "text/plain; charset=utf-8"
+                ],
+                "summary": "Auth0 metrics in Prometheus format.",
+                "responses": {}
+            }
+        },
+        "/probe": {
+            "get": {
+                "description": "Exposes the exporter's own metrics, i.e: target_scrape_request_total.",
+                "produces": [
+                    "application/json",
+                    "text/plain; charset=utf-8"
+                ],
+                "summary": "Exporter's own metrics for its operations.",
+                "responses": {}
+            }
+        }
+    }
+}
