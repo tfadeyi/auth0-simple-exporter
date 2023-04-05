@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/auth0-simple-exporter/pkg/logging"
-	"github.com/auth0-simple-exporter/pkg/version"
 	"github.com/spf13/cobra"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/logging"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/version"
 )
 
 var versionCmd = &cobra.Command{

@@ -4,10 +4,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/auth0-simple-exporter/pkg/client"
 	"github.com/juju/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/client"
 )
 
 type (

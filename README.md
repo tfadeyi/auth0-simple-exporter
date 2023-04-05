@@ -2,6 +2,7 @@
 
 # Auth0 Exporter
 
+[![release pipeline](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/release.yml/badge.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/release.yml)
 [![Continuous Integration](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml/badge.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-yellowgreen.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE)
 [![Language](https://img.shields.io/badge/language-Go-blue.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter)

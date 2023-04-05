@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	swaggeroptions "github.com/auth0-simple-exporter/cmd/options/swagger"
-	"github.com/auth0-simple-exporter/pkg/swagger"
 	"github.com/spf13/cobra"
+	swaggeroptions "github.com/tfadeyi/auth0-simple-exporter/cmd/options/swagger"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/swagger"
 )
 
 func serveSwaggerCmd() *cobra.Command {

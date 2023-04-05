@@ -1,4 +1,4 @@
-module github.com/auth0-simple-exporter
+module github.com/tfadeyi/auth0-simple-exporter
 
 go 1.19
 
