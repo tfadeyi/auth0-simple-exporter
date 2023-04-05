@@ -1,0 +1,10 @@
+namespace: auth0-exporter
+resources:
+  - namespace.yaml
+  - deployment.yaml
+  - serviceaccount.yaml
+secretGenerator:
+  - name: auth0-credentials
+    namespace: auth0-exporter
+    envs:
+    - auth0-credentials=secrets/.env.secrets

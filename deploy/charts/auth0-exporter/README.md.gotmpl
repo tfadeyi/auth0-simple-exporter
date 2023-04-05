@@ -1,0 +1,34 @@
+{{ template "chart.header" . }}
+{{ template "chart.description" . }}
+
+{{ template "chart.versionBadge" . }}{{ template "chart.typeBadge" . }}{{ template "chart.appVersionBadge" . }}
+
+## Additional Information
+
+The Auth0 exporter helm chart installs the exporter on the target cluster, the collected metrics will exposed
+on the `/metrics` endpoint.
+
+## Installing the Chart
+
+### Deploying the chart
+
+#### Pass secret to chart as a value, it creates the secret
+    This shows a simple installation of the exporter helm chart, running with TLS disabled.
+    ```shell
+    $ export TOKEN="< auth0 management API static static token >"
+    $ export DOMAIN="< auth0 tenant domain >"
+    ```
+
+    ```shell
+    # Installing by passing in secret directly
+    helm upgrade --install --create-namespace -n auth0-exporter auth0-exporter \
+      https://tfadeyi.github.io/charts \
+      --set auth0.domain="$DOMAIN" --set auth0.token="$TOKEN" \
+     --set exporter.tls.disabled=true
+    ```
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+{{ template "helm-docs.versionFooter" . }}

@@ -1,0 +1,120 @@
+project_name: auth0-simple-exporter
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - id: "linux"
+    env:
+      - CGO_ENABLED=0
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X "pkg/version.version={{.Version}}" -X "pkg/version.commit={{.Commit}}" -X "pkg/version.date={{.Date}}"
+    binary: "{{ .ProjectName }}"
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+      - arm
+  - id: "darwin"
+    env:
+      - CGO_ENABLED=0
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X "pkg/version.version={{.Version}}" -X "pkg/version.commit={{.Commit}}" -X "pkg/version.date={{.Date}}"
+    binary: "{{ .ProjectName }}"
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+  - id: "windows"
+    env:
+      - CGO_ENABLED=0
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X "pkg/version.version={{.Version}}" -X "pkg/version.commit={{.Commit}}" -X "pkg/version.date={{.Date}}"
+    binary: "{{ .ProjectName }}"
+    goos:
+      - windows
+    goarch:
+      - amd64
+      - arm64
+archives:
+  - id: linux
+    format: tar.gz
+    name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
+    wrap_in_directory: true
+    builds:
+      - "linux"
+  - id: darwin
+    format: tar.gz
+    name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
+    wrap_in_directory: true
+    builds:
+      - "darwin"
+  - id: windows
+    format: tar.gz
+    name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
+    wrap_in_directory: true
+    builds:
+      - "windows"
+
+kos:
+  - working_dir: .
+    id: "linux"
+    build: "linux"
+    base_image: gcr.io/distroless/base:nonroot
+    # labels are going to be supported in goreleaser 1.16.3, waiting for the release
+    #    labels:
+    #      org.opencontainers.image.source: https://github.com/tfadeyi/auth0-simple-exporter
+    #      org.opencontainers.image.description: "Simple Prometheus exporter for Auth0 log events"
+    #      org.opencontainers.image.licenses: APACHE
+    #      org.opencontainers.image.title: "Auth0 Exporter"
+    #      org.opencontainers.image.vendor: ""
+    #      org.opencontainers.image.authors: "Oluwole Fadeyi"
+
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
+    tags:
+      - latest
+      - '{{.Tag}}'
+    sbom: cyclonedx
+    bare: true
+    base_import_paths: true
+
+checksum:
+  name_template: "{{ .ProjectName }}-SHA256SUMS"
+  algorithm: sha256
+release:
+  draft: true
+changelog:
+  use: github-native
+  skip: false
+
+signs:
+  - cmd: cosign
+    args:
+      - "sign-blob"
+      - "${artifact}"
+      - "--output-signature=${signature}"
+      - "--yes" # needed on cosign 2.0.0+
+    artifacts: checksum
+
+# the image signing doesn't seem to work when using ku to build the image
+#docker_signs:
+#  - cmd: cosign
+#    args:
+#      - "sign"
+#      - "ghcr.io/tfadeyi/auth0-simple-exporter@${digest}"
+#      - "--yes"
+#    artifacts: all
+#    output: true
