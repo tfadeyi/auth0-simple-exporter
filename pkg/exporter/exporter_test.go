@@ -7,14 +7,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/auth0-simple-exporter/pkg/client"
-	"github.com/auth0-simple-exporter/pkg/client/logs"
-	"github.com/auth0-simple-exporter/pkg/exporter/metrics"
 	"github.com/auth0/go-auth0/management"
 	"github.com/juju/errors"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/client"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/client/logs"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/exporter/metrics"
 )
 
 func TestExporter(t *testing.T) {

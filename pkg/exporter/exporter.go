@@ -5,16 +5,16 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/auth0-simple-exporter/pkg/client"
-	"github.com/auth0-simple-exporter/pkg/client/logs"
-	"github.com/auth0-simple-exporter/pkg/exporter/metrics"
-	"github.com/auth0-simple-exporter/pkg/logging"
 	"github.com/auth0/go-auth0/management"
 	"github.com/juju/errors"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/client"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/client/logs"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/exporter/metrics"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/logging"
 )
 
 type (
@@ -91,11 +91,11 @@ func New(ctx context.Context, opts ...Option) *exporter {
 
 // metrics godoc
 //
-// @Summary              Auth0 metrics in Prometheus format.
-// @Description.markdown metrics.md
-// @Produce              json
-// @Produce              text/plain; charset=utf-8
-// @Router               /metrics [get]
+//	@Summary				Auth0 metrics in Prometheus format.
+//	@Description.markdown	metrics.md
+//	@Produce				json
+//	@Produce				text/plain; charset=utf-8
+//	@Router					/metrics [get]
 func (e *exporter) metrics() echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		log := logging.LoggerFromEchoContext(ctx)
@@ -125,11 +125,11 @@ func (e *exporter) metrics() echo.HandlerFunc {
 
 // probe godoc
 //
-// @Summary     Exporter's own metrics for its operations.
-// @Description Exposes the exporter's own metrics, i.e: target_scrape_request_total.
-// @Produce     json
-// @Produce     text/plain; charset=utf-8
-// @Router      /probe [get]
+//	@Summary		Exporter's own metrics for its operations.
+//	@Description	Exposes the exporter's own metrics, i.e: target_scrape_request_total.
+//	@Produce		json
+//	@Produce		text/plain; charset=utf-8
+//	@Router			/probe [get]
 func (e *exporter) probe() echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		promhttp.HandlerFor(e.probeRegistry, promhttp.HandlerOpts{}).ServeHTTP(ctx.Response(), ctx.Request())

@@ -3,8 +3,8 @@ package exporter
 import (
 	"time"
 
-	"github.com/auth0-simple-exporter/pkg/client"
-	"github.com/auth0-simple-exporter/pkg/logging"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/client"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/logging"
 )
 
 func Client(client client.Client) Option {

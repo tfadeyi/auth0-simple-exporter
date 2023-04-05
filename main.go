@@ -30,8 +30,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/auth0-simple-exporter/cmd"
-	"github.com/auth0-simple-exporter/pkg/logging"
+	"github.com/tfadeyi/auth0-simple-exporter/cmd"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/logging"
 )
 
 func main() {

@@ -1,7 +1,7 @@
 package client
 
 import (
-	"github.com/auth0-simple-exporter/pkg/client/logs"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/client/logs"
 )
 
 type (

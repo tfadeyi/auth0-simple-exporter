@@ -27,8 +27,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/auth0-simple-exporter/pkg/logging"
 	"github.com/spf13/cobra"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/logging"
 )
 
 // rootCmd represents the base command when called without any subcommands
