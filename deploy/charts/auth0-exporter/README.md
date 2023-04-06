@@ -1,8 +1,10 @@
 # auth0-exporter
 
-Auth0 Prometheus exporter
+The helm chart for the auth0 prometheus exporter.
 
-![Version: 0.0.3](https://img.shields.io/badge/Version-0.0.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.3](https://img.shields.io/badge/AppVersion-0.0.3-informational?style=flat-square)
+[![Version](https://img.shields.io/github/v/release/tfadeyi/auth0-simple-exporter?color=blue&label=Version&sort=semver&style=flat-square)](https://img.shields.io/github/v/release/tfadeyi/auth0-simple-exporter?color=blue&label=Version&sort=semver&style=flat-square)
+![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+[![AppVersion](https://img.shields.io/github/v/release/tfadeyi/auth0-simple-exporter?color=blue&label=AppVersion&sort=semver&style=flat-square)](https://img.shields.io/github/v/release/tfadeyi/auth0-simple-exporter?color=blue&label=AppVersion&sort=semver&style=flat-square)
 
 ## Additional Information
 
@@ -16,16 +18,16 @@ on the `/metrics` endpoint.
 #### Pass secret to chart as a value, it creates the secret
     This shows a simple installation of the exporter helm chart, running with TLS disabled.
     ```shell
-    $ export TOKEN="< auth0 management API static static token >"
-    $ export DOMAIN="< auth0 tenant domain >"
+    export TOKEN="< auth0 management API static static token >"
+    export DOMAIN="< auth0 tenant domain >"
     ```
-
     ```shell
     # Installing by passing in secret directly
+    helm repo add auth0-exporter https://tfadeyi.github.io/auth0-simple-exporter
     helm upgrade --install --create-namespace -n auth0-exporter auth0-exporter \
-      https://tfadeyi.github.io/charts \
+      auth0-simple-exporter \
       --set auth0.domain="$DOMAIN" --set auth0.token="$TOKEN" \
-     --set exporter.tls.disabled=true
+      --set exporter.tls.disabled=true
     ```
 
 ## Values
@@ -58,8 +60,8 @@ on the `/metrics` endpoint.
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | string | `"100m"` |  |
 | resources.limits.memory | string | `"128Mi"` |  |
-| resources.requests.cpu | string | `"50m"` |  |
-| resources.requests.memory | string | `"64Mi"` |  |
+| resources.requests.cpu | string | `"100m"` |  |
+| resources.requests.memory | string | `"128Mi"` |  |
 | securityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | securityContext.readOnlyRootFilesystem | bool | `true` |  |
 | securityContext.runAsNonRoot | bool | `true` |  |

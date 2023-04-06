@@ -1,5 +1,5 @@
 basePath: /
-host: localhost:9301
+host: localhost:8080
 info:
   contact:
     name: Oluwole Fadeyi (@tfadeyi)
@@ -10,7 +10,7 @@ info:
     name: Apache 2.0
     url: https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE
   title: Auth0 simple exporter
-  version: 0.0.3
+  version: 0.0.2
 paths:
   /metrics:
     get:
