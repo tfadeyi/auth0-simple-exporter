@@ -16,7 +16,7 @@ import (
 )
 
 // @title       Auth0 simple exporter
-// @version     0.0.3
+// @version     0.0.2
 // @description A simple Prometheus exporter for Auth0 log [events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs),
 // @description which allows you to collect metrics from Auth0 and expose them in a format that can be consumed by Prometheus.
 
@@ -25,7 +25,7 @@ import (
 // @license.name Apache 2.0
 // @license.url  https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE
 
-// @host     localhost:9301
+// @host     localhost:8080
 // @BasePath /
 
 // Export configures the exporter Router and starts the server with the given configuration

@@ -2,12 +2,11 @@
 
 # Auth0 Exporter
 
-[![release pipeline](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/release.yml/badge.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/release.yml?event=push)
-[![Continuous Integration](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml/badge.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml)
+[![Continuous Integration](https://img.shields.io/github/actions/workflow/status/tfadeyi/auth0-simple-exporter/ci.yml?branch=main&style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-yellowgreen.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE)
-[![Language](https://img.shields.io/badge/language-Go-blue.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter)
-[![GitHub release](https://img.shields.io/badge/release-0.0.3-green.svg?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
-
+[![Language](https://img.shields.io/github/go-mod/go-version/tfadeyi/auth0-simple-exporter?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter)
+[![GitHub release](https://img.shields.io/github/v/release/tfadeyi/auth0-simple-exporter?color=green&style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
+[![Code size](https://img.shields.io/github/languages/code-size/tfadeyi/auth0-simple-exporter?color=orange&style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter)
 </div>
 
 ---
@@ -33,9 +32,14 @@ This Prometheus exporter aims to simplify this, making it easier to expose tenan
 Run exporter's container with TLS disabled.
 
 ```shell
-$ export TOKEN="< auth0 management API static static token >"
-$ export DOMAIN="< auth0 tenant domain >"
-$ docker run --network host -u $(id -u):$(id -g) -e TOKEN="$TOKEN" -e DOMAIN="$DOMAIN" ghcr.io/tfadeyi/auth0-simple-exporter:latest export --tls.disabled
+export TOKEN="< auth0 management API static static token >"
+export DOMAIN="< auth0 tenant domain >"
+
+curl -LJO https://github.com/tfadeyi/auth0-simple-exporter/releases/download/v0.0.1/auth0-simple-exporter-linux-amd64.tar.gz && \
+tar -xzvf auth0-simple-exporter-linux-amd64.tar.gz && \
+cd auth0-simple-exporter-linux-amd64
+
+./auth0-simple-exporter export --tls.disabled
 ```
 
 ## Installation
@@ -57,13 +61,14 @@ $ docker run --network host -u $(id -u):$(id -g) -e TOKEN="$TOKEN" -e DOMAIN="$D
 * ### Helm
     This shows a simple installation of the exporter helm chart, running with TLS disabled.
     ```shell
-    $ export TOKEN="< auth0 management API static static token >"
-    $ export DOMAIN="< auth0 tenant domain >"
+    export TOKEN="< auth0 management API static static token >"
+    export DOMAIN="< auth0 tenant domain >"
     ```
     ```shell
     # Installing by passing in secret directly
+    helm repo add auth0-exporter https://tfadeyi.github.io/auth0-simple-exporter
     helm upgrade --install --create-namespace -n auth0-exporter auth0-exporter \
-      https://tfadeyi.github.io/charts \
+      auth0-simple-exporter \
       --set auth0.domain="$DOMAIN" --set auth0.token="$TOKEN" \
       --set exporter.tls.disabled=true
     ```

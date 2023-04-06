@@ -1,7 +1,9 @@
 {{ template "chart.header" . }}
 {{ template "chart.description" . }}
 
-{{ template "chart.versionBadge" . }}{{ template "chart.typeBadge" . }}{{ template "chart.appVersionBadge" . }}
+[![Version](https://img.shields.io/github/v/release/tfadeyi/auth0-simple-exporter?color=blue&label=Version&sort=semver&style=flat-square)](https://img.shields.io/github/v/release/tfadeyi/auth0-simple-exporter?color=blue&label=Version&sort=semver&style=flat-square)
+{{ template "chart.typeBadge" . }}
+[![AppVersion](https://img.shields.io/github/v/release/tfadeyi/auth0-simple-exporter?color=blue&label=AppVersion&sort=semver&style=flat-square)](https://img.shields.io/github/v/release/tfadeyi/auth0-simple-exporter?color=blue&label=AppVersion&sort=semver&style=flat-square)
 
 ## Additional Information
 
@@ -15,16 +17,16 @@ on the `/metrics` endpoint.
 #### Pass secret to chart as a value, it creates the secret
     This shows a simple installation of the exporter helm chart, running with TLS disabled.
     ```shell
-    $ export TOKEN="< auth0 management API static static token >"
-    $ export DOMAIN="< auth0 tenant domain >"
+    export TOKEN="< auth0 management API static static token >"
+    export DOMAIN="< auth0 tenant domain >"
     ```
-
     ```shell
     # Installing by passing in secret directly
+    helm repo add auth0-exporter https://tfadeyi.github.io/auth0-simple-exporter
     helm upgrade --install --create-namespace -n auth0-exporter auth0-exporter \
-      https://tfadeyi.github.io/charts \
+      auth0-simple-exporter \
       --set auth0.domain="$DOMAIN" --set auth0.token="$TOKEN" \
-     --set exporter.tls.disabled=true
+      --set exporter.tls.disabled=true
     ```
 
 {{ template "chart.requirementsSection" . }}
