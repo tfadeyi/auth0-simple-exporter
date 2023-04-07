@@ -14,35 +14,45 @@ const (
 	// failedMfaSendVoiceCall Attempt to make Voice call for MFA failed.
 	failedMfaSendVoiceCall = "gd_send_voice_failure"
 
-	tenantSuccessSendVoiceCall = "tenant_success_send_voice_call_operations_total"
-	tenantFailedSendVoiceCall  = "tenant_failed_send_voice_call_operations_total"
+	tenantTotalSendVoiceCall  = "tenant_send_voice_call_operations_total"
+	tenantFailedSendVoiceCall = "tenant_failed_send_voice_call_operations_total"
 )
 
-func successSendVoiceCallCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func sendVoiceCallTotalCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantSuccessSendVoiceCall)),
-			Help: "The number of voice_call operations. (codes: gd_send_voice)",
-		}, []string{})
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantTotalSendVoiceCall),
+			Help: "The total number of voice_call operations.",
+		}, []string{"client"})
+	for _, client := range applications {
+		initCounter(m, client.GetName())
+	}
+	return m
 }
 
-func failSendVoiceCallCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func sendVoiceCallFailCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantFailedSendVoiceCall)),
-			Help: "The number of voice_call operations. (codes: gd_send_voice_failure)",
-		}, []string{})
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantFailedSendVoiceCall),
+			Help: "The number of failed voice_call operations. (codes: gd_send_voice_failure)",
+		}, []string{"client"})
+	for _, client := range applications {
+		initCounter(m, client.GetName())
+	}
+	return m
 }
 
 func sendVoiceCall(m *Metrics, log *management.Log) error {
 	if log == nil {
 		return errInvalidLogEvent
 	}
+
 	switch log.GetType() {
 	case failedMfaSendVoiceCall:
-		increaseCounter(m.failedVoiceCallCounter)
+		increaseCounter(m.voiceCallFailCounter, log.GetClientName())
+		increaseCounter(m.voiceCallTotalCounter, log.GetClientName())
 	case successMfaSendVoiceCall:
-		increaseCounter(m.successfulVoiceCallCounter)
+		increaseCounter(m.voiceCallTotalCounter, log.GetClientName())
 	default:
 		return errors.Annotate(errInvalidLogEvent, "send_voice_call event handler can't handle event")
 	}

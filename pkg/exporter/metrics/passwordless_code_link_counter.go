@@ -17,12 +17,17 @@ const (
 	tenantSendCodeLink = "tenant_send_code_link_total"
 )
 
-func passwordLessSendCodeLinkCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func passwordLessSendCodeLinkCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantSendCodeLink)),
-			Help: "The number of send_code_link operations. (codes: cls,cs)",
-		}, []string{"type"})
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantSendCodeLink),
+			Help: "The total number of send_code_link operations. (codes: cls,cs)",
+		}, []string{"type", "client"})
+	for _, client := range applications {
+		initCounter(m, "cls", client.GetName())
+		initCounter(m, "cs", client.GetName())
+	}
+	return m
 }
 
 func passwordLessSendCodeLink(m *Metrics, log *management.Log) error {
@@ -32,9 +37,9 @@ func passwordLessSendCodeLink(m *Metrics, log *management.Log) error {
 
 	switch log.GetType() {
 	case successSendCodeLink:
-		increaseCounter(m.passwordLessCodeLinkCounter, log.GetType())
+		increaseCounter(m.passwordLessCodeLinkCounter, log.GetType(), log.GetClientName())
 	case successSendCode:
-		increaseCounter(m.passwordLessCodeLinkCounter, log.GetType())
+		increaseCounter(m.passwordLessCodeLinkCounter, log.GetType(), log.GetClientName())
 	default:
 		return errors.Annotate(errInvalidLogEvent, "code_link event handler can't handle event")
 	}

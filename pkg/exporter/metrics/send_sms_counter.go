@@ -14,24 +14,32 @@ const (
 	// failureMfaSendFailure Attempt to send SMS for MFA failed.
 	failureMfaSendFailure = "gd_send_sms_failure"
 
-	tenantSuccessSendSMS = "tenant_success_send_sms_operations_total"
-	tenantFailedSendSMS  = "tenant_failed_send_sms_operations_total"
+	tenantTotalSendSMS  = "tenant_send_sms_operations_total"
+	tenantFailedSendSMS = "tenant_failed_send_sms_operations_total"
 )
 
-func successSendSMSOperationsMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func sendSMSTotalCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantSuccessSendSMS)),
-			Help: "The number of successful send_sms operations. (codes: gd_send_sms)",
-		}, []string{})
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantTotalSendSMS),
+			Help: "The total number of successful send_sms operations.",
+		}, []string{"client"})
+	for _, client := range applications {
+		initCounter(m, client.GetName())
+	}
+	return m
 }
 
-func failSendSMSOperationsMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func sendSMSFailCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantFailedSendSMS)),
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantFailedSendSMS),
 			Help: "The number of failed send_sms operations. (codes: gd_send_sms_failure)",
-		}, []string{})
+		}, []string{"client"})
+	for _, client := range applications {
+		initCounter(m, client.GetName())
+	}
+	return m
 }
 
 func sendSMS(m *Metrics, log *management.Log) error {
@@ -40,9 +48,10 @@ func sendSMS(m *Metrics, log *management.Log) error {
 	}
 	switch log.GetType() {
 	case successMfaSendSms:
-		increaseCounter(m.successfulSendSMSCounter)
+		increaseCounter(m.sendSMSTotalCounter, log.GetClientName())
 	case failureMfaSendFailure:
-		increaseCounter(m.failedSendSMSCounter)
+		increaseCounter(m.sendSMSFailCounter, log.GetClientName())
+		increaseCounter(m.sendSMSTotalCounter, log.GetClientName())
 	default:
 		return errors.Annotate(errInvalidLogEvent, "send_sms event handler can't handle event")
 	}

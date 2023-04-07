@@ -12,24 +12,32 @@ const (
 	failedSignupCode     = "fs"
 	successfulSignupCode = "ss"
 
-	tenantSuccessSignup = "tenant_successful_sign_up_total"
-	tenantFailedSignup  = "tenant_failed_sign_up_total"
+	tenantTotalSignup  = "tenant_sign_up_operations_total"
+	tenantFailedSignup = "tenant_failed_sign_up_operations_total"
 )
 
-func successSignupCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func signupTotalCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantSuccessSignup)),
-			Help: "The number of successful signup operations. (codes: ss)",
-		}, []string{})
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantTotalSignup),
+			Help: "The total number of signup operations.",
+		}, []string{"client"})
+	for _, client := range applications {
+		initCounter(m, client.GetName())
+	}
+	return m
 }
 
-func failSignupCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func signupFailCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantFailedSignup)),
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantFailedSignup),
 			Help: "The number of failed signup operations. (codes: fs)",
-		}, []string{})
+		}, []string{"client"})
+	for _, client := range applications {
+		initCounter(m, client.GetName())
+	}
+	return m
 }
 
 func signup(m *Metrics, log *management.Log) error {
@@ -39,9 +47,10 @@ func signup(m *Metrics, log *management.Log) error {
 
 	switch log.GetType() {
 	case failedSignupCode:
-		increaseCounter(m.failedSignupCounter)
+		increaseCounter(m.signupFailCounter, log.GetClientName())
+		increaseCounter(m.signupTotalCounter, log.GetClientName())
 	case successfulSignupCode:
-		increaseCounter(m.successfulSignupCounter)
+		increaseCounter(m.signupTotalCounter, log.GetClientName())
 	default:
 		return errors.Annotate(errInvalidLogEvent, "signup event handler can't handle event")
 	}

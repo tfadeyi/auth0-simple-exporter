@@ -12,24 +12,32 @@ const (
 	failedLogoutCode     = "flo"
 	successfulLogoutCode = "slo"
 
-	tenantSuccessfulLogoutOperations = "tenant_successful_logout_operations_total"
-	tenantFailedLogoutOperations     = "tenant_failed_logout_operations_total"
+	tenantFailedLogoutOperations = "tenant_failed_logout_operations_total"
+	tenantTotalLogoutOperations  = "tenant_logout_operations_total"
 )
 
-func successLogoutCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func logoutTotalCounterMetric(namespace, subsystem string, applicationClients []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantSuccessfulLogoutOperations)),
-			Help: "The number of successful logout operations. (codes: slo)",
-		}, []string{})
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantTotalLogoutOperations),
+			Help: "The total number of logout operations.",
+		}, []string{"client"})
+	for _, client := range applicationClients {
+		m.WithLabelValues(client.GetName())
+	}
+	return m
 }
 
-func failLogoutCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func logoutFailCounterMetric(namespace, subsystem string, applicationClients []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantFailedLogoutOperations)),
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantFailedLogoutOperations),
 			Help: "The number of failed logout operations. (codes: flo)",
-		}, []string{})
+		}, []string{"client"})
+	for _, client := range applicationClients {
+		m.WithLabelValues(client.GetName())
+	}
+	return m
 }
 
 func logout(m *Metrics, log *management.Log) error {
@@ -38,10 +46,11 @@ func logout(m *Metrics, log *management.Log) error {
 	}
 
 	switch log.GetType() {
-	case failedLogoutCode:
-		increaseCounter(m.failedLogoutCounter)
 	case successfulLogoutCode:
-		increaseCounter(m.successfulLogoutCounter)
+		increaseCounter(m.logoutTotalCounter, log.GetClientName())
+	case failedLogoutCode:
+		increaseCounter(m.logoutFailCounter, log.GetClientName())
+		increaseCounter(m.logoutTotalCounter, log.GetClientName())
 	default:
 		return errors.Annotate(errInvalidLogEvent, "logout event handler can't handle event")
 	}

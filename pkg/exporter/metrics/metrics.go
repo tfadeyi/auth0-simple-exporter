@@ -22,48 +22,48 @@ type (
 	// In case you add a metric here later, make sure to include it in the
 	// List method or you'll going to have a bad time.
 	Metrics struct {
-		successfulLoginCnt *prometheus.CounterVec
-		failedLoginCnt     *prometheus.CounterVec
+		loginTotalCounter *prometheus.CounterVec
+		loginFailCounter  *prometheus.CounterVec
 
-		successfulLogoutCounter *prometheus.CounterVec
-		failedLogoutCounter     *prometheus.CounterVec
+		logoutTotalCounter *prometheus.CounterVec
+		logoutFailCounter  *prometheus.CounterVec
 
-		successfulChangePasswordCounter *prometheus.CounterVec
-		failedChangePasswordCounter     *prometheus.CounterVec
+		signupTotalCounter *prometheus.CounterVec
+		signupFailCounter  *prometheus.CounterVec
 
-		successfulChangeEmailCounter *prometheus.CounterVec
-		failedChangeEmailCounter     *prometheus.CounterVec
+		changePasswordTotalCounter *prometheus.CounterVec
+		changePasswordFailCounter  *prometheus.CounterVec
 
-		successfulAPIOperationCounter *prometheus.CounterVec
-		failedAPIOperationCounter     *prometheus.CounterVec
+		changeEmailTotalCounter *prometheus.CounterVec
+		changeEmailFailCounter  *prometheus.CounterVec
 
-		successfulChangePhoneNumberCounter *prometheus.CounterVec
-		failedChangePhoneNumberCounter     *prometheus.CounterVec
+		apiOperationTotalCounter *prometheus.CounterVec
+		apiOperationFailCounter  *prometheus.CounterVec
 
-		successfulDeleteUserCounter *prometheus.CounterVec
-		failedDeleteUserCounter     *prometheus.CounterVec
+		changePhoneNumberTotalCounter *prometheus.CounterVec
+		changePhoneNumberFailCounter  *prometheus.CounterVec
+
+		deleteUserTotalCounter *prometheus.CounterVec
+		deleteUserFailCounter  *prometheus.CounterVec
 
 		passwordLessCodeLinkCounter *prometheus.CounterVec
 
-		successfulPostChangePasswordHookCounter *prometheus.CounterVec
-		failedPostChangePasswordHookCounter     *prometheus.CounterVec
+		postChangePasswordHookTotalCounter *prometheus.CounterVec
+		postChangePasswordHookFailCounter  *prometheus.CounterVec
 
-		successfulPushNotificationCounter *prometheus.CounterVec
-		failedPushNotificationCounter     *prometheus.CounterVec
+		pushNotificationTotalCounter *prometheus.CounterVec
+		pushNotificationFailCounter  *prometheus.CounterVec
 
 		successfulSendEmailCounter *prometheus.CounterVec
 
-		successfulSendSMSCounter *prometheus.CounterVec
-		failedSendSMSCounter     *prometheus.CounterVec
+		sendSMSTotalCounter *prometheus.CounterVec
+		sendSMSFailCounter  *prometheus.CounterVec
 
-		successfulSignupCounter *prometheus.CounterVec
-		failedSignupCounter     *prometheus.CounterVec
+		voiceCallTotalCounter *prometheus.CounterVec
+		voiceCallFailCounter  *prometheus.CounterVec
 
-		successfulVoiceCallCounter *prometheus.CounterVec
-		failedVoiceCallCounter     *prometheus.CounterVec
-
-		successfulChangePasswordRequestCounter *prometheus.CounterVec
-		failedChangePasswordRequestCounter     *prometheus.CounterVec
+		changePasswordRequestTotalCounter *prometheus.CounterVec
+		changePasswordRequestFailCounter  *prometheus.CounterVec
 	}
 
 	LogEventFunc func(m *Metrics, log *management.Log) error
@@ -71,51 +71,52 @@ type (
 
 // Creates and populates a new Metrics struct
 // This is where all the prometheus metrics, names and labels are specified
-func New(namespace, subsystem string) *Metrics {
-	return &Metrics{
-		successfulLoginCnt: successLoginCounterMetric(namespace, subsystem),
-		failedLoginCnt:     failLoginCounterMetric(namespace, subsystem),
+func New(namespace, subsystem string, applications []*management.Client) *Metrics {
+	m := &Metrics{
+		loginTotalCounter: loginTotalCounterMetric(namespace, subsystem, applications),
+		loginFailCounter:  loginFailCounterMetric(namespace, subsystem, applications),
 
-		successfulLogoutCounter: successLogoutCounterMetric(namespace, subsystem),
-		failedLogoutCounter:     failLogoutCounterMetric(namespace, subsystem),
+		logoutTotalCounter: logoutTotalCounterMetric(namespace, subsystem, applications),
+		logoutFailCounter:  logoutFailCounterMetric(namespace, subsystem, applications),
 
-		successfulChangePasswordCounter: successChangePasswordMetric(namespace, subsystem),
-		failedChangePasswordCounter:     failChangePasswordCounterMetric(namespace, subsystem),
+		signupTotalCounter: signupTotalCounterMetric(namespace, subsystem, applications),
+		signupFailCounter:  signupFailCounterMetric(namespace, subsystem, applications),
 
-		successfulChangeEmailCounter: successChangeEmailCounterMetric(namespace, subsystem),
-		failedChangeEmailCounter:     failedChangeEmailCounterMetric(namespace, subsystem),
+		changePasswordTotalCounter: changePasswordTotalCounterMetric(namespace, subsystem, applications),
+		changePasswordFailCounter:  changePasswordFailCounterMetric(namespace, subsystem, applications),
 
-		successfulAPIOperationCounter: successAPIOperationCounterMetric(namespace, subsystem),
-		failedAPIOperationCounter:     failAPIOperationCounterMetric(namespace, subsystem),
+		changeEmailTotalCounter: changeEmailTotalCounterMetric(namespace, subsystem, applications),
+		changeEmailFailCounter:  changeEmailFailCounterMetric(namespace, subsystem, applications),
 
-		successfulChangePhoneNumberCounter: successChangePhoneNumberMetric(namespace, subsystem),
-		failedChangePhoneNumberCounter:     failChangePhoneNumberMetric(namespace, subsystem),
+		apiOperationTotalCounter: APIOperationTotalCounterMetric(namespace, subsystem, applications),
+		apiOperationFailCounter:  APIOperationFailCounterMetric(namespace, subsystem, applications),
 
-		successfulDeleteUserCounter: successDeleteUserCounterMetric(namespace, subsystem),
-		failedDeleteUserCounter:     failDeleteUserCounterMetric(namespace, subsystem),
+		changePhoneNumberTotalCounter: changePhoneNumberTotalCounterMetric(namespace, subsystem, applications),
+		changePhoneNumberFailCounter:  changePhoneNumberFailCounterMetric(namespace, subsystem, applications),
 
-		passwordLessCodeLinkCounter: passwordLessSendCodeLinkCounterMetric(namespace, subsystem),
+		deleteUserTotalCounter: deleteUserTotalCounterMetric(namespace, subsystem, applications),
+		deleteUserFailCounter:  deleteUserFailCounterMetric(namespace, subsystem, applications),
 
-		successfulPostChangePasswordHookCounter: successPostChangePasswordHookCounterMetric(namespace, subsystem),
-		failedPostChangePasswordHookCounter:     failPostChangePasswordHookCounterMetric(namespace, subsystem),
+		passwordLessCodeLinkCounter: passwordLessSendCodeLinkCounterMetric(namespace, subsystem, applications),
 
-		successfulPushNotificationCounter: successPushNotificationCounterMetric(namespace, subsystem),
-		failedPushNotificationCounter:     failPushNotificationCounterMetric(namespace, subsystem),
+		postChangePasswordHookTotalCounter: postChangePasswordHookTotalCounterMetric(namespace, subsystem, applications),
+		postChangePasswordHookFailCounter:  postChangePasswordHookFailCounterMetric(namespace, subsystem, applications),
 
-		successfulSendEmailCounter: sendEmailCounterMetric(namespace, subsystem),
+		pushNotificationTotalCounter: pushNotificationTotalCounterMetric(namespace, subsystem, applications),
+		pushNotificationFailCounter:  pushNotificationFailCounterMetric(namespace, subsystem, applications),
 
-		successfulSendSMSCounter: successSendSMSOperationsMetric(namespace, subsystem),
-		failedSendSMSCounter:     failSendSMSOperationsMetric(namespace, subsystem),
+		successfulSendEmailCounter: sendEmailCounterMetric(namespace, subsystem, applications),
 
-		successfulSignupCounter: successSignupCounterMetric(namespace, subsystem),
-		failedSignupCounter:     failSignupCounterMetric(namespace, subsystem),
+		sendSMSTotalCounter: sendSMSTotalCounterMetric(namespace, subsystem, applications),
+		sendSMSFailCounter:  sendSMSFailCounterMetric(namespace, subsystem, applications),
 
-		successfulVoiceCallCounter: successSendVoiceCallCounterMetric(namespace, subsystem),
-		failedVoiceCallCounter:     failSendVoiceCallCounterMetric(namespace, subsystem),
+		voiceCallTotalCounter: sendVoiceCallTotalCounterMetric(namespace, subsystem, applications),
+		voiceCallFailCounter:  sendVoiceCallFailCounterMetric(namespace, subsystem, applications),
 
-		successfulChangePasswordRequestCounter: successChangePasswordRequestCounterMetric(namespace, subsystem),
-		failedChangePasswordRequestCounter:     failChangePasswordRequestCounterMetric(namespace, subsystem),
+		changePasswordRequestTotalCounter: changePasswordRequestTotalCounterMetric(namespace, subsystem, applications),
+		changePasswordRequestFailCounter:  changePasswordRequestFailCounterMetric(namespace, subsystem, applications),
 	}
+	return m
 }
 
 func (m *Metrics) logEventHandlers() []LogEventFunc {
@@ -139,49 +140,49 @@ func (m *Metrics) logEventHandlers() []LogEventFunc {
 	}
 }
 
-// Needed by echo-contrib so echo can register and collect these metrics
+// List is needed by the server so it can register and collect these metrics
 func (m *Metrics) List() []prometheus.Collector {
 	return []prometheus.Collector{
 		// ADD EVERY METRIC HERE!
-		m.successfulLoginCnt,
-		m.failedLoginCnt,
+		m.loginTotalCounter,
+		m.loginFailCounter,
 
-		m.successfulAPIOperationCounter,
-		m.failedAPIOperationCounter,
+		m.apiOperationTotalCounter,
+		m.apiOperationFailCounter,
 
-		m.successfulLogoutCounter,
-		m.failedLogoutCounter,
+		m.logoutTotalCounter,
+		m.logoutFailCounter,
 
-		m.successfulChangeEmailCounter,
-		m.failedChangeEmailCounter,
+		m.changeEmailTotalCounter,
+		m.changeEmailFailCounter,
 
-		m.successfulChangePasswordCounter,
-		m.failedChangePasswordCounter,
+		m.changePasswordTotalCounter,
+		m.changePasswordFailCounter,
 
-		m.successfulDeleteUserCounter,
-		m.failedDeleteUserCounter,
+		m.deleteUserTotalCounter,
+		m.deleteUserFailCounter,
 
-		m.successfulPostChangePasswordHookCounter,
-		m.failedPostChangePasswordHookCounter,
+		m.postChangePasswordHookTotalCounter,
+		m.postChangePasswordHookFailCounter,
 
-		m.successfulPushNotificationCounter,
-		m.failedPushNotificationCounter,
+		m.pushNotificationTotalCounter,
+		m.pushNotificationFailCounter,
 
 		m.passwordLessCodeLinkCounter,
 
 		m.successfulSendEmailCounter,
 
-		m.successfulSendSMSCounter,
-		m.failedSendSMSCounter,
+		m.sendSMSTotalCounter,
+		m.sendSMSFailCounter,
 
-		m.successfulSignupCounter,
-		m.failedSignupCounter,
+		m.signupTotalCounter,
+		m.signupFailCounter,
 
-		m.successfulVoiceCallCounter,
-		m.failedVoiceCallCounter,
+		m.voiceCallTotalCounter,
+		m.voiceCallFailCounter,
 
-		m.successfulChangePasswordRequestCounter,
-		m.failedChangePasswordRequestCounter,
+		m.changePasswordRequestTotalCounter,
+		m.changePasswordRequestFailCounter,
 	}
 }
 
@@ -200,12 +201,16 @@ func increaseCounter(m *prometheus.CounterVec, labels ...string) {
 	m.WithLabelValues(labels...).Inc()
 }
 
+func initCounter(m *prometheus.CounterVec, labels ...string) {
+	m.WithLabelValues(labels...)
+}
+
 // This will push your metrics object into every request context for later use
-func Middleware(next echo.HandlerFunc) echo.HandlerFunc {
+func Middleware(next echo.HandlerFunc, applicationClients []*management.Client) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		namespace := c.Get(namespaceCtxKey).(string)
 		subsystem := c.Get(subsystemCtxKey).(string)
-		c.Set(ListCtxKey, New(namespace, subsystem))
+		c.Set(ListCtxKey, New(namespace, subsystem, applicationClients))
 		return next(c)
 	}
 }

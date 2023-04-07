@@ -9,38 +9,48 @@ import (
 )
 
 const (
-	failChangePassword    = "fcp"
-	successChangePassword = "sce"
+	failedChangePassword     = "fcp"
+	successfulChangePassword = "sce"
 
-	tenantSuccessChangePassword = "tenant_success_change_password_total"
-	tenantFailedChangePassword  = "tenant_failed_change_password_total"
+	tenantTotalChangePassword  = "tenant_change_password_total"
+	tenantFailedChangePassword = "tenant_failed_change_password_total"
 )
 
-func successChangePasswordMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func changePasswordTotalCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantSuccessChangePassword)),
-			Help: "The number of successful change user password operations on the tenant. (codes: scp)",
-		}, []string{})
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantTotalChangePassword),
+			Help: "The total number of change_user_password operations on the tenant. (codes: scp,fcp)",
+		}, []string{"client"})
+	for _, client := range applications {
+		m.WithLabelValues(client.GetName())
+	}
+	return m
 }
 
-func failChangePasswordCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func changePasswordFailCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantFailedChangePassword)),
-			Help: "The number of failed change user password operations on the tenant. (codes: fcp)",
-		}, []string{})
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantFailedChangePassword),
+			Help: "The number of failed change_user_password operations on the tenant. (codes: fcp)",
+		}, []string{"client"})
+	for _, client := range applications {
+		m.WithLabelValues(client.GetName())
+	}
+	return m
 }
 
 func changePassword(m *Metrics, log *management.Log) error {
 	if log == nil {
 		return errInvalidLogEvent
 	}
+
 	switch log.GetType() {
-	case failChangePassword:
-		increaseCounter(m.successfulLoginCnt)
-	case successChangePassword:
-		increaseCounter(m.successfulLoginCnt)
+	case successfulChangePassword:
+		increaseCounter(m.changePasswordTotalCounter, log.GetClientName())
+	case failedChangePassword:
+		increaseCounter(m.changePasswordFailCounter, log.GetClientName())
+		increaseCounter(m.changePasswordTotalCounter, log.GetClientName())
 	default:
 		return errors.Annotate(errInvalidLogEvent, "change user password operations event handler can't handle event")
 	}

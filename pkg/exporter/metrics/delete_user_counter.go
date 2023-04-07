@@ -12,35 +12,45 @@ const (
 	failedDeleteUserOperation     = "fdu"
 	successfulDeleteUserOperation = "du"
 
-	tenantSuccessDeleteUser = "tenant_success_delete_user_total"
-	tenantFailedDeleteUser  = "tenant_failed_delete_user_total"
+	tenantTotalDeleteUser  = "tenant_delete_user_total"
+	tenantFailedDeleteUser = "tenant_failed_delete_user_total"
 )
 
-func successDeleteUserCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func deleteUserTotalCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantSuccessDeleteUser)),
-			Help: "The number of successful delete user operations on the tenant. (codes: du)",
-		}, []string{})
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantTotalDeleteUser),
+			Help: "The total number of delete user operations on the tenant. (codes: du,fdu)",
+		}, []string{"client"})
+	for _, client := range applications {
+		m.WithLabelValues(client.GetName())
+	}
+	return m
 }
 
-func failDeleteUserCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func deleteUserFailCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantFailedDeleteUser)),
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantFailedDeleteUser),
 			Help: "The number of failed delete user operations on the tenant. (codes: fdu)",
-		}, []string{})
+		}, []string{"client"})
+	for _, client := range applications {
+		m.WithLabelValues(client.GetName())
+	}
+	return m
 }
 
 func deleteUser(m *Metrics, log *management.Log) error {
 	if log == nil {
 		return errInvalidLogEvent
 	}
+
 	switch log.GetType() {
-	case failedDeleteUserOperation:
-		increaseCounter(m.failedDeleteUserCounter)
 	case successfulDeleteUserOperation:
-		increaseCounter(m.successfulDeleteUserCounter)
+		increaseCounter(m.deleteUserTotalCounter, log.GetClientName())
+	case failedDeleteUserOperation:
+		increaseCounter(m.deleteUserFailCounter, log.GetClientName())
+		increaseCounter(m.deleteUserTotalCounter, log.GetClientName())
 	default:
 		return errors.Annotate(errInvalidLogEvent, "delete user operations event handler can't handle event")
 	}

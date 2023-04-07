@@ -84,11 +84,12 @@ func TestExporter(t *testing.T) {
 	})
 	t.Run("fail exporter collect if error occurs in auth0 client", func(t *testing.T) {
 		ctx := context.Background()
-		client, err := client.NewWithOpts(client.Options{Client: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
-			return nil, errors.New("some error")
-		}}})
-		require.NoError(t, err)
-
+		client := client.Client{
+			Log: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
+				return nil, errors.New("some error")
+			}},
+			App: nil,
+		}
 		current := time.Now()
 		e := exporter{
 			startTime: current,
@@ -99,10 +100,12 @@ func TestExporter(t *testing.T) {
 	})
 	t.Run("successful execute exporter collect if auth0 client returns a empty log list", func(t *testing.T) {
 		ctx := context.Background()
-		client, err := client.NewWithOpts(client.Options{Client: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
-			return []*management.Log{}, nil
-		}}})
-		require.NoError(t, err)
+		client := client.Client{
+			Log: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
+				return []*management.Log{}, nil
+			}},
+			App: nil,
+		}
 		current := time.Now()
 		e := exporter{
 			startTime: current,
@@ -113,10 +116,12 @@ func TestExporter(t *testing.T) {
 	})
 	t.Run("fail exporter collect if auth0 client didn't return a list of logs", func(t *testing.T) {
 		ctx := context.Background()
-		client, err := client.NewWithOpts(client.Options{Client: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
-			return []string{}, nil
-		}}})
-		require.NoError(t, err)
+		client := client.Client{
+			Log: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
+				return []string{}, nil
+			}},
+			App: nil,
+		}
 		current := time.Now()
 		e := exporter{
 			startTime: current,
@@ -132,57 +137,69 @@ func TestExporterHandler(t *testing.T) {
 
 	t.Run("don't fail if API rate limit is reached", func(t *testing.T) {
 		ctx := context.Background()
-		client, err := client.NewWithOpts(client.Options{Client: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
-			return []string{}, logs.ErrAPIRateLimitReached
-		}}})
-		require.NoError(t, err)
+		client := client.Client{
+			Log: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
+				return []string{}, logs.ErrAPIRateLimitReached
+			}},
+			App: nil,
+		}
 		current := time.Now()
 		exporter := New(ctx, From(current), Client(client))
 
 		metricsServer := echo.New()
-		metricsServer.Use(metrics.Middleware)
+		metricsServer.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+			return metrics.Middleware(next, []*management.Client{})
+		})
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		rec := httptest.NewRecorder()
 		echoCtx := metricsServer.NewContext(req, rec)
-		echoCtx.Set(metrics.ListCtxKey, metrics.New(exporter.namespace, exporter.subsystem))
+		echoCtx.Set(metrics.ListCtxKey, metrics.New(exporter.namespace, exporter.subsystem, []*management.Client{}))
 
 		require.NoError(t, exporter.metrics()(echoCtx))
 		assert.Equal(t, http.StatusOK, rec.Code)
 	})
 	t.Run("successful request if the auth0 client returns 0 items", func(t *testing.T) {
 		ctx := context.Background()
-		client, err := client.NewWithOpts(client.Options{Client: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
-			return []*management.Log{}, nil
-		}}})
-		require.NoError(t, err)
+		client := client.Client{
+			Log: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
+				return []*management.Log{}, nil
+			}},
+			App: nil,
+		}
 		current := time.Now()
 		exporter := New(ctx, From(current), Client(client))
 
 		metricsServer := echo.New()
-		metricsServer.Use(metrics.Middleware)
+		metricsServer.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+			return metrics.Middleware(next, []*management.Client{})
+		})
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		rec := httptest.NewRecorder()
 		echoCtx := metricsServer.NewContext(req, rec)
-		echoCtx.Set(metrics.ListCtxKey, metrics.New(exporter.namespace, exporter.subsystem))
+		echoCtx.Set(metrics.ListCtxKey, metrics.New(exporter.namespace, exporter.subsystem, []*management.Client{}))
 
 		require.NoError(t, exporter.metrics()(echoCtx))
 		assert.Equal(t, http.StatusOK, rec.Code)
 	})
 	t.Run("fail if Auth0 client errors with an unexpected error", func(t *testing.T) {
 		ctx := context.Background()
-		client, err := client.NewWithOpts(client.Options{Client: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
-			return []string{}, errors.New("unexpected error")
-		}}})
-		require.NoError(t, err)
+		client := client.Client{
+			Log: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
+				return []string{}, errors.New("unexpected error")
+			}},
+			App: nil,
+		}
 		current := time.Now()
 		exporter := New(ctx, From(current), Client(client))
 
 		metricsServer := echo.New()
-		metricsServer.Use(metrics.Middleware)
+		metricsServer.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+			return metrics.Middleware(next, []*management.Client{})
+		})
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		rec := httptest.NewRecorder()
 		echoCtx := metricsServer.NewContext(req, rec)
-		echoCtx.Set(metrics.ListCtxKey, metrics.New(exporter.namespace, exporter.subsystem))
+		echoCtx.Set(metrics.ListCtxKey, metrics.New(exporter.namespace, exporter.subsystem, []*management.Client{}))
 
 		require.Error(t, exporter.metrics()(echoCtx))
 	})

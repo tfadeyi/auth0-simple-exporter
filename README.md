@@ -113,28 +113,39 @@ Flags:
 
 ## Example queries
 
-Monitor the percentage of successful logins:
+Monitor the percentage of failed logins in the Auth0 tenant:
 
 ```
-(tenant_successful_login_operations_total / (on job,instance) (tenant_successful_login_operations_total + tenant_failed_login_operations_total)) * 100
+(tenant_failed_login_operations_total / tenant_login_operations_total) * 100
 ```
 
-Monitor the current logged-in users:
+Monitor the number current logged-in users for a client application in Auth0 tenant:
 
 ```
-(on job,instance) (tenant_successful_login_operations_total - tenant_successful_logout_operations_total)
+(tenant_login_operations_total{client="ChatGPT"} - tenant_failed_login_operations_total{client="ChatGPT"}) - (tenant_logout_operations_total{client="ChatGPT"} - tenant_failed_logout_operations_total{client="ChatGPT"})
 ```
 
 ## Metrics
 
-| Metric                                           | Meaning                                                  | Labels |
-|--------------------------------------------------|----------------------------------------------------------|--------|
-| `tenant_successful_sign_up_total`           | The number of successful signup operations. (codes: ss)  |        |
-| `tenant_failed_sign_up_total`               | The number of failed signup operations. (codes: fs)      ||
-| `tenant_successful_login_operations_total`  | The number of successful login operations. (codes: s)    |        |
-| `tenant_failed_login_operations_total`      | The number of failed login operations. (codes: f,fp,fu)  | code   |
-| `tenant_successful_logout_operations_total` | The number of successful logout operations. (codes: slo) |        |
-| `tenant_failed_logout_operations_total`    | The number of failed logout operations. (codes: flo)     |        |
+### Signup
+| Metric                                   | Meaning                                             | Labels |
+|------------------------------------------|-----------------------------------------------------|--------|
+| `tenant_sign_up_operations_total`        | The total number of signup operations.              | client |
+| `tenant_failed_sign_up_operations_total` | The number of failed signup operations. (codes: fs) | client |
+
+### Login
+| Metric                                 | Meaning                                                 | Labels |
+|----------------------------------------|---------------------------------------------------------|--------|
+| `tenant_login_operations_total`        | The total number of login operations.                   | client |
+| `tenant_failed_login_operations_total` | The number of failed login operations. (codes: f,fp,fu) | client |
+
+### Logout
+| Metric                                  | Meaning                                              | Labels |
+|-----------------------------------------|------------------------------------------------------|--------|
+| `tenant_logout_operations_total`        | The total number of logout operations.               | client |
+| `tenant_failed_logout_operations_total` | The number of failed logout operations. (codes: flo) | client |
+
+**The other exposed metrics can be found [here](./docs/metrics.md).**
 
 ## Known Issues
 
