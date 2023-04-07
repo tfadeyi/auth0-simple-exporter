@@ -1,6 +1,7 @@
 name: Test and Lint
 on:
   push:
+    branches:
 permissions:
   contents: read
 
