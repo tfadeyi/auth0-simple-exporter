@@ -24,8 +24,7 @@ on the `/metrics` endpoint.
     ```shell
     # Installing by passing in secret directly
     helm repo add auth0-exporter https://tfadeyi.github.io/auth0-simple-exporter
-    helm upgrade --install --create-namespace -n auth0-exporter auth0-exporter \
-      auth0-simple-exporter \
+    helm upgrade --install --create-namespace -n auth0-exporter auth0-exporter/auth0-exporter \
       --set auth0.domain="$DOMAIN" --set auth0.token="$TOKEN" \
       --set exporter.tls.disabled=true
     ```
