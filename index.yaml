@@ -1,0 +1,20 @@
+apiVersion: v1
+entries:
+  auth0-exporter:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2023-04-07T00:17:52.060386773Z"
+    description: The helm chart for the auth0 prometheus exporter.
+    digest: 3a0c312d87735cb31d1d760c5abc9554d60a12632e8552d4fa2e2f002f3e9bc1
+    home: https://github.com/tfadeyi/auth0-simple-exporter
+    maintainers:
+    - name: Oluwole Fadeyi
+      url: https://oluwole.fadey.io/
+    name: auth0-exporter
+    sources:
+    - https://github.com/tfadeyi/auth0-simple-exporter
+    type: application
+    urls:
+    - https://github.com/tfadeyi/auth0-simple-exporter/releases/download/auth0-exporter-0.0.1/auth0-exporter-0.0.1.tgz
+    version: 0.0.1
+generated: "2023-04-07T00:17:52.060396873Z"
