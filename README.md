@@ -7,6 +7,7 @@
 [![Language](https://img.shields.io/github/go-mod/go-version/tfadeyi/auth0-simple-exporter?style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter)
 [![GitHub release](https://img.shields.io/github/v/release/tfadeyi/auth0-simple-exporter?color=green&style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
 [![Code size](https://img.shields.io/github/languages/code-size/tfadeyi/auth0-simple-exporter?color=orange&style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tfadeyi/auth0-simple-exporter?style=flat-square)](https://goreportcard.com/report/github.com/tfadeyi/auth0-simple-exporter)
 </div>
 
 ---
