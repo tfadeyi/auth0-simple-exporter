@@ -1,8 +1,10 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
+	"time"
 
+	"github.com/juju/errors"
+	"github.com/spf13/cobra"
 	exporteroptions "github.com/tfadeyi/auth0-simple-exporter/cmd/options/exporter"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/exporter"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/logging"
@@ -23,6 +25,10 @@ func serveExporterCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			log := logging.NewPromLoggerWithOpts(opts.LogLevel)
+			from, err := time.Parse("2006-01-02", opts.FromFetchTime)
+			if err != nil {
+				return errors.Annotate(err, "failed to parse value in --auth0.from flag")
+			}
 
 			e := exporter.New(
 				ctx,
@@ -39,6 +45,7 @@ func serveExporterCmd() *cobra.Command {
 				exporter.TLSHosts(opts.TLSHosts),
 				exporter.ProbeAddr(opts.ProbeAddr),
 				exporter.ProbePort(opts.ProbePort),
+				exporter.From(from),
 				exporter.Logger(log),
 			)
 			return e.Export()

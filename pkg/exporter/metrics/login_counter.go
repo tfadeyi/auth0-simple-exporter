@@ -9,43 +9,55 @@ import (
 )
 
 const (
-	failedLogin                      = "f"
 	successfulLogin                  = "s"
+	failedLogin                      = "f"
 	failedLoginWithIncorrectPassword = "fp"
 	failedLoginWithIncorrectUsername = "fu"
 
-	tenantSuccessfulLogin = "tenant_successful_login_operations_total"
-	tenantFailedLogin     = "tenant_failed_login_operations_total"
+	tenantFailedLogin = "tenant_failed_login_operations_total"
+	tenantTotalLogin  = "tenant_login_operations_total"
 )
 
-func successLoginCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func loginTotalCounterMetric(namespace, subsystem string, applicationClients []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, tenantSuccessfulLogin),
-			Help: "The number of successful login operations. (codes: s)",
-		}, []string{})
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantTotalLogin),
+			Help: "The total number of login operations.",
+		}, []string{"client"})
+	for _, client := range applicationClients {
+		m.WithLabelValues(client.GetName())
+	}
+	return m
 }
-func failLoginCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func loginFailCounterMetric(namespace, subsystem string, applicationClients []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: prometheus.BuildFQName(namespace, subsystem, tenantFailedLogin),
 			Help: "The number of failed login operations. (codes: f,fp,fu)",
-		}, []string{"code"})
+		}, []string{"client"})
+	for _, client := range applicationClients {
+		m.WithLabelValues(client.GetName())
+	}
+	return m
 }
 
 func login(m *Metrics, log *management.Log) error {
 	if log == nil {
 		return errInvalidLogEvent
 	}
+
 	switch log.GetType() {
 	case successfulLogin:
-		increaseCounter(m.successfulLoginCnt)
+		increaseCounter(m.loginTotalCounter, log.GetClientName())
 	case failedLogin:
-		increaseCounter(m.failedLoginCnt, log.GetType())
+		increaseCounter(m.loginFailCounter, log.GetClientName())
+		increaseCounter(m.loginTotalCounter, log.GetClientName())
 	case failedLoginWithIncorrectPassword:
-		increaseCounter(m.failedLoginCnt, log.GetType())
+		increaseCounter(m.loginFailCounter, log.GetClientName())
+		increaseCounter(m.loginTotalCounter, log.GetClientName())
 	case failedLoginWithIncorrectUsername:
-		increaseCounter(m.failedLoginCnt, log.GetType())
+		increaseCounter(m.loginFailCounter, log.GetClientName())
+		increaseCounter(m.loginTotalCounter, log.GetClientName())
 	default:
 		return errors.Annotate(errInvalidLogEvent, "login event handler can't handle event")
 	}

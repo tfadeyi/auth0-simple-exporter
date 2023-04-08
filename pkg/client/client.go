@@ -1,6 +1,7 @@
 package client
 
 import (
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/client/applications"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/client/logs"
 )
 
@@ -11,24 +12,25 @@ type (
 		Token        string
 		ClientSecret string
 		ClientID     string
-		// Client, if set it overrides the auth0 client used in the wrapper
-		Client logs.Client
 	}
 
 	Client struct {
-		logs.Client
+		Log logs.Client
+		App applications.Client
 	}
 )
 
 // NewWithOpts creates a new instance of the client using the given options
 func NewWithOpts(opts Options) (Client, error) {
-	if opts.Client != nil {
-		return Client{Client: opts.Client}, nil
-	}
 	// create client to retrieve logs
 	c, err := logs.New(opts.Domain, opts.ClientID, opts.ClientSecret, opts.Token)
 	if err != nil {
 		return Client{}, err
 	}
-	return Client{Client: c}, nil
+	// create client to retrieve apps
+	appClient, err := applications.New(opts.Domain, opts.ClientID, opts.ClientSecret, opts.Token)
+	if err != nil {
+		return Client{}, err
+	}
+	return Client{Log: c, App: appClient}, nil
 }

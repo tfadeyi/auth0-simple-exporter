@@ -6,6 +6,8 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
+	"github.com/auth0/go-auth0/management"
+	"github.com/juju/errors"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/exporter/metrics"
@@ -33,15 +35,27 @@ func (e *exporter) Export() error {
 	log := e.logger
 	log.Info("initialising exporter", "build", version.BuildInfo())
 
-	server := echo.New()
+	// collect all the auth0 apps/clients, this is required for initialising the prometheus counter metrics to zero
+	// all labels must be known before.
+	list, err := e.client.App.List(e.ctx)
+	if err != nil {
+		return errors.Annotate(err, "error fetching the auth0 tenant client applications.")
+	}
+	applications, ok := list.([]*management.Client)
+	if !ok {
+		return errors.New("auth0 client applications fetch didn't return the expected list of applications client type")
+	}
 
+	server := echo.New()
 	server.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return metrics.NamespaceMiddleware(next, e.namespace)
 	})
 	server.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return metrics.SubsystemMiddleware(next, e.subsystem)
 	})
-	server.Use(metrics.Middleware)
+	server.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return metrics.Middleware(next, applications)
+	})
 	server.Use(middleware.Recover())
 	server.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return logging.Middleware(next, log)

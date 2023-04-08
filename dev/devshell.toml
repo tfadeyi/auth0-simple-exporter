@@ -8,9 +8,9 @@ The exporter code is already running in the background and reachable by promethe
  * {50}exporter{reset}: http://localhost:9301/metrics
  * {30}go ref{reset}: http://localhost:1313/pkg/github.com/auth0-simple-exporter
  * {10}swagger{reset}: http://localhost:1314/swagger/index.html
- * {1}prometheus{reset}: http://localhost:9090/ (run prom command)
+ * {1}prometheus{reset}: http://localhost:9090/ (run {1}prom{reset} command in your terminal)
 
-\n REMEMBER TO RUN {1}off{reset} BEFORE using CTRL-D!
+\n REMEMBER TO RUN {1}done{reset} BEFORE using CTRL-D!
 \n Use CTRL-D to leave the shell
 """
 
@@ -22,7 +22,7 @@ packages = [
 ]
 
 # Shell env commands
-startup.kill.text = "alias off='pkill -f tmux'"
+startup.kill.text = "alias done='pkill -f tmux'"
 startup.sessions.text = "alias sessions='tmux list-session'"
 # Profiling & Testing
 startup.heap.text = "alias heap='go tool pprof'"

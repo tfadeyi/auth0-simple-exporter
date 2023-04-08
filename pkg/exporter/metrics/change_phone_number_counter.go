@@ -12,35 +12,45 @@ const (
 	failedChangePhoneNumber     = "fcpn"
 	successfulChangePhoneNumber = "scpn"
 
-	tenantSuccessChangePhoneNumber = "tenant_success_change_phone_number_total"
-	tenantFailedChangePhoneNumber  = "tenant_failed_change_phone_number_total"
+	tenantTotalChangePhoneNumber  = "tenant_change_phone_number_total"
+	tenantFailedChangePhoneNumber = "tenant_failed_change_phone_number_total"
 )
 
-func successChangePhoneNumberMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func changePhoneNumberTotalCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantSuccessChangePhoneNumber)),
-			Help: "The number of successful change phone number operations on the tenant. (codes: scpn)",
-		}, []string{})
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantTotalChangePhoneNumber),
+			Help: "The total number of change_phone_number operations on the tenant. (codes: scpn,fcpn)",
+		}, []string{"client"})
+	for _, client := range applications {
+		m.WithLabelValues(client.GetName())
+	}
+	return m
 }
 
-func failChangePhoneNumberMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func changePhoneNumberFailCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantFailedChangePhoneNumber)),
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantFailedChangePhoneNumber),
 			Help: "The number of failed change phone number operations on the tenant. (codes: fcpn)",
-		}, []string{})
+		}, []string{"client"})
+	for _, client := range applications {
+		m.WithLabelValues(client.GetName())
+	}
+	return m
 }
 
 func changePhoneNumber(m *Metrics, log *management.Log) error {
 	if log == nil {
 		return errInvalidLogEvent
 	}
+
 	switch log.GetType() {
-	case failedChangePhoneNumber:
-		increaseCounter(m.failedChangePhoneNumberCounter)
 	case successfulChangePhoneNumber:
-		increaseCounter(m.successfulChangePhoneNumberCounter)
+		increaseCounter(m.changePhoneNumberTotalCounter, log.GetClientName())
+	case failedChangePhoneNumber:
+		increaseCounter(m.changePhoneNumberFailCounter, log.GetClientName())
+		increaseCounter(m.changePhoneNumberTotalCounter, log.GetClientName())
 	default:
 		return errors.Annotate(errInvalidLogEvent, "change phone number operations event handler can't handle event")
 	}

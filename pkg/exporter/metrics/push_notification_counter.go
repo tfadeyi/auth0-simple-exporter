@@ -14,24 +14,32 @@ const (
 	// failureMfaPushNotification Push notification for MFA failed.
 	failureMfaPushNotification = "gd_send_pn_failure"
 
-	tenantSuccessPushNotification = "tenant_success_push_notification_total"
-	tenantFailPushNotification    = "tenant_fail_push_notification_total"
+	tenantTotalPushNotification = "tenant_push_notification_total"
+	tenantFailPushNotification  = "tenant_failed_push_notification_total"
 )
 
-func successPushNotificationCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func pushNotificationTotalCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantSuccessPushNotification)),
-			Help: "The number of successful push_notification operations. (codes: gd_send_pn)",
-		}, []string{})
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantTotalPushNotification),
+			Help: "The total number of push_notification operations. (codes: gd_send_pn,gd_send_pn_failure)",
+		}, []string{"client"})
+	for _, client := range applications {
+		initCounter(m, client.GetName())
+	}
+	return m
 }
 
-func failPushNotificationCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func pushNotificationFailCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantFailPushNotification)),
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantFailPushNotification),
 			Help: "The number of failed push_notification operations. (codes: gd_send_pn_failure)",
-		}, []string{})
+		}, []string{"client"})
+	for _, client := range applications {
+		initCounter(m, client.GetName())
+	}
+	return m
 }
 
 func pushNotification(m *Metrics, log *management.Log) error {
@@ -40,10 +48,11 @@ func pushNotification(m *Metrics, log *management.Log) error {
 	}
 
 	switch log.GetType() {
-	case failureMfaPushNotification:
-		increaseCounter(m.failedPushNotificationCounter)
 	case successfulMfaPushNotification:
-		increaseCounter(m.successfulPushNotificationCounter)
+		increaseCounter(m.pushNotificationTotalCounter, log.GetClientName())
+	case failureMfaPushNotification:
+		increaseCounter(m.pushNotificationFailCounter, log.GetClientName())
+		increaseCounter(m.pushNotificationTotalCounter, log.GetClientName())
 	default:
 		return errors.Annotate(errInvalidLogEvent, "push_notification event handler can't handle event")
 	}

@@ -12,24 +12,32 @@ const (
 	failedChangeEmail     = "fce"
 	successfulChangeEmail = "sce"
 
-	tenantSuccessChangeEmail = "tenant_success_change_email_total"
-	tenantFailedChangeEmail  = "tenant_failed_change_email_total"
+	tenantTotalChangeEmail  = "tenant_change_email_total"
+	tenantFailedChangeEmail = "tenant_failed_change_email_total"
 )
 
-func successChangeEmailCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func changeEmailTotalCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantSuccessChangeEmail)),
-			Help: "The number of successful change user email operations on the tenant. (codes: sce)",
-		}, []string{})
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantTotalChangeEmail),
+			Help: "The total number of change_user_email operations on the tenant. (codes: sce,fce)",
+		}, []string{"client"})
+	for _, client := range applications {
+		m.WithLabelValues(client.GetName())
+	}
+	return m
 }
 
-func failedChangeEmailCounterMetric(namespace, subsystem string) *prometheus.CounterVec {
-	return prometheus.NewCounterVec(
+func changeEmailFailCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
+	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
-			Name: prometheus.BuildFQName(namespace, subsystem, string(tenantFailedChangeEmail)),
+			Name: prometheus.BuildFQName(namespace, subsystem, tenantFailedChangeEmail),
 			Help: "The number of failed change user email operations on the tenant. (codes: fce)",
-		}, []string{})
+		}, []string{"client"})
+	for _, client := range applications {
+		m.WithLabelValues(client.GetName())
+	}
+	return m
 }
 
 func changeEmail(m *Metrics, log *management.Log) error {
@@ -38,10 +46,11 @@ func changeEmail(m *Metrics, log *management.Log) error {
 	}
 
 	switch log.GetType() {
-	case failedChangeEmail:
-		increaseCounter(m.failedChangeEmailCounter)
 	case successfulChangeEmail:
-		increaseCounter(m.successfulChangeEmailCounter)
+		increaseCounter(m.changeEmailTotalCounter, log.GetClientName())
+	case failedChangeEmail:
+		increaseCounter(m.changeEmailFailCounter, log.GetClientName())
+		increaseCounter(m.changeEmailTotalCounter, log.GetClientName())
 	default:
 		return errors.Annotate(errInvalidLogEvent, "change user email operations event handler can't handle event")
 	}

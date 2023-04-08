@@ -8,7 +8,6 @@ import (
 	"github.com/auth0/go-auth0/management"
 	"github.com/juju/errors"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/client"
@@ -139,19 +138,19 @@ func (e *exporter) probe() echo.HandlerFunc {
 
 // collect collects all logs from Auth0 using startTime as the initial checkpoint
 func (e *exporter) collect(ctx context.Context, m *metrics.Metrics) error {
-	list, err := e.client.List(ctx, e.startTime)
+	list, err := e.client.Log.List(ctx, e.startTime)
 	if err != nil {
 		return errors.Annotate(err, "error fetching the log events from Auth0")
 	}
 
 	tenantLogEvents, ok := list.([]*management.Log)
 	if !ok {
-		return errors.New("client FetchAll didn't return the expect list types, expected Log type")
+		return errors.New("auth0 client log fetch didn't return the expected list of Log type")
 	}
 
 	for _, event := range tenantLogEvents {
 		if err := m.Update(event); err != nil {
-			log.Error(err)
+			e.logger.V(0).Error(err, err.Error())
 			continue
 		}
 	}

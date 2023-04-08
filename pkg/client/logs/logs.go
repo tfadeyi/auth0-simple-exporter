@@ -52,7 +52,6 @@ func New(domain, clientID, clientSecret, token string) (*logClient, error) {
 	if errs != nil {
 		return nil, errs
 	}
-
 	return &logClient{client.Log}, nil
 }
 
@@ -75,14 +74,14 @@ func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{},
 		if from.IsZero() {
 			logs, err = l.mgmt.List(
 				management.Context(ctx),
-				management.IncludeFields("type", "log_id", "date"),
+				management.IncludeFields("type", "log_id", "date", "client_name"),
 				management.Page(i),
 				management.PerPage(100),
 			)
 		} else {
 			logs, err = l.mgmt.List(
 				management.Context(ctx),
-				management.IncludeFields("type", "log_id", "date"),
+				management.IncludeFields("type", "log_id", "date", "client_name"),
 				management.Page(i),
 				management.PerPage(100),
 				management.Query(fmt.Sprintf("date:[%s TO *]", from.Format("2006-01-02"))),
