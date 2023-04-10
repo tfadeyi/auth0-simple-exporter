@@ -44,7 +44,7 @@ jobs:
         run: make install-tools
 
       - name: Install cosign
-        uses: sigstore/cosign-installer@v3.0.1
+        uses: sigstore/cosign-installer@v3.0.2
 
       - name: Setup ko
         uses: ko-build/setup-ko@v0.6
