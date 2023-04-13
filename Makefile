@@ -13,13 +13,17 @@ export KO_DOCKER_REPO=$KO_DOCKER_REPO
 # include files with the `// +build mock` annotation
 TEST_TAGS:=-tags mock -coverprofile cover.out
 
-.PHONY: build generate docs test build-all-platforms clean install-tools licenses docker-build
+.PHONY: build generate docs test build-all-platforms clean install-tools licenses lint
 
-install-tools:
+install-ci-tools:
 	go install github.com/swaggo/swag/cmd/swag@v1.8.7
 	go install github.com/matryer/moq@v0.2.7
 	go install github.com/google/go-licenses@c781b427440f8ea100841eefdd308e660d26d121
 	go install github.com/norwoodj/helm-docs/cmd/helm-docs@v1.11.0
+
+install-local-tools: install-ci-tools
+	go install https://github.com/goreleaser/goreleaser@v1.17.0
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.52.2
 
 build:
 	cd $(ROOT_DIR) && $(GO_BUILD) -o builds/$(BIN_NAME) .
@@ -52,6 +56,9 @@ clean:
 	cd $(ROOT_DIR) && \
 	rm -rf ./builds && \
 	rm -rf kodata
+
+lint:
+	golangci-lint run
 
 # generates the licenses used by the tool
 licenses:

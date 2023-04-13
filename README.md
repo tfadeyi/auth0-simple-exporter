@@ -30,25 +30,39 @@ This Prometheus exporter aims to simplify this, making it easier to expose tenan
 * *(Optional)* Auth0 tenant management API [static token](https://auth0.com/docs/secure/tokens/access-tokens/management-api-access-tokens).
 
 ## TL;DR
-Run exporter's container with TLS disabled.
+
+The quickest way to install the exporter is through Helm, make sure you have your Auth0 credentials at hand.
 
 ```shell
 export TOKEN="< auth0 management API static static token >"
 export DOMAIN="< auth0 tenant domain >"
-
-curl -LJO https://github.com/tfadeyi/auth0-simple-exporter/releases/download/v0.0.1/auth0-simple-exporter-linux-amd64.tar.gz && \
-tar -xzvf auth0-simple-exporter-linux-amd64.tar.gz && \
-cd auth0-simple-exporter-linux-amd64
-
-./auth0-simple-exporter export --tls.disabled
 ```
+```shell
+  # Installing by passing in secret directly
+  helm repo add auth0-exporter https://tfadeyi.github.io/auth0-simple-exporter
+  helm upgrade --install --create-namespace -n auth0-exporter auth0-exporter/auth0-exporter \
+  --set auth0.domain="$DOMAIN" --set auth0.token="$TOKEN" \
+  --set exporter.tls.disabled=true
+```
+This will install the exporter running with TLS disabled.
 
 ## Installation
 
-* ### Download Binaries
+* ### Download Pre-built Binaries
 
     Binaries can be downloaded from [Releases](https://github.com/tfadeyi/auth0-simple-exporter/releases) page.
+  * Download and run exporter's binary with TLS disabled.
 
+    ```shell
+    export TOKEN="< auth0 management API static static token >"
+    export DOMAIN="< auth0 tenant domain >"
+
+    curl -LJO https://github.com/tfadeyi/auth0-simple-exporter/releases/download/v0.0.2/auth0-simple-exporter-linux-amd64.tar.gz && \
+    tar -xzvf auth0-simple-exporter-linux-amd64.tar.gz && \
+    cd auth0-simple-exporter-linux-amd64
+
+    ./auth0-simple-exporter export --tls.disabled
+    ```
 * ### Docker
     The recommended way to get the Docker Image is to pull the prebuilt image from the project's Github Container Registry.
     ```shell
@@ -75,6 +89,13 @@ cd auth0-simple-exporter-linux-amd64
 
     More info on the helm deployment can be found [here](deploy/charts/auth0-exporter/README.md).
 
+* ### Build from source
+    From the repository root directory run:
+    ```shell
+    make build
+    # or for multiple systems
+    make build-all-platforms
+    ```
 ## Usage
 
 ```
@@ -149,13 +170,30 @@ Monitor the number current logged-in users for a client application in Auth0 ten
 
 ## Known Issues
 
-### API Rate Limits
-When the Prometheus scraping job interval is too frequent the exporter might encounter api-rate limit from Auth0.
-To mitigate this try increasing the scraping interval for the job.
+* ### API Rate Limits
+  When the Prometheus scraping job interval is too frequent the exporter might encounter api-rate limit from Auth0.
+  To mitigate this try increasing the scraping interval for the job.
 
-### Not all logs/events are available
-Currently, not all logs/events from Auth0 are exposed, if a metric is not exposed, feel free to open a feature request.
+* ### Not all logs/events are available
+  Currently, not all logs/events from Auth0 are exposed, if a metric is not exposed, feel free to open a feature request.
 
+## Prometheus
+
+Example Prometheus configuration for the exporter. Replace `AUTH0-EXPORTER-HOSTNAME` with your instance's hostname.
+```yaml
+scrape_configs:
+  - job_name: auth0_exporter
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['<<AUTH0-EXPORTER-HOSTNAME>>:9301']
+    relabel_configs:
+      - source_labels: [ __address__ ]
+        target_label: __param_target
+      - source_labels: [ __param_target ]
+        target_label: instance
+      - target_label: __address__
+        replacement: <<AUTH0-EXPORTER-HOSTNAME>>:9301
+```
 
 ## Development
 
