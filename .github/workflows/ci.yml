@@ -15,7 +15,7 @@ jobs:
           go-version: '1.19'
       - uses: actions/checkout@v3
       - name: Install tools
-        run: make install-tools
+        run: make install-ci-tools
       - name: Go Fmt
         run: diff -u <(echo -n) <(gofmt -d ./)
         shell: bash

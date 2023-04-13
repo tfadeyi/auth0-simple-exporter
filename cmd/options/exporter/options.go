@@ -185,7 +185,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 	fs.IntVar(
 		&o.HostPort,
 		"web.listen-address",
-		8080,
+		9301,
 		"Port where the exporter webserver will listen on.",
 	)
 	fs.StringVar(
@@ -198,7 +198,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 	fs.IntVar(
 		&o.ProbePort,
 		"probe.listen-address",
-		8081,
+		9302,
 		"Port where the probe webserver will listen on.",
 	)
 	fs.StringVar(

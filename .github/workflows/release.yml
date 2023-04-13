@@ -41,7 +41,7 @@ jobs:
         run: git fetch --prune --unshallow
 
       - name: Install tools
-        run: make install-tools
+        run: make install-ci-tools
 
       - name: Install cosign
         uses: sigstore/cosign-installer@v3.0.2
@@ -97,7 +97,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install tools
-        run: make install-tools
+        run: make install-ci-tools
 
       - name: Install Go
         uses: actions/setup-go@v4
