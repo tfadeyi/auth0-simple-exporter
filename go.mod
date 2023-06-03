@@ -3,7 +3,7 @@ module github.com/tfadeyi/auth0-simple-exporter
 go 1.19
 
 require (
-	github.com/auth0/go-auth0 v0.17.1
+	github.com/auth0/go-auth0 v0.17.2
 	github.com/go-kit/log v0.2.1
 	github.com/go-logr/logr v1.2.4
 	github.com/juju/errors v1.0.0
