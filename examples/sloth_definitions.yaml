@@ -1,0 +1,16 @@
+version: "prometheus/v1"
+service: "your-application"
+labels:
+  project: your-application
+slos:
+  - name: "application-login"
+    objective: 95
+    description: "95% of logins to the your-application app should be successful."
+    sli:
+      events:
+        error_query: sum(rate(tenant_failed_login_operations_total{client="your-application"}[{{.window}}])) OR on() vector(0)
+        total_query: sum(rate(tenant_login_operations_total{client="your-application"}[{{.window}}]))
+    alerting:
+      name: "ApplicationLogin"
+      labels:
+        category: "correctness"

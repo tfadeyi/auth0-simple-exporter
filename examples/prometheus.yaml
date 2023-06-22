@@ -1,6 +1,6 @@
 # my global config
 global:
-  scrape_interval: 5s # Set the scrape interval to every 5 seconds. Default is every 1 minute.
+  scrape_interval: 10s # Set the scrape interval to every 5 seconds. Default is every 1 minute.
   evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
 
 scrape_configs:
@@ -15,3 +15,7 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: localhost:9301
+
+# Rules and alerts are read from the specified file(s)
+rule_files:
+  - rules.yml
