@@ -195,6 +195,53 @@ scrape_configs:
         replacement: <<AUTH0-EXPORTER-HOSTNAME>>:9301
 ```
 
+You can find example Prometheus alerting groups under `./example_rules.yml`, this will setup
+alert on SLOs for the different metrics.
+
+To add them to your Prometheus config, simply reference the `./example_rules.yml` file in the
+config.
+
+```yaml
+rule_files:
+ - "example_rules.yml"
+```
+
+<details>
+  <summary>Example Prometheus config</summary>
+
+```yaml
+# my global config
+global:
+  scrape_interval: 5s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 5s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  - "example_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "exporter"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["localhost:9301"]
+```
+
+</details>
+
 ## Development
 
 #### Makefile

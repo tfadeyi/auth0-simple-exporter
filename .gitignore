@@ -21,3 +21,4 @@ builds/
 .idea/
 tmp/
 dev/prometheus/data
+slo_definitions/
