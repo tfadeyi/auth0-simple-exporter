@@ -16,6 +16,12 @@ const (
 	tenantFailedAPIOperations = "tenant_failed_api_operations_total"
 )
 
+// @sloth.slo      name api_operation_availability
+// @sloth.slo      objective 99.0
+// @sloth.sli      error_query sum(rate(tenant_failed_api_operations_total[{{.window}}])) OR on() vector(0)
+// @sloth.sli      total_query sum(rate(tenant_api_operations_total[{{.window}}]))
+// @sloth.slo      description SLO describing the availability of the Auth0 tenant API, setting the objective to 99%.
+// @sloth.alerting name Auth0APIAvailability
 func APIOperationTotalCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
 	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{

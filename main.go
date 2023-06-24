@@ -21,6 +21,8 @@ THE SOFTWARE.
 */
 //go:generate swag fmt
 //go:generate swag init --parseDependency --generalInfo ./pkg/exporter/server.go --output ./pkg/docs --markdownFiles ./docs
+//go:generate sloscribe init --to-file
+//go:generate sloth generate -i ./slo_definitions/auth0-exporter.yaml -o example_rules.yml
 
 package main
 
@@ -33,6 +35,8 @@ import (
 	"github.com/tfadeyi/auth0-simple-exporter/cmd"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/logging"
 )
+
+// @sloth service auth0-exporter
 
 func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, os.Kill, syscall.SIGTERM)

@@ -16,6 +16,12 @@ const (
 	tenantFailedChangePassword = "tenant_failed_change_password_total"
 )
 
+// @sloth.slo      name change_password_service_availability
+// @sloth.slo      objective 99.0
+// @sloth.sli      error_query sum(rate(tenant_failed_change_password_total[{{.window}}])) OR on() vector(0)
+// @sloth.sli      total_query sum(rate(tenant_change_password_total[{{.window}}]))
+// @sloth.slo      description SLO describing the availability of the Auth0 tenant change password service, setting the objective to 99%.
+// @sloth.alerting name Auth0ChangePasswordAvailability
 func changePasswordTotalCounterMetric(namespace, subsystem string, applications []*management.Client) *prometheus.CounterVec {
 	m := prometheus.NewCounterVec(
 		prometheus.CounterOpts{
