@@ -27,7 +27,7 @@ func (l *applicationClient) List(ctx context.Context, args ...interface{}) (inte
 	hasNext := true
 	for hasNext {
 		apps, err := l.mgmt.List(
-			management.Context(ctx),
+			ctx,
 			management.IncludeFields("name"),
 			management.PerPage(100),
 			management.Page(page),
@@ -60,7 +60,7 @@ func New(domain, clientID, clientSecret, token string) (*applicationClient, erro
 		client = c
 	}
 	if clientID != "" && clientSecret != "" {
-		c, err := management.New(domain, management.WithClientCredentials(clientID, clientSecret))
+		c, err := management.New(domain, management.WithClientCredentials(context.Background(), clientID, clientSecret))
 		if err != nil {
 			errs = multierr.Append(errs, err)
 		}

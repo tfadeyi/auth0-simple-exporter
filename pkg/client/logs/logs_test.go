@@ -33,7 +33,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("fail if List \"from\" argument is not a time.Time type", func(t *testing.T) {
 		c := logClient{mgmt: &logManagementMock{
-			ListFunc: func(opts ...management.RequestOption) ([]*management.Log, error) {
+			ListFunc: func(ctx context.Context, opts ...management.RequestOption) ([]*management.Log, error) {
 				return nil, nil
 			},
 		}}
@@ -43,7 +43,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("fail if client returns rate limit errors", func(t *testing.T) {
 		c := logClient{mgmt: &logManagementMock{
-			ListFunc: func(opts ...management.RequestOption) ([]*management.Log, error) {
+			ListFunc: func(ctx context.Context, opts ...management.RequestOption) ([]*management.Log, error) {
 				return nil, errors.QuotaLimitExceededf("api request limit was reached")
 			},
 		}}
@@ -63,7 +63,7 @@ func TestClient(t *testing.T) {
 		}
 
 		c := logClient{mgmt: &logManagementMock{
-			ListFunc: func(opts ...management.RequestOption) ([]*management.Log, error) {
+			ListFunc: func(ctx context.Context, opts ...management.RequestOption) ([]*management.Log, error) {
 				var result []*management.Log
 				for i := range storedLogs {
 					index := i + (currentPage * pageSize)

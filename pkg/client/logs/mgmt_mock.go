@@ -4,6 +4,7 @@
 package logs
 
 import (
+	"context"
 	"github.com/auth0/go-auth0/management"
 	"sync"
 )
@@ -18,13 +19,13 @@ var _ logManagement = &logManagementMock{}
 //
 //		// make and configure a mocked logManagement
 //		mockedlogManagement := &logManagementMock{
-//			ListFunc: func(opts ...management.RequestOption) ([]*management.Log, error) {
+//			ListFunc: func(ctx context.Context, opts ...management.RequestOption) ([]*management.Log, error) {
 //				panic("mock out the List method")
 //			},
-//			ReadFunc: func(id string, opts ...management.RequestOption) (*management.Log, error) {
+//			ReadFunc: func(ctx context.Context, id string, opts ...management.RequestOption) (*management.Log, error) {
 //				panic("mock out the Read method")
 //			},
-//			SearchFunc: func(opts ...management.RequestOption) ([]*management.Log, error) {
+//			SearchFunc: func(ctx context.Context, opts ...management.RequestOption) ([]*management.Log, error) {
 //				panic("mock out the Search method")
 //			},
 //		}
@@ -35,23 +36,27 @@ var _ logManagement = &logManagementMock{}
 //	}
 type logManagementMock struct {
 	// ListFunc mocks the List method.
-	ListFunc func(opts ...management.RequestOption) ([]*management.Log, error)
+	ListFunc func(ctx context.Context, opts ...management.RequestOption) ([]*management.Log, error)
 
 	// ReadFunc mocks the Read method.
-	ReadFunc func(id string, opts ...management.RequestOption) (*management.Log, error)
+	ReadFunc func(ctx context.Context, id string, opts ...management.RequestOption) (*management.Log, error)
 
 	// SearchFunc mocks the Search method.
-	SearchFunc func(opts ...management.RequestOption) ([]*management.Log, error)
+	SearchFunc func(ctx context.Context, opts ...management.RequestOption) ([]*management.Log, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
 		// List holds details about calls to the List method.
 		List []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
 			// Opts is the opts argument value.
 			Opts []management.RequestOption
 		}
 		// Read holds details about calls to the Read method.
 		Read []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
 			// ID is the id argument value.
 			ID string
 			// Opts is the opts argument value.
@@ -59,6 +64,8 @@ type logManagementMock struct {
 		}
 		// Search holds details about calls to the Search method.
 		Search []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
 			// Opts is the opts argument value.
 			Opts []management.RequestOption
 		}
@@ -69,19 +76,21 @@ type logManagementMock struct {
 }
 
 // List calls ListFunc.
-func (mock *logManagementMock) List(opts ...management.RequestOption) ([]*management.Log, error) {
+func (mock *logManagementMock) List(ctx context.Context, opts ...management.RequestOption) ([]*management.Log, error) {
 	if mock.ListFunc == nil {
 		panic("logManagementMock.ListFunc: method is nil but logManagement.List was just called")
 	}
 	callInfo := struct {
+		Ctx  context.Context
 		Opts []management.RequestOption
 	}{
+		Ctx:  ctx,
 		Opts: opts,
 	}
 	mock.lockList.Lock()
 	mock.calls.List = append(mock.calls.List, callInfo)
 	mock.lockList.Unlock()
-	return mock.ListFunc(opts...)
+	return mock.ListFunc(ctx, opts...)
 }
 
 // ListCalls gets all the calls that were made to List.
@@ -89,9 +98,11 @@ func (mock *logManagementMock) List(opts ...management.RequestOption) ([]*manage
 //
 //	len(mockedlogManagement.ListCalls())
 func (mock *logManagementMock) ListCalls() []struct {
+	Ctx  context.Context
 	Opts []management.RequestOption
 } {
 	var calls []struct {
+		Ctx  context.Context
 		Opts []management.RequestOption
 	}
 	mock.lockList.RLock()
@@ -101,21 +112,23 @@ func (mock *logManagementMock) ListCalls() []struct {
 }
 
 // Read calls ReadFunc.
-func (mock *logManagementMock) Read(id string, opts ...management.RequestOption) (*management.Log, error) {
+func (mock *logManagementMock) Read(ctx context.Context, id string, opts ...management.RequestOption) (*management.Log, error) {
 	if mock.ReadFunc == nil {
 		panic("logManagementMock.ReadFunc: method is nil but logManagement.Read was just called")
 	}
 	callInfo := struct {
+		Ctx  context.Context
 		ID   string
 		Opts []management.RequestOption
 	}{
+		Ctx:  ctx,
 		ID:   id,
 		Opts: opts,
 	}
 	mock.lockRead.Lock()
 	mock.calls.Read = append(mock.calls.Read, callInfo)
 	mock.lockRead.Unlock()
-	return mock.ReadFunc(id, opts...)
+	return mock.ReadFunc(ctx, id, opts...)
 }
 
 // ReadCalls gets all the calls that were made to Read.
@@ -123,10 +136,12 @@ func (mock *logManagementMock) Read(id string, opts ...management.RequestOption)
 //
 //	len(mockedlogManagement.ReadCalls())
 func (mock *logManagementMock) ReadCalls() []struct {
+	Ctx  context.Context
 	ID   string
 	Opts []management.RequestOption
 } {
 	var calls []struct {
+		Ctx  context.Context
 		ID   string
 		Opts []management.RequestOption
 	}
@@ -137,19 +152,21 @@ func (mock *logManagementMock) ReadCalls() []struct {
 }
 
 // Search calls SearchFunc.
-func (mock *logManagementMock) Search(opts ...management.RequestOption) ([]*management.Log, error) {
+func (mock *logManagementMock) Search(ctx context.Context, opts ...management.RequestOption) ([]*management.Log, error) {
 	if mock.SearchFunc == nil {
 		panic("logManagementMock.SearchFunc: method is nil but logManagement.Search was just called")
 	}
 	callInfo := struct {
+		Ctx  context.Context
 		Opts []management.RequestOption
 	}{
+		Ctx:  ctx,
 		Opts: opts,
 	}
 	mock.lockSearch.Lock()
 	mock.calls.Search = append(mock.calls.Search, callInfo)
 	mock.lockSearch.Unlock()
-	return mock.SearchFunc(opts...)
+	return mock.SearchFunc(ctx, opts...)
 }
 
 // SearchCalls gets all the calls that were made to Search.
@@ -157,9 +174,11 @@ func (mock *logManagementMock) Search(opts ...management.RequestOption) ([]*mana
 //
 //	len(mockedlogManagement.SearchCalls())
 func (mock *logManagementMock) SearchCalls() []struct {
+	Ctx  context.Context
 	Opts []management.RequestOption
 } {
 	var calls []struct {
+		Ctx  context.Context
 		Opts []management.RequestOption
 	}
 	mock.lockSearch.RLock()

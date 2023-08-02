@@ -33,7 +33,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("fail if client returns rate limit errors", func(t *testing.T) {
 		c := applicationClient{mgmt: &applicationManagementMock{
-			ListFunc: func(opts ...management.RequestOption) (*management.ClientList, error) {
+			ListFunc: func(ctx context.Context, opts ...management.RequestOption) (*management.ClientList, error) {
 				return nil, errors.QuotaLimitExceededf("api request limit was reached")
 			},
 		}}
