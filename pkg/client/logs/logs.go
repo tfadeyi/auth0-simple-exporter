@@ -39,7 +39,7 @@ func New(domain, clientID, clientSecret, token string) (*logClient, error) {
 		client = c
 	}
 	if clientID != "" && clientSecret != "" {
-		c, err := management.New(domain, management.WithClientCredentials(clientID, clientSecret))
+		c, err := management.New(domain, management.WithClientCredentials(context.Background(), clientID, clientSecret))
 		if err != nil {
 			errs = multierr.Append(errs, err)
 		}
@@ -73,14 +73,14 @@ func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{},
 
 		if from.IsZero() {
 			logs, err = l.mgmt.List(
-				management.Context(ctx),
+				ctx,
 				management.IncludeFields("type", "log_id", "date", "client_name"),
 				management.Page(i),
 				management.PerPage(100),
 			)
 		} else {
 			logs, err = l.mgmt.List(
-				management.Context(ctx),
+				ctx,
 				management.IncludeFields("type", "log_id", "date", "client_name"),
 				management.Page(i),
 				management.PerPage(100),
