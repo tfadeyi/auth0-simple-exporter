@@ -2,6 +2,7 @@ package logs
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -53,32 +54,44 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("successfully fetch all logs across multiple pages with client.List", func(t *testing.T) {
-		totalLogNumber := 4299
-		pageSize := 100
-		currentPage := 0
+		totalLogNumber := 220
+		take := 1
+		checkpoint := 0
+		firstCall := true
+
 		storedLogs := make([]*management.Log, totalLogNumber)
 		for i := 0; i < totalLogNumber; i++ {
 			var code = "f"
-			storedLogs[i] = &management.Log{Type: &code}
+			var logID = fmt.Sprintf("log-%d", i)
+			storedLogs[i] = &management.Log{LogID: &logID, Type: &code}
 		}
 
 		c := logClient{mgmt: &logManagementMock{
 			ListFunc: func(ctx context.Context, opts ...management.RequestOption) ([]*management.Log, error) {
 				var result []*management.Log
-				for i := range storedLogs {
-					index := i + (currentPage * pageSize)
-					if i == pageSize || (index >= len(storedLogs)) {
-						break
-					}
-					result = append(result, storedLogs[index])
+				if !firstCall {
+					take = 100
 				}
 
-				currentPage++
+				if checkpoint >= totalLogNumber {
+					return result, nil
+				}
+
+				if (checkpoint + take) >= totalLogNumber {
+					result = storedLogs[checkpoint:totalLogNumber]
+				} else {
+					result = storedLogs[checkpoint:(checkpoint + take)]
+				}
+
+				checkpoint = checkpoint + take
+				firstCall = false
+
 				return result, nil
 			},
 		}}
-		actualLogs, err := c.List(context.Background(), time.Now())
+
+		totalActualLogs, err := c.List(context.Background(), time.Now())
 		require.NoError(t, err)
-		assert.Len(t, actualLogs, totalLogNumber)
+		assert.Len(t, totalActualLogs, totalLogNumber-1)
 	})
 }
