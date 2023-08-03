@@ -83,10 +83,9 @@ func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{},
 			return nil, ErrAPIRateLimitReached
 		case err != nil:
 			return nil, err
-		case len(logs) == 0:
-			return nil, errors.New("no checkpoint log was found")
+		case len(logs) > 0:
+			checkpoint = logs[0]
 		}
-		checkpoint = logs[0]
 	}
 
 	for {
