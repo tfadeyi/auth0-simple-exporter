@@ -83,7 +83,7 @@ func TestClient(t *testing.T) {
 					result = storedLogs[checkpoint:(checkpoint + take)]
 				}
 
-				checkpoint = checkpoint + take
+				checkpoint += take
 				firstCall = false
 
 				return result, nil

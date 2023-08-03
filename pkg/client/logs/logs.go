@@ -79,12 +79,12 @@ func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{},
 			management.Query(fmt.Sprintf("date:[%s TO %s]", previousDay, previousDay)),
 		)
 		switch {
-		case len(logs) == 0:
-			return nil, errors.New("no checkpoint log was found")
 		case errors.Is(err, errors.QuotaLimitExceeded):
 			return nil, ErrAPIRateLimitReached
 		case err != nil:
 			return nil, err
+		case len(logs) == 0:
+			return nil, errors.New("no checkpoint log was found")
 		}
 		checkpoint = logs[0]
 	}
