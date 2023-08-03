@@ -17,23 +17,23 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-//	@title			Auth0 simple exporter
-//	@version		0.0.2
-//	@description	A simple Prometheus exporter for Auth0 log [events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs),
-//	@description	which allows you to collect metrics from Auth0 and expose them in a format that can be consumed by Prometheus.
+// @title       Auth0 simple exporter
+// @version     0.1.0
+// @description A simple Prometheus exporter for Auth0 log [events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs),
+// @description which allows you to collect metrics from Auth0 and expose them in a format that can be consumed by Prometheus.
 
-//	@contact.name	Oluwole Fadeyi (@tfadeyi)
+// @contact.name Oluwole Fadeyi (@tfadeyi)
 
-//	@license.name	Apache 2.0
-//	@license.url	https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE
+// @license.name Apache 2.0
+// @license.url  https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE
 
-//	@host		localhost:8080
-//	@BasePath	/
+// @host     localhost:8080
+// @BasePath /
 
 // Export configures the exporter Router and starts the server with the given configuration
 func (e *exporter) Export() error {
 	log := e.logger
-	log.Info("initialising exporter", "build", version.BuildInfo())
+	log.Info("initialising exporter", "build", version.Info())
 
 	// collect all the auth0 apps/clients, this is required for initialising the prometheus counter metrics to zero
 	// all labels must be known before.
