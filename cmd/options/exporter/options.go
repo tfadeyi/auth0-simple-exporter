@@ -141,7 +141,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 	fs.StringVar(
 		&o.FromFetchTime,
 		"auth0.from",
-		(time.Now().Add(-24 * time.Hour)).Format("2006-01-02"),
+		(time.Now()).Format("2006-01-02"),
 		"Point in time from were to start fetching auth0 logs. (format: YYYY-MM-DD)",
 	)
 	fs.StringVar(

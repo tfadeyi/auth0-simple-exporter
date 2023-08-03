@@ -66,27 +66,31 @@ func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{},
 		}
 	}
 
-	i := 0
-	for {
-		var logs []*management.Log
-		var err error
-
-		if from.IsZero() {
-			logs, err = l.mgmt.List(
-				ctx,
-				management.IncludeFields("type", "log_id", "date", "client_name"),
-				management.Page(i),
-				management.PerPage(100),
-			)
-		} else {
-			logs, err = l.mgmt.List(
-				ctx,
-				management.IncludeFields("type", "log_id", "date", "client_name"),
-				management.Page(i),
-				management.PerPage(100),
-				management.Query(fmt.Sprintf("date:[%s TO *]", from.Format("2006-01-02"))),
-			)
+	// Get the last log from the list of logs for the previous day.
+	// This is used as the starting point for the fetching of the logs.
+	// This allows us to use the checkpoint pagination style
+	var checkpoint *management.Log
+	if !from.IsZero() {
+		previousDay := from.Add(-24 * time.Hour).Format("2006-01-02")
+		logs, err := l.mgmt.List(
+			ctx,
+			management.IncludeFields("type", "log_id", "date", "client_name"),
+			management.PerPage(1),
+			management.Query(fmt.Sprintf("date:[%s TO %s]", previousDay, previousDay)),
+		)
+		switch {
+		case errors.Is(err, errors.QuotaLimitExceeded):
+			return nil, ErrAPIRateLimitReached
+		case err != nil:
+			return nil, err
+		case len(logs) == 0:
+			return nil, errors.New("no checkpoint log was found")
 		}
+		checkpoint = logs[0]
+	}
+
+	for {
+		logs, err := l.fetchLogs(ctx, checkpoint)
 		switch {
 		case errors.Is(err, errors.QuotaLimitExceeded):
 			return nil, ErrAPIRateLimitReached
@@ -94,9 +98,28 @@ func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{},
 			return nil, err
 		}
 		allLogs = append(allLogs, logs...)
-		if len(logs) < 100 {
+
+		if len(logs) == 0 {
 			return allLogs, nil
 		}
-		i++
+		checkpoint = logs[len(logs)-1]
 	}
+}
+
+// fetchLogs returns the list of logs given a starting checkpoint. If no checkpoint is passed it returns the list of the
+// latest logs. (Default: 100 items)
+func (l *logClient) fetchLogs(ctx context.Context, checkpoint *management.Log) ([]*management.Log, error) {
+	if checkpoint != nil {
+		return l.mgmt.List(
+			ctx,
+			management.IncludeFields("type", "log_id", "date", "client_name"),
+			management.From(checkpoint.GetLogID()),
+			management.Take(100),
+		)
+	}
+	return l.mgmt.List(
+		ctx,
+		management.IncludeFields("type", "log_id", "date", "client_name"),
+		management.Take(100),
+	)
 }
