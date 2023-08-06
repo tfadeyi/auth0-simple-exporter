@@ -76,7 +76,7 @@ func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{},
 			ctx,
 			management.IncludeFields("type", "log_id", "date", "client_name"),
 			management.PerPage(1),
-			management.Query(fmt.Sprintf("date:[%s TO %s]", previousDay, previousDay)),
+			management.Query(fmt.Sprintf("date:[* TO %s]", previousDay)),
 		)
 		switch {
 		case errors.Is(err, errors.QuotaLimitExceeded):
