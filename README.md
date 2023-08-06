@@ -29,6 +29,13 @@ This Prometheus exporter aims to simplify this, making it easier to expose tenan
 * Auth0 tenant [management API](https://auth0.com/docs/api#management-api) client credentials.
 * *(Optional)* Auth0 tenant management API [static token](https://auth0.com/docs/secure/tokens/access-tokens/management-api-access-tokens).
 
+## Super TL;DR
+If you just want to try the exporter locally without installation, you can do so by using Nix.
+
+```shell
+nix run github:tfadeyi/auth0-simple-exporter export -- --tls.disabled
+```
+
 ## TL;DR
 
 The quickest way to install the exporter is through Helm, make sure you have your Auth0 credentials at hand.
@@ -100,7 +107,7 @@ This will install the exporter running with TLS disabled.
 * ### Nix
     The exporter can be used via Nix.
     ```shell
-    nix run github:tfadeyi/auth0-simple-exporter export --tls.disabled
+    nix run github:tfadeyi/auth0-simple-exporter export -- --tls.disabled
     ```
 
 ## Usage
