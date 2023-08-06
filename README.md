@@ -96,6 +96,13 @@ This will install the exporter running with TLS disabled.
     # or for multiple systems
     make build-all-platforms
     ```
+
+* ### Nix
+    The exporter can be used via Nix.
+    ```shell
+    nix run github:tfadeyi/auth0-simple-exporter export --tls.disabled
+    ```
+
 ## Usage
 
 ```
@@ -214,7 +221,7 @@ This will boot up a Nix devshell with the need tools and information.
 
 **Everyone** is welcome to contribute to the project.
 
-Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for information on how to get started.
+Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md) for information on how to get started.
 
 Feedback is always appreciated, whether it's a bug or feature request, feel free to open an issue using one of the templates.
 

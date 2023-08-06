@@ -1,35 +1,43 @@
+[[env]]
+name = "GOROOT"
+value = ""
+[[env]]
+name = "PC_DISABLE_TUI"
+value = "true"
+[[env]]
+name = "CGO_ENABLED"
+value = "0"
+
 [devshell]
 name = "prometheus-golang"
 motd = """{106}NixOS Prometheus exporter development shell{reset}
 
-The exporter code is already running in the background and reachable by prometheus.
+Developement commands:
+ * generate: runs go generate
+ * test: run tests and linting
+ * up: startup services
+ * down: shutdown services
 
 {250}Links{reset}:
- * {50}exporter{reset}: http://localhost:9301/metrics
- * {30}go ref{reset}: http://localhost:1313/pkg/github.com/auth0-simple-exporter
- * {10}swagger{reset}: http://localhost:1314/swagger/index.html
+ * {30}go ref{reset}: http://localhost:1313/pkg/github.com/tfadeyi/auth0-simple-exporter/
  * {1}prometheus{reset}: http://localhost:9090/ (run {1}prom{reset} command in your terminal)
 
-\n REMEMBER TO RUN {1}done{reset} BEFORE using CTRL-D!
+\n REMEMBER TO RUN {1}down{reset} BEFORE using CTRL-D!
 \n Use CTRL-D to leave the shell
 """
 
 packages = [
-    "prometheus", "gotools", "moq",
+    "process-compose", "go", "gotools",
+    "prometheus", "moq",
     "goreleaser", "golangci-lint",
     "tmux", "helm-docs",
-    "go-swag", "ko", "air",
+    "go-swag", "ko",
 ]
 
-# Shell env commands
-startup.kill.text = "alias done='pkill -f tmux'"
-startup.sessions.text = "alias sessions='tmux list-session'"
 # Profiling & Testing
 startup.heap.text = "alias heap='go tool pprof'"
-startup.testing.text = "alias test='make test && make lint && KO_DOCKER_REPO=ghcr.io/tfadeyi/auth0-exporter goreleaser check'"
 
-# Exporter
-startup.exporter.text = "tmux new -s exporter -d 'air -c $ROOT_DIR/dev/.air-exporter.toml'"
-startup.godoc.text = "tmux new -s godoc -d 'godoc -http=:1313'"
-startup.openapi.text = "tmux new -s openapi -d 'air -c $ROOT_DIR/dev/.air-swagger.toml'"
-startup.prometheus.text = "alias prom='prometheus  --web.enable-lifecycle --storage.tsdb.path=$ROOT_DIR/dev/prometheus/data --config.file=$ROOT_DIR/dev/prometheus/prometheus.yml'"
+startup.generate.text = "alias generate='process-compose -f ./dev/process-compose.yaml up generate'"
+startup.testing.text = "alias test='process-compose -f ./dev/process-compose.yaml'"
+startup.services_up.text = "alias up='process-compose -f ./dev/services.yaml up godoc'"
+startup.services_down.text = "alias down='process-compose process stop godoc'"
