@@ -1,0 +1,19 @@
+version: "0.5"
+
+environment:
+  - "GLOBAL_ENV_VAR=1"
+
+processes:
+  prometheus:
+    command: |
+      prometheus --web.enable-lifecycle --storage.tsdb.path=./prometheus/data --config.file=./prometheus/prometheus.yml </dev/null &>/dev/null &
+    working_dir: "$ROOT_DIR/dev"
+#    availability:
+#      restart: "exit_on_failure"
+
+  godoc:
+    command: |
+      godoc -http=:1313 </dev/null &>/dev/null &
+    working_dir: "$ROOT_DIR"
+#    availability:
+#      restart: "exit_on_failure"

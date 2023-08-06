@@ -27,6 +27,7 @@ func versionCmd() *cobra.Command {
 			log := logging.LoggerFromContext(ctx)
 			if opts.Verbose {
 				log.Info(version.BuildInfo())
+				return
 			}
 			log.Info(version.Info())
 		},

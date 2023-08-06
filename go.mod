@@ -1,6 +1,6 @@
 module github.com/tfadeyi/auth0-simple-exporter
 
-go 1.19
+go 1.20
 
 require (
 	github.com/auth0/go-auth0 v1.0.0

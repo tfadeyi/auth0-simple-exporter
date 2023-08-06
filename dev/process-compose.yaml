@@ -1,0 +1,59 @@
+version: "0.5"
+
+environment:
+  - "GLOBAL_ENV_VAR=1"
+
+processes:
+  sanitycheck:
+    command: "which go"
+    availability:
+      restart: "exit_on_failure"
+
+  generate:
+    command: |
+      go generate ./...
+      helm-docs --chart-search-root=deploy/charts/
+      gomod2nix
+    working_dir: "$ROOT_DIR"
+    availability:
+      restart: "exit_on_failure"
+    depends_on:
+      sanitycheck:
+        condition: process_completed_successfully
+
+  test:
+    command: "go test ./..."
+    working_dir: "$ROOT_DIR"
+    availability:
+      restart: "exit_on_failure"
+    depends_on:
+      generate:
+        condition: process_completed_successfully
+
+  lint:
+    command: "golangci-lint run"
+    working_dir: "$ROOT_DIR"
+    availability:
+      restart: "exit_on_failure"
+    depends_on:
+      test:
+        condition: process_completed_successfully
+
+  releaser_check:
+    command: |
+      KO_DOCKER_REPO=ghcr.io/tfadeyi/auth0-exporter goreleaser check
+    working_dir: "$ROOT_DIR"
+    availability:
+      restart: "exit_on_failure"
+    depends_on:
+      lint:
+        condition: process_completed_successfully
+#  test:
+#    command: "go test ./..."
+#    working_dir: "$ROOT_DIR"
+#    availability:
+#      restart: "exit_on_failure"
+#    depends_on:
+#      sanitycheck:
+#        condition: process_completed_successfully
+
