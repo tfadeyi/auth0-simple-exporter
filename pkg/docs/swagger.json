@@ -10,7 +10,7 @@
             "name": "Apache 2.0",
             "url": "https://github.com/tfadeyi/auth0-simple-exporter/blob/main/LICENSE"
         },
-        "version": "0.0.2"
+        "version": "0.1.0"
     },
     "host": "localhost:8080",
     "basePath": "/",
