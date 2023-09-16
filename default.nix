@@ -13,7 +13,7 @@
 
 pkgs.buildGoApplication {
   pname = "auth0-simple-exporter";
-  version = "v0.1.0";
+  version = "v0.1.1";
   pwd = ./.;
   src = ./.;
   modules = ./gomod2nix.toml;

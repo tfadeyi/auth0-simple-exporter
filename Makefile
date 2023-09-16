@@ -37,13 +37,9 @@ build-all-platforms:
 	$(MAKE) GOOS=windows GOARCH=amd64 ./builds/$(BIN_NAME)-windows-amd64
 
 # generates all documentation: openapi spec, helm-docs
-docs:
+generate:
 	cd $(ROOT_DIR) && go generate ./... && \
 	helm-docs --chart-search-root=deploy/charts/
-
-# used to generate struct mocks
-generate:
-	cd $(ROOT_DIR) && go generate ./...
 
 test: build
 	cd $(ROOT_DIR) &&  go test $(GOFLAGS) $(TEST_TAGS) ./...

@@ -49,7 +49,7 @@ on the `/metrics` endpoint.
 | exporter.tls.disabled | bool | `false` | Run exporter without TLS. |
 | exporter.tls.keyFile | string | `""` | The key file for the exporter TLS connection. |
 | fullnameOverride | string | `""` | Helm default setting, use this to shorten install name |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/tfadeyi/auth0-simple-exporter","tag":"v0.1.0"}` | image settings |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/tfadeyi/auth0-simple-exporter","tag":"v0.1.1"}` | image settings |
 | imagePullSecrets | list | `[]` | specify credentials if pulling from a customer registry |
 | labels | object | `{}` |  |
 | nameOverride | string | `""` | Helm default setting to override release name, leave blank |
