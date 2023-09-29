@@ -1,7 +1,5 @@
 project_name: auth0-simple-exporter
-before:
-  hooks:
-    - go mod tidy
+
 builds:
   - id: "linux"
     env:
