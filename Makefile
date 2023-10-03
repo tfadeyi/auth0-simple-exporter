@@ -22,7 +22,7 @@ install-ci-tools:
 	go install github.com/norwoodj/helm-docs/cmd/helm-docs@v1.11.0
 
 install-local-tools: install-ci-tools
-	go install https://github.com/goreleaser/goreleaser@v1.17.0
+	go install github.com/goreleaser/goreleaser@v1.17.0
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.52.2
 
 build:

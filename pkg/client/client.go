@@ -3,6 +3,7 @@ package client
 import (
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/client/applications"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/client/logs"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/client/users"
 )
 
 type (
@@ -17,6 +18,7 @@ type (
 	Client struct {
 		Log logs.Client
 		App applications.Client
+		User users.Client
 	}
 )
 
@@ -32,5 +34,10 @@ func NewWithOpts(opts Options) (Client, error) {
 	if err != nil {
 		return Client{}, err
 	}
-	return Client{Log: c, App: appClient}, nil
+	// create client to retrieve users
+	userClient, err := users.New(opts.Domain, opts.ClientID, opts.ClientSecret, opts.Token)
+	if err != nil {
+		return Client{}, err
+	}
+	return Client{Log: c, App: appClient, User: userClient}, nil
 }

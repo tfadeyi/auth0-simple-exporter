@@ -64,6 +64,8 @@ type (
 
 		changePasswordRequestTotalCounter *prometheus.CounterVec
 		changePasswordRequestFailCounter  *prometheus.CounterVec
+
+		monthlyActiveUsersCounterMetric *prometheus.Counter
 	}
 
 	LogEventFunc func(m *Metrics, log *management.Log) error
@@ -115,6 +117,8 @@ func New(namespace, subsystem string, applications []*management.Client) *Metric
 
 		changePasswordRequestTotalCounter: changePasswordRequestTotalCounterMetric(namespace, subsystem, applications),
 		changePasswordRequestFailCounter:  changePasswordRequestFailCounterMetric(namespace, subsystem, applications),
+
+		monthlyActiveUsersCounterMetric: monthlyActiveUsersCounterMetric(namespace, subsystem, applications),
 	}
 	return m
 }
@@ -183,6 +187,8 @@ func (m *Metrics) List() []prometheus.Collector {
 
 		m.changePasswordRequestTotalCounter,
 		m.changePasswordRequestFailCounter,
+
+		*m.monthlyActiveUsersCounterMetric,
 	}
 }
 
@@ -229,4 +235,9 @@ func SubsystemMiddleware(next echo.HandlerFunc, subsystem string) echo.HandlerFu
 		ctx.Set(subsystemCtxKey, subsystem)
 		return next(ctx)
 	}
+}
+
+func (m *Metrics) ProcessUsers(users []*management.User) error {
+	processMonthlyActiveUsers(m, users)
+	return nil
 }

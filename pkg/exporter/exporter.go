@@ -138,6 +138,7 @@ func (e *exporter) probe() echo.HandlerFunc {
 
 // collect collects all logs from Auth0 using startTime as the initial checkpoint
 func (e *exporter) collect(ctx context.Context, m *metrics.Metrics) error {
+	// Process logs
 	list, err := e.client.Log.List(ctx, e.startTime)
 	if err != nil {
 		return errors.Annotate(err, "error fetching the log events from Auth0")
@@ -154,5 +155,19 @@ func (e *exporter) collect(ctx context.Context, m *metrics.Metrics) error {
 			continue
 		}
 	}
+
+	// Process users
+	list, err = e.client.User.List(ctx)
+	if err != nil {
+		return errors.Annotate(err, "error fetching the users from Auth0")	
+	}
+	tenantUsers, ok := list.([]*management.User)
+	if !ok {
+		return errors.New("auth0 client users fetch didn't return the expected list of User type")
+	}
+	if err := m.ProcessUsers(tenantUsers); err != nil {
+		e.logger.V(0).Error(err, err.Error())
+	}
+
 	return nil
 }
