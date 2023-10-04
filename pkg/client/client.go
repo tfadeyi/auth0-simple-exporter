@@ -16,8 +16,8 @@ type (
 	}
 
 	Client struct {
-		Log logs.Client
-		App applications.Client
+		Log  logs.Client
+		App  applications.Client
 		User users.Client
 	}
 )

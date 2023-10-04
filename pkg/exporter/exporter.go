@@ -159,7 +159,7 @@ func (e *exporter) collect(ctx context.Context, m *metrics.Metrics) error {
 	// Process users
 	list, err = e.client.User.List(ctx)
 	if err != nil {
-		return errors.Annotate(err, "error fetching the users from Auth0")	
+		return errors.Annotate(err, "error fetching the users from Auth0")
 	}
 	tenantUsers, ok := list.([]*management.User)
 	if !ok {
