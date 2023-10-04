@@ -238,6 +238,6 @@ func SubsystemMiddleware(next echo.HandlerFunc, subsystem string) echo.HandlerFu
 }
 
 func (m *Metrics) ProcessUsers(users []*management.User) error {
-	processMonthlyActiveUsers(m, users)
+	_ = processMonthlyActiveUsers(m, users)
 	return nil
 }
