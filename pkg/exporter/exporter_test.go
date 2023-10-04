@@ -14,6 +14,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/client"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/client/logs"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/client/users"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/exporter/metrics"
 )
 
@@ -104,6 +105,9 @@ func TestExporter(t *testing.T) {
 			Log: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
 				return []*management.Log{}, nil
 			}},
+			User: &users.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
+				return []*management.User{}, nil
+			}},
 			App: nil,
 		}
 		current := time.Now()
@@ -163,6 +167,9 @@ func TestExporterHandler(t *testing.T) {
 		client := client.Client{
 			Log: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
 				return []*management.Log{}, nil
+			}},
+			User: &users.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
+				return []*management.User{}, nil
 			}},
 			App: nil,
 		}
