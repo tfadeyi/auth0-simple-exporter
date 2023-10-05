@@ -77,3 +77,9 @@ Exposes the Auth0 metrics collected by the exporter in a prometheus format.
 |--------------------------------------|----------------------------------------------------------------------|--------|
 | `tenant_api_operations_total`        | The total number of API operations on the tenant. (codes: sapi,fapi) | client |
 | `tenant_failed_api_operations_total` | The number of failed API operations on the tenant. (codes: fapi)     | client |
+
+
+### User statistics
+| Metric                               | Meaning                                                              | Labels |
+|--------------------------------------|----------------------------------------------------------------------|--------|
+| `tenant_total_monthly_active_users`        | The number of monthly active users. A user is active if he/she has logged in at least once in the last 30 days | tenant |
