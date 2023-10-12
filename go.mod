@@ -19,7 +19,7 @@ require (
 	github.com/tonglil/gokitlogr v1.0.0
 	go.uber.org/multierr v1.11.0
 	golang.org/x/crypto v0.14.0
-	golang.org/x/sync v0.3.0
+	golang.org/x/sync v0.4.0
 )
 
 require (
