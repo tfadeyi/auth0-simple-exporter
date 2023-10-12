@@ -110,6 +110,13 @@ This will install the exporter running with TLS disabled.
     nix run github:tfadeyi/auth0-simple-exporter export -- --tls.disabled
     ```
 
+* ### Octopus Deploy
+    You can use `Octopus Deploy` to the deploy the exporter to your cluster.
+    Simply add the following as the Feed URL.
+  ```text
+  https://tfadeyi.github.io/auth0-simple-exporter
+  ```
+
 ## Usage
 
 ```
