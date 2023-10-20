@@ -27,6 +27,7 @@ This Prometheus exporter aims to simplify this, making it easier to expose tenan
 
 * [Auth0](https://auth0.com/) account.
 * Auth0 tenant [management API](https://auth0.com/docs/api#management-api) client credentials.
+  * Required Grants: `read:users` or `read:user_idp_tokens`,`read:clients` or `read:client_keys`,`read:logs`
 * *(Optional)* Auth0 tenant management API [static token](https://auth0.com/docs/secure/tokens/access-tokens/management-api-access-tokens).
 
 ## Super TL;DR
