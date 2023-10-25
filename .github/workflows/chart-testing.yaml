@@ -3,7 +3,8 @@ on:
   pull_request:
     paths:
       - "charts/**"
-      - ".github/workflows/**"
+      - ".github/workflows/chart-testing.yaml"
+      - ".github/workflows/setup_environment/action.yaml"
 
   test_list_changed:
     name: Test (list changed)
@@ -22,9 +23,7 @@ on:
       id: list_changed
       run: |
         changed=$(ct list-changed --config chart-testing.yaml)
-        if [[ -n "$changed" ]]; then
-          echo "::set-output name=changed::true"
-        fi
+        echo "changed=true" >> $GITHUB_OUTPUT
 
   test_lint:
     name: Test (lint)
