@@ -1,0 +1,65 @@
+name: Helm Charts CI
+on:
+  pull_request:
+    paths:
+      - "charts/**"
+      - ".github/workflows/**"
+
+  test_list_changed:
+    name: Test (list changed)
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.list_changed.outputs.changed }}
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+      # used to fetch all history for all branches and tags
+      with:
+        fetch-depth: 0
+    - name: setup_environment
+      uses: ./.github/workflows/setup_environment
+    - name: Run chart-testing (list-changed)
+      id: list_changed
+      run: |
+        changed=$(ct list-changed --config chart-testing.yaml)
+        if [[ -n "$changed" ]]; then
+          echo "::set-output name=changed::true"
+        fi
+
+  test_lint:
+    name: Test (lint)
+    runs-on: ubuntu-latest
+    needs: test_list_changed
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+      # used to fetch all history for all branches and tags
+      with:
+        fetch-depth: 0
+    - name: setup_environment
+      uses: ./.github/workflows/setup_environment
+    - name: Run chart-testing (lint)
+      run: ct lint --config chart-testing.yaml
+      if: needs.test_list_changed.outputs.changed == 'true'
+
+  test_install:
+    name: Test (install)
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    needs: test_list_changed
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+      # used to fetch all history for all branches and tags
+      with:
+        fetch-depth: 0
+    - name: setup_environment
+      uses: ./.github/workflows/setup_environment
+    - uses: debianmaster/actions-k3s@master
+      id: k3s
+      with:
+        version: 'latest'
+    - name: Run chart-testing (install)
+      run: ct install --config chart-testing.yaml
