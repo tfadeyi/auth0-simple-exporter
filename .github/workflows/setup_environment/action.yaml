@@ -1,0 +1,15 @@
+# Sets up Helm and Python needed for each job
+on:
+  workflow_call:
+
+runs:
+  using: composite
+  steps:
+  - uses: azure/setup-helm@v1
+    with:
+      version: v3.5.3
+  - uses: actions/setup-python@v2
+    with:
+      python-version: 3.7
+  - uses: helm/chart-testing-action@v2.0.1
+

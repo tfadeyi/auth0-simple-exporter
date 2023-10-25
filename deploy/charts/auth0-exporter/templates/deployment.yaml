@@ -86,10 +86,6 @@ spec:
             - "--tls.cert-file=/etc/tls-certs/cert-file"
             - "--tls.key-file=/etc/tls-certs/key-file"
             {{- end }}
-          ports:
-            - name: http
-              containerPort: {{ int .Values.exporter.port }}
-              protocol: TCP
           {{- if and (not .Values.exporter.tls.disabled) (not .Values.exporter.tls.auto) }}
           volumeMounts:
           - name: tls-certs

@@ -1,0 +1,8 @@
+helm-extra-args: --timeout 200s
+validate-maintainers: false
+validate-chart-schema: false
+validate-yaml: true
+debug: true
+target-branch: main
+chart-dirs:
+  - "deploy/charts"
