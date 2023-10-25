@@ -12,7 +12,7 @@ on:
       changed: ${{ steps.list_changed.outputs.changed }}
     steps:
     - name: checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       # used to fetch all history for all branches and tags
       with:
         fetch-depth: 0
@@ -32,7 +32,7 @@ on:
     needs: test_list_changed
     steps:
     - name: checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       # used to fetch all history for all branches and tags
       with:
         fetch-depth: 0
@@ -51,7 +51,7 @@ on:
     needs: test_list_changed
     steps:
     - name: checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       # used to fetch all history for all branches and tags
       with:
         fetch-depth: 0
