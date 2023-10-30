@@ -6,6 +6,7 @@ on:
       - ".github/workflows/chart-testing.yaml"
       - ".github/workflows/setup_environment/action.yaml"
 
+jobs:
   test_list_changed:
     name: Test (list changed)
     runs-on: ubuntu-latest
