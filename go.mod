@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/auth0/go-auth0 v1.2.0
 	github.com/go-kit/log v0.2.1
-	github.com/go-logr/logr v1.2.4
+	github.com/go-logr/logr v1.3.0
 	github.com/juju/errors v1.0.0
 	github.com/labstack/echo/v4 v4.11.2
 	github.com/prometheus/client_golang v1.17.0
