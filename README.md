@@ -15,8 +15,6 @@
 A simple Prometheus exporter for [Auth0](https://auth0.com/) log [events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs),
 which allows you to collect metrics from Auth0 and expose them in a format that can be consumed by Prometheus.
 
-> Development is in progress.
-
 ## Motivation
 
 It can be difficult to monitor **Auth0** tenant events on a Prometheus stack,
