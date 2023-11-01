@@ -118,6 +118,25 @@ func TestExporter(t *testing.T) {
 		}
 		require.NoError(t, e.collect(ctx, nil))
 	})
+	t.Run("successful collect exporter metrics if auth0 client returns a context canceled error", func(t *testing.T) {
+		ctx := context.Background()
+		client := client.Client{
+			Log: &logs.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
+				return []*management.Log{}, context.Canceled
+			}},
+			User: &users.ClientMock{ListFunc: func(ctx context.Context, args ...interface{}) (interface{}, error) {
+				return []*management.User{}, nil
+			}},
+			App: nil,
+		}
+		current := time.Now()
+		e := exporter{
+			startTime: current,
+			ctx:       ctx,
+			client:    client,
+		}
+		require.NoError(t, e.collect(ctx, nil))
+	})
 	t.Run("fail exporter collect if auth0 client didn't return a list of logs", func(t *testing.T) {
 		ctx := context.Background()
 		client := client.Client{

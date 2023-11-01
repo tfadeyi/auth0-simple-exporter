@@ -80,9 +80,9 @@ func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{},
 		)
 		switch {
 		case errors.Is(err, errors.QuotaLimitExceeded):
-			return nil, ErrAPIRateLimitReached
+			return allLogs, ErrAPIRateLimitReached
 		case err != nil:
-			return nil, err
+			return allLogs, err
 		case len(logs) > 0:
 			checkpoint = logs[0]
 		}
@@ -92,9 +92,9 @@ func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{},
 		logs, err := l.fetchLogs(ctx, checkpoint)
 		switch {
 		case errors.Is(err, errors.QuotaLimitExceeded):
-			return nil, ErrAPIRateLimitReached
+			return allLogs, ErrAPIRateLimitReached
 		case err != nil:
-			return nil, err
+			return allLogs, err
 		}
 		allLogs = append(allLogs, logs...)
 
