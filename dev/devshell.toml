@@ -14,9 +14,10 @@ motd = """{106}NixOS Prometheus exporter development shell{reset}
 
 Developement commands:
  * generate: runs go generate
- * test: run tests and linting
+ * run-test: run tests and linting
  * up: startup services
  * down: shutdown services
+ * fmt: formatter
 
 {250}Links{reset}:
  * {30}go ref{reset}: http://localhost:1313/pkg/github.com/tfadeyi/auth0-simple-exporter/
@@ -31,13 +32,38 @@ packages = [
     "prometheus", "moq",
     "goreleaser", "golangci-lint",
     "tmux", "helm-docs",
-    "go-swag", "ko",
+    "go-swag", "ko", "gnumake"
 ]
 
-# Profiling & Testing
-startup.heap.text = "alias heap='go tool pprof'"
+[[commands]]
+name = "run-test"
+command = """
+make test
+make lint
+KO_DOCKER_REPO=ghcr.io/tfadeyi/auth0-exporter goreleaser check
+"""
 
-startup.generate.text = "alias generate='process-compose -f ./dev/process-compose.yaml up generate'"
-startup.testing.text = "alias test='process-compose -f ./dev/process-compose.yaml'"
-startup.services_up.text = "alias up='process-compose -f ./dev/services.yaml up godoc'"
-startup.services_down.text = "alias down='process-compose process stop godoc'"
+[[commands]]
+name = "fmt"
+command = """
+make format
+"""
+
+[[commands]]
+name = "generate"
+command = """
+make generate
+gomod2nix
+"""
+
+[[commands]]
+name = "up"
+command = """
+process-compose -f ./dev/services.yaml up godoc
+"""
+
+[[commands]]
+name = "down"
+command = """
+process-compose process stop godoc
+"""
