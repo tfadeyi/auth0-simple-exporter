@@ -72,11 +72,42 @@ kos:
 checksum:
   name_template: "{{ .ProjectName }}-SHA256SUMS"
   algorithm: sha256
+
 release:
   draft: true
+
 changelog:
-  use: github-native
-  skip: false
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "^test:"
+      - "^chore"
+      - "merge conflict"
+      - Merge pull request
+      - Merge remote-tracking branch
+      - Merge branch
+  groups:
+    - title: Dependency updates
+      regexp: '^.*?(feat|fix)\(deps\)!?:.+$'
+      order: 300
+    - title: "New Features"
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 100
+    - title: "Security updates"
+      regexp: '^.*?sec(\([[:word:]]+\))??!?:.+$'
+      order: 150
+    - title: "Bug fixes"
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 200
+    - title: "Documentation updates"
+      regexp: ^.*?doc(\([[:word:]]+\))??!?:.+$
+      order: 400
+    - title: "Build process updates"
+      regexp: ^.*?build(\([[:word:]]+\))??!?:.+$
+      order: 400
+    - title: Other work
+      order: 9999
 
 signs:
   - cmd: cosign
@@ -85,14 +116,13 @@ signs:
       - "${artifact}"
       - "--output-signature=${signature}"
       - "--yes" # needed on cosign 2.0.0+
-    artifacts: checksum
+    artifacts: all
 
 # the image signing doesn't seem to work when using ku to build the image
-#docker_signs:
-#  - cmd: cosign
-#    args:
-#      - "sign"
-#      - "ghcr.io/tfadeyi/auth0-simple-exporter@${digest}"
-#      - "--yes"
-#    artifacts: all
-#    output: true
+docker_signs:
+  - cmd: cosign
+    args:
+      - "sign"
+      - "${artifact}"
+      - "--yes"
+    artifacts: all
