@@ -1,5 +1,4 @@
 ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-SHELL := /bin/bash
 COMMIT:=$(shell git rev-list -1 HEAD)
 VERSION:=$(COMMIT)
 DATE:=$(shell date -uR)
@@ -55,6 +54,9 @@ clean:
 
 lint:
 	golangci-lint run
+
+format:
+	gofmt -l -s -w .
 
 # generates the licenses used by the tool
 licenses:
