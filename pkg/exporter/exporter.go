@@ -140,7 +140,10 @@ func (e *exporter) probe() echo.HandlerFunc {
 func (e *exporter) collect(ctx context.Context, m *metrics.Metrics) error {
 	// Process logs
 	list, err := e.client.Log.List(ctx, e.startTime)
-	if err != nil {
+	switch {
+	case errors.Is(err, context.Canceled):
+		e.logger.V(0).Error(err, "Could not finish fetching all the log events, too many might be present, from Auth0 in the given request context, try adding the --auth0.from")
+	case err != nil:
 		return errors.Annotate(err, "error fetching the log events from Auth0")
 	}
 

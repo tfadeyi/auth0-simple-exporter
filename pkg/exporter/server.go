@@ -18,7 +18,7 @@ import (
 )
 
 //	@title			Auth0 simple exporter
-//	@version		0.2.0
+//	@version		0.2.1
 //	@description	A simple Prometheus exporter for Auth0 log [events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs),
 //	@description	which allows you to collect metrics from Auth0 and expose them in a format that can be consumed by Prometheus.
 
@@ -60,6 +60,7 @@ func (e *exporter) Export() error {
 	server.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return logging.Middleware(next, log)
 	})
+	server.Use(middleware.Timeout())
 	server.HideBanner = true
 	server.HidePort = true
 
