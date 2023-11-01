@@ -8,14 +8,27 @@
 [![GitHub release](https://img.shields.io/github/v/release/tfadeyi/auth0-simple-exporter?color=green&style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter/releases)
 [![Code size](https://img.shields.io/github/languages/code-size/tfadeyi/auth0-simple-exporter?color=orange&style=flat-square)](https://github.com/tfadeyi/auth0-simple-exporter)
 [![Go Report Card](https://goreportcard.com/badge/github.com/tfadeyi/auth0-simple-exporter?style=flat-square)](https://goreportcard.com/report/github.com/tfadeyi/auth0-simple-exporter)
+
+
+<p align="center">
+
+
+<a href="#Installation">**Installation**</a>
+·
+<a href="#Usage">**Usage**</a>
+·
+<a href="https://github.com/tfadeyi/auth0-simple-exporter/blob/main/docs/metrics.md">**Metrics**</a>
+·
+<a href="https://github.com/tfadeyi/auth0-simple-exporter/issues">**Report Bug**</a>
+
+
+</p>
 </div>
 
 ---
 
 A simple Prometheus exporter for [Auth0](https://auth0.com/) log [events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs),
 which allows you to collect metrics from Auth0 and expose them in a format that can be consumed by Prometheus.
-
-> Development is in progress.
 
 ## Motivation
 
