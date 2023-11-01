@@ -6,7 +6,7 @@ We encourage everyone to follow them with their best judgement.
 
 ## Prerequisites
 
-- [Go 1.19+](https://go.dev/) (minimum version required is 1.19):
+- [Go 1.21+](https://go.dev/) (minimum version required is 1.21):
     - Install on macOS with `brew install go`.
     - Install on Ubuntu with `sudo apt install golang`.
     - Install on Windows with [this link](https://go.dev/doc/install) or `choco install go`
