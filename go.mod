@@ -3,23 +3,23 @@ module github.com/tfadeyi/auth0-simple-exporter
 go 1.21
 
 require (
-	github.com/auth0/go-auth0 v1.2.0
+	github.com/auth0/go-auth0 v1.3.0
 	github.com/go-kit/log v0.2.1
 	github.com/go-logr/logr v1.3.0
 	github.com/juju/errors v1.0.0
-	github.com/labstack/echo/v4 v4.11.2
+	github.com/labstack/echo/v4 v4.11.3
 	github.com/prometheus/client_golang v1.17.0
 	github.com/prometheus/client_model v0.5.0
 	github.com/prometheus/common v0.45.0
-	github.com/spf13/cobra v1.7.0
+	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.4
 	github.com/swaggo/echo-swagger v1.4.1
 	github.com/swaggo/swag v1.16.2
 	github.com/tonglil/gokitlogr v1.0.0
 	go.uber.org/multierr v1.11.0
-	golang.org/x/crypto v0.14.0
-	golang.org/x/sync v0.4.0
+	golang.org/x/crypto v0.15.0
+	golang.org/x/sync v0.5.0
 )
 
 require (
@@ -50,10 +50,10 @@ require (
 	github.com/swaggo/files/v2 v2.0.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
-	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/oauth2 v0.13.0 // indirect
-	golang.org/x/sys v0.13.0 // indirect
-	golang.org/x/text v0.13.0 // indirect
+	golang.org/x/net v0.18.0 // indirect
+	golang.org/x/oauth2 v0.14.0 // indirect
+	golang.org/x/sys v0.14.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.7.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
