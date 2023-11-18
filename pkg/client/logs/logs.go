@@ -23,6 +23,7 @@ type (
 )
 
 var ErrAPIRateLimitReached = errors.New("client reached api rate limit")
+var errLastCheckpointMaxAttemptsReached = errors.New("max number of attempts was reached")
 
 // New returns a new instance of the log fetching client, plus possible errors
 func New(domain, clientID, clientSecret, token string) (*logClient, error) {
@@ -70,22 +71,15 @@ func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{},
 	// This is used as the starting point for the fetching of the logs.
 	// This allows us to use the checkpoint pagination style
 	var checkpoint *management.Log
-	if !from.IsZero() {
-		previousDay := from.Add(-24 * time.Hour).Format("2006-01-02")
-		logs, err := l.mgmt.List(
-			ctx,
-			management.IncludeFields("type", "log_id", "date", "client_name"),
-			management.PerPage(1),
-			management.Query(fmt.Sprintf("date:[* TO %s]", previousDay)),
-		)
-		switch {
-		case errors.Is(err, errors.QuotaLimitExceeded):
-			return allLogs, ErrAPIRateLimitReached
-		case err != nil:
-			return allLogs, err
-		case len(logs) > 0:
-			checkpoint = logs[0]
-		}
+	var err error
+	checkpoint, err = l.findLatestCheckpoint(ctx, from, 0, 30)
+	switch {
+	case errors.Is(err, errLastCheckpointMaxAttemptsReached):
+		// do nothing
+	case errors.Is(err, errors.QuotaLimitExceeded):
+		return allLogs, ErrAPIRateLimitReached
+	case err != nil:
+		return allLogs, err
 	}
 
 	for {
@@ -121,4 +115,32 @@ func (l *logClient) fetchLogs(ctx context.Context, checkpoint *management.Log) (
 		management.IncludeFields("type", "log_id", "date", "client_name"),
 		management.Take(100),
 	)
+}
+
+// findLatestCheckpoint recursively polls the logs api to find the latest available log to be use for the checkpoint pagination.
+// Keeps polling the auth0 api until max attempts are reached or a checkpoint log is found.
+func (l *logClient) findLatestCheckpoint(ctx context.Context, from time.Time, attempt, maxAttempts int) (*management.Log, error) {
+	var checkpoint *management.Log
+	if attempt > maxAttempts {
+		return nil, errLastCheckpointMaxAttemptsReached
+	}
+
+	if !from.IsZero() {
+		previousDay := from.Add(-24 * time.Hour)
+		logs, err := l.mgmt.List(
+			ctx,
+			management.IncludeFields("type", "log_id", "date", "client_name"),
+			management.PerPage(1),
+			management.Page(0),
+			management.Query(fmt.Sprintf("date:[%s TO %s]", previousDay.Format("2006-01-02"), previousDay.Format("2006-01-02"))),
+		)
+		if err != nil {
+			return nil, err
+		}
+		if len(logs) > 0 {
+			return logs[0], nil
+		}
+		return l.findLatestCheckpoint(ctx, previousDay, attempt+1, maxAttempts)
+	}
+	return checkpoint, nil
 }

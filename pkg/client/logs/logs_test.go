@@ -95,3 +95,47 @@ func TestClient(t *testing.T) {
 		assert.Len(t, totalActualLogs, totalLogNumber-1)
 	})
 }
+
+func TestFindLatestCheckpoint(t *testing.T) {
+	var checkpointID = "foo"
+	t.Run("successfully find latest checkpoint, 2 days before auth0.from", func(t *testing.T) {
+		from := time.Now()
+		maxAttempts := 30
+		expected := &management.Log{LogID: &checkpointID}
+		var globalCounter = 2
+
+		client := logClient{mgmt: &logManagementMock{
+			ListFunc: func(ctx context.Context, opts ...management.RequestOption) ([]*management.Log, error) {
+				var result []*management.Log
+				if globalCounter == 2 {
+					return append(result, &management.Log{LogID: &checkpointID}), nil
+				}
+				return result, nil
+			},
+		}}
+
+		checkpoint, err := client.findLatestCheckpoint(context.TODO(), from, globalCounter, maxAttempts)
+		require.NoError(t, err)
+		assert.EqualValues(t, expected.LogID, checkpoint.LogID)
+	})
+
+	t.Run("fails to find latest checkpoint, max attempt are reached", func(t *testing.T) {
+		from := time.Now()
+		maxAttempts := 10
+		var globalCounter = 12
+
+		client := logClient{mgmt: &logManagementMock{
+			ListFunc: func(ctx context.Context, opts ...management.RequestOption) ([]*management.Log, error) {
+				var result []*management.Log
+				if globalCounter == 2 {
+					return append(result, &management.Log{LogID: &checkpointID}), nil
+				}
+				return result, nil
+			},
+		}}
+
+		_, err := client.findLatestCheckpoint(context.TODO(), from, globalCounter, maxAttempts)
+		require.Error(t, err)
+		assert.ErrorIs(t, err, errLastCheckpointMaxAttemptsReached)
+	})
+}
