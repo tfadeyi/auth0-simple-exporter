@@ -111,12 +111,12 @@ func (e *exporter) metrics() echo.HandlerFunc {
 			log.Error(err, "reached the Auth0 rate limit, fetching should resume shortly")
 			e.targetScrapeRequestErrors.Inc()
 		case err != nil:
-			log.Error(err, "error collecting event logs metrics from the selected Auth0 tenant")
+			log.Error(err, "error collecting event metrics from the selected Auth0 tenant")
 			e.targetScrapeRequestErrors.Inc()
-			return echo.NewHTTPError(http.StatusInternalServerError, "Exporter encountered some issues when collecting logs from Auth0")
+			return echo.NewHTTPError(http.StatusInternalServerError, "Exporter encountered some issues when collecting events from Auth0, please check the exporter logs with --log.level debug")
 		}
 
-		log.Info("successfully collected metrics from the auth0 tenant")
+		log.Info("successfully collected metrics from the Auth0 tenant")
 		promhttp.HandlerFor(registry, promhttp.HandlerOpts{}).ServeHTTP(ctx.Response(), ctx.Request())
 		return nil
 	}
@@ -137,19 +137,24 @@ func (e *exporter) probe() echo.HandlerFunc {
 }
 
 // collect collects all logs from Auth0 using startTime as the initial checkpoint
+//
+//nolint:goconst
 func (e *exporter) collect(ctx context.Context, m *metrics.Metrics) error {
 	// Process logs
 	list, err := e.client.Log.List(ctx, e.startTime)
 	switch {
 	case errors.Is(err, context.Canceled):
-		e.logger.V(0).Error(err, "Could not finish fetching all the log events, too many might be present, from Auth0 in the given request context, try adding the --auth0.from")
+		eventLogs := list.([]*management.Log)
+		e.logger.V(0).Error(err, "Request was terminated by the client,"+
+			"the exporter could not finish polling the Auth0 log client to fetch the tenant logs."+
+			"Please increase the client timeout or try adding the --auth0.from flag", "logs_events_found", len(eventLogs), "from", e.startTime)
 	case err != nil:
 		return errors.Annotate(err, "error fetching the log events from Auth0")
 	}
 
 	tenantLogEvents, ok := list.([]*management.Log)
 	if !ok {
-		return errors.New("auth0 client log fetch didn't return the expected list of Log type")
+		return errors.New("Auth0 log client did not return the expected list of Log type")
 	}
 
 	for _, event := range tenantLogEvents {
@@ -161,7 +166,13 @@ func (e *exporter) collect(ctx context.Context, m *metrics.Metrics) error {
 
 	// Process users
 	list, err = e.client.User.List(ctx)
-	if err != nil {
+	switch {
+	case errors.Is(err, context.Canceled):
+		eventUsers := list.([]*management.User)
+		e.logger.V(0).Error(err, "Request was terminated by the client,"+
+			"the exporter could not finish polling the Auth0 user client to fetch the tenant users."+
+			"Please increase the client timeout", "users_found", len(eventUsers))
+	case err != nil:
 		return errors.Annotate(err, "error fetching the users from Auth0")
 	}
 	tenantUsers, ok := list.([]*management.User)
