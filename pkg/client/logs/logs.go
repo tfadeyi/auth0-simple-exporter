@@ -7,6 +7,7 @@ import (
 
 	"github.com/auth0/go-auth0/management"
 	"github.com/juju/errors"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/exporter/format"
 	"go.uber.org/multierr"
 )
 
@@ -126,13 +127,12 @@ func (l *logClient) findLatestCheckpoint(ctx context.Context, from time.Time, at
 	}
 
 	if !from.IsZero() {
-		previousDay := from.Add(-24 * time.Hour)
 		logs, err := l.mgmt.List(
 			ctx,
 			management.IncludeFields("type", "log_id", "date", "client_name"),
 			management.PerPage(1),
 			management.Page(0),
-			management.Query(fmt.Sprintf("date:[%s TO %s]", previousDay.Format("2006-01-02"), previousDay.Format("2006-01-02"))),
+			management.Query(fmt.Sprintf("date:[%s TO %s]", from.Format(time.DateOnly), from.Format(format.TimeFormat))),
 		)
 		if err != nil {
 			return nil, err
@@ -140,7 +140,7 @@ func (l *logClient) findLatestCheckpoint(ctx context.Context, from time.Time, at
 		if len(logs) > 0 {
 			return logs[0], nil
 		}
-		return l.findLatestCheckpoint(ctx, previousDay, attempt+1, maxAttempts)
+		return l.findLatestCheckpoint(ctx, from.Add(-24*time.Hour), attempt+1, maxAttempts)
 	}
 	return checkpoint, nil
 }

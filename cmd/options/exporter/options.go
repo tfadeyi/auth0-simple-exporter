@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/client"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/exporter/format"
 )
 
 type (
@@ -141,7 +142,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 	fs.StringVar(
 		&o.FromFetchTime,
 		"auth0.from",
-		(time.Now()).Format("2006-01-02"),
+		(time.Now()).Format(format.TimeFormat),
 		"Point in time from were to start fetching auth0 logs. (format: YYYY-MM-DD)",
 	)
 	fs.StringVar(

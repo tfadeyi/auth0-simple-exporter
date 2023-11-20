@@ -1,12 +1,14 @@
 package cmd
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/juju/errors"
 	"github.com/spf13/cobra"
 	exporteroptions "github.com/tfadeyi/auth0-simple-exporter/cmd/options/exporter"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/exporter"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/exporter/format"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/logging"
 )
 
@@ -25,9 +27,13 @@ func serveExporterCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			log := logging.NewPromLoggerWithOpts(opts.LogLevel)
-			from, err := time.Parse("2006-01-02", opts.FromFetchTime)
+			from, err := time.Parse(format.TimeFormat, opts.FromFetchTime)
 			if err != nil {
-				return errors.Annotate(err, "failed to parse value in --auth0.from flag")
+				opts.FromFetchTime = fmt.Sprintf("%sT%d:%d", opts.FromFetchTime, 23, 59)
+				from, err = time.Parse(format.TimeFormat, opts.FromFetchTime)
+				if err != nil {
+					return errors.Annotate(err, "could not parse time in --auth0.from, make sure the format is correct")
+				}
 			}
 
 			e := exporter.New(
