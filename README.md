@@ -141,7 +141,7 @@ Flags:
       --auth0.client-id string       Auth0 management api client-id.
       --auth0.client-secret string   Auth0 management api client-secret.
       --auth0.domain string          Auth0 tenant's domain. (i.e: <tenant_name>.eu.auth0.com).
-      --auth0.from string            Point in time from were to start fetching auth0 logs. (format: YYYY-MM-DD) (default "2023-04-02")
+      --auth0.from string            Point in time from were to start fetching auth0 logs. (format: RFC3339) (default Now)
       --auth0.token string           Auth0 management api static token. (the token can be used instead of client credentials).
   -h, --help                         help for export
       --log.level string             Exporter log level (debug, info, warn, error). (default "warn")
