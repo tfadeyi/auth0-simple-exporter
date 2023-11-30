@@ -15,7 +15,6 @@ import (
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/client"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/client/logs"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/client/users"
-	"github.com/tfadeyi/auth0-simple-exporter/pkg/exporter/metrics"
 )
 
 func TestExporter(t *testing.T) {
@@ -170,13 +169,9 @@ func TestExporterHandler(t *testing.T) {
 		exporter := New(ctx, From(current), Client(client))
 
 		metricsServer := echo.New()
-		metricsServer.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-			return metrics.Middleware(next, []*management.Client{})
-		})
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		rec := httptest.NewRecorder()
 		echoCtx := metricsServer.NewContext(req, rec)
-		echoCtx.Set(metrics.ListCtxKey, metrics.New(exporter.namespace, exporter.subsystem, []*management.Client{}))
 
 		require.NoError(t, exporter.metrics()(echoCtx))
 		assert.Equal(t, http.StatusOK, rec.Code)
@@ -196,13 +191,9 @@ func TestExporterHandler(t *testing.T) {
 		exporter := New(ctx, From(current), Client(client))
 
 		metricsServer := echo.New()
-		metricsServer.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-			return metrics.Middleware(next, []*management.Client{})
-		})
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		rec := httptest.NewRecorder()
 		echoCtx := metricsServer.NewContext(req, rec)
-		echoCtx.Set(metrics.ListCtxKey, metrics.New(exporter.namespace, exporter.subsystem, []*management.Client{}))
 
 		require.NoError(t, exporter.metrics()(echoCtx))
 		assert.Equal(t, http.StatusOK, rec.Code)
@@ -219,13 +210,9 @@ func TestExporterHandler(t *testing.T) {
 		exporter := New(ctx, From(current), Client(client))
 
 		metricsServer := echo.New()
-		metricsServer.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-			return metrics.Middleware(next, []*management.Client{})
-		})
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		rec := httptest.NewRecorder()
 		echoCtx := metricsServer.NewContext(req, rec)
-		echoCtx.Set(metrics.ListCtxKey, metrics.New(exporter.namespace, exporter.subsystem, []*management.Client{}))
 
 		require.Error(t, exporter.metrics()(echoCtx))
 	})

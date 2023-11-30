@@ -50,15 +50,6 @@ func (e *exporter) Export() error {
 	e.metricsRegistry.MustRegister(e.metricsObject.List()...)
 
 	server := echo.New()
-	server.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-		return metrics.NamespaceMiddleware(next, e.namespace)
-	})
-	server.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-		return metrics.SubsystemMiddleware(next, e.subsystem)
-	})
-	server.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-		return metrics.Middleware(next, applications)
-	})
 	server.Use(middleware.Recover())
 	server.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return logging.Middleware(next, log)
