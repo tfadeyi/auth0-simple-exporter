@@ -49,6 +49,8 @@ type (
 		totalScrapes              prometheus.Counter
 		targetScrapeRequestErrors prometheus.Counter
 		probeRegistry             *prometheus.Registry
+		metricsObject             *metrics.Metrics
+		metricsRegistry           *prometheus.Registry
 	}
 	Option func(e *exporter)
 )
@@ -72,7 +74,8 @@ func New(ctx context.Context, opts ...Option) *exporter {
 				Name:      "target_scrape_request_total",
 				Help:      "Total requests to the exporter",
 			}),
-		probeRegistry: prometheus.NewRegistry(),
+		probeRegistry:   prometheus.NewRegistry(),
+		metricsRegistry: prometheus.NewRegistry(),
 	}
 	for _, opt := range opts {
 		// apply options
@@ -99,13 +102,10 @@ func (e *exporter) metrics() echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		log := logging.LoggerFromEchoContext(ctx)
 		log.Info("handling request for the auth0 tenant metrics")
-		metrics := ctx.Get(metrics.ListCtxKey).(*metrics.Metrics)
-		registry := prometheus.NewRegistry()
-		registry.MustRegister(metrics.List()...)
 
 		e.totalScrapes.Inc()
 		log.Info("handling request for the auth0 tenant metrics")
-		err := e.collect(ctx.Request().Context(), metrics)
+		err := e.collect(ctx.Request().Context(), e.metricsObject)
 		switch {
 		case errors.Is(err, logs.ErrAPIRateLimitReached):
 			log.Error(err, "reached the Auth0 rate limit, fetching should resume shortly")
@@ -117,7 +117,7 @@ func (e *exporter) metrics() echo.HandlerFunc {
 		}
 
 		log.Info("successfully collected metrics from the Auth0 tenant")
-		promhttp.HandlerFor(registry, promhttp.HandlerOpts{}).ServeHTTP(ctx.Response(), ctx.Request())
+		promhttp.HandlerFor(e.metricsRegistry, promhttp.HandlerOpts{}).ServeHTTP(ctx.Response(), ctx.Request())
 		return nil
 	}
 }

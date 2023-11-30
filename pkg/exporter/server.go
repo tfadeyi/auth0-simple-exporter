@@ -46,6 +46,9 @@ func (e *exporter) Export() error {
 		return errors.New("auth0 client applications fetch didn't return the expected list of applications client type")
 	}
 
+	e.metricsObject = metrics.New(e.namespace, e.subsystem, applications)
+	e.metricsRegistry.MustRegister(e.metricsObject.List()...)
+
 	server := echo.New()
 	server.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return metrics.NamespaceMiddleware(next, e.namespace)
