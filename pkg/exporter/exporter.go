@@ -157,6 +157,10 @@ func (e *exporter) collect(ctx context.Context, m *metrics.Metrics) error {
 		return errors.New("Auth0 log client did not return the expected list of Log type")
 	}
 
+	if len(tenantLogEvents) > 0 {
+		e.startTime = *tenantLogEvents[len(tenantLogEvents)-1].Date
+	}
+
 	for _, event := range tenantLogEvents {
 		if err := m.Update(event); err != nil {
 			e.logger.V(0).Error(err, err.Error())
