@@ -67,7 +67,7 @@ func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{},
 	}
 
 	for {
-		query := fmt.Sprintf("date:[%s TO *]", from.UTC().Format(time.RFC3339))
+		query := fmt.Sprintf("date:{%s TO *]", from.UTC().Format(time.RFC3339))
 
 		logs, err := l.mgmt.List(
 			ctx,
