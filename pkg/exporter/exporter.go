@@ -179,10 +179,12 @@ func (e *exporter) collect(ctx context.Context, m *metrics.Metrics) error {
 	case err != nil:
 		return errors.Annotate(err, "error fetching the users from Auth0")
 	}
+
 	tenantUsers, ok := list.([]*management.User)
 	if !ok {
 		return errors.New("auth0 client users fetch didn't return the expected list of User type")
 	}
+
 	if err := m.ProcessUsers(tenantUsers); err != nil {
 		e.logger.V(0).Error(err, err.Error())
 	}

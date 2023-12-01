@@ -58,7 +58,7 @@ type (
 		changePasswordRequestTotalCounter *prometheus.CounterVec
 		changePasswordRequestFailCounter  *prometheus.CounterVec
 
-		monthlyActiveUsersCounterMetric *prometheus.Counter
+		monthlyActiveUsersGaugeMetric *prometheus.Gauge
 	}
 
 	LogEventFunc func(m *Metrics, log *management.Log) error
@@ -111,7 +111,7 @@ func New(namespace, subsystem string, applications []*management.Client) *Metric
 		changePasswordRequestTotalCounter: changePasswordRequestTotalCounterMetric(namespace, subsystem, applications),
 		changePasswordRequestFailCounter:  changePasswordRequestFailCounterMetric(namespace, subsystem, applications),
 
-		monthlyActiveUsersCounterMetric: monthlyActiveUsersCounterMetric(namespace, subsystem, applications),
+		monthlyActiveUsersGaugeMetric: monthlyActiveUsersGaugeMetric(namespace, subsystem, applications),
 	}
 	return m
 }
@@ -181,7 +181,7 @@ func (m *Metrics) List() []prometheus.Collector {
 		m.changePasswordRequestTotalCounter,
 		m.changePasswordRequestFailCounter,
 
-		*m.monthlyActiveUsersCounterMetric,
+		*m.monthlyActiveUsersGaugeMetric,
 	}
 }
 
