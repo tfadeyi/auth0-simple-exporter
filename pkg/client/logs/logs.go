@@ -22,6 +22,9 @@ type (
 	}
 )
 
+// max number of items returned by Auth0 for each API call
+const ItemCountPerPage = 50
+
 var ErrAPIRateLimitReached = errors.New("client reached api rate limit")
 
 // New returns a new instance of the log fetching client, plus possible errors
@@ -74,7 +77,7 @@ func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{},
 			management.IncludeFields("type", "log_id", "date", "client_name"),
 			management.Query(query),
 			management.Sort("date:1"),
-			management.Take(50), // max number of items allowed by Auth0
+			management.Take(ItemCountPerPage),
 		)
 
 		switch {
@@ -86,7 +89,7 @@ func (l *logClient) List(ctx context.Context, args ...interface{}) (interface{},
 
 		if len(logs) == 0 {
 			break
-		} else if len(logs) == 50 {
+		} else if len(logs) == ItemCountPerPage {
 			// the last item is used as checkpoint (it will be the first
 			// of the next response)
 			from = *logs[len(logs)-1].Date

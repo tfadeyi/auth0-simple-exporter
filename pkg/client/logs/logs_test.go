@@ -66,7 +66,7 @@ func TestClient(t *testing.T) {
 
 		c := logClient{mgmt: &logManagementMock{
 			ListFunc: func(ctx context.Context, opts ...management.RequestOption) ([]*management.Log, error) {
-				take := min(totalLogNumber-taken, 50)
+				take := min(totalLogNumber-taken, ItemCountPerPage)
 				result := storedLogs[taken : taken+take]
 
 				// the -1 here is to compensate the fact that the c.List
