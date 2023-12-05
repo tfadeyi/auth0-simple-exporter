@@ -21,10 +21,6 @@ func monthlyActiveUsersGaugeMetric(namespace, subsystem string, applications []*
 }
 
 func processMonthlyActiveUsers(m *Metrics, users []*management.User) error {
-	if len(users) == 0 {
-		return nil
-	}
-
 	currentTime := time.Now()
 	startTime := currentTime.AddDate(0, 0, -30)
 	count := 0.0
