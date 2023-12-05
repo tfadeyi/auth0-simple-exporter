@@ -90,7 +90,7 @@ func TestExporter(t *testing.T) {
 			}},
 			App: nil,
 		}
-		e := New(nil, Client(client))
+		e := New(context.Background(), Client(client))
 		require.Error(t, e.collect(e.ctx, nil))
 	})
 	t.Run("successful execute exporter collect if auth0 client returns a empty log list", func(t *testing.T) {
@@ -103,7 +103,7 @@ func TestExporter(t *testing.T) {
 			}},
 			App: nil,
 		}
-		e := New(nil, Client(client))
+		e := New(context.Background(), Client(client))
 		e.metricsObject = metrics.New(e.namespace, e.subsystem, []*management.Client{})
 		require.NoError(t, e.collect(e.ctx, e.metricsObject))
 	})
@@ -117,7 +117,7 @@ func TestExporter(t *testing.T) {
 			}},
 			App: nil,
 		}
-		e := New(nil, Client(client))
+		e := New(context.Background(), Client(client))
 		e.metricsObject = metrics.New(e.namespace, e.subsystem, []*management.Client{})
 		require.NoError(t, e.collect(e.ctx, e.metricsObject))
 	})
@@ -128,7 +128,7 @@ func TestExporter(t *testing.T) {
 			}},
 			App: nil,
 		}
-		e := New(nil, Client(client))
+		e := New(context.Background(), Client(client))
 		require.Error(t, e.collect(e.ctx, nil))
 	})
 }
@@ -143,7 +143,7 @@ func TestExporterHandler(t *testing.T) {
 			}},
 			App: nil,
 		}
-		exporter := New(nil, Client(client))
+		exporter := New(context.Background(), Client(client))
 
 		metricsServer := echo.New()
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
@@ -163,7 +163,7 @@ func TestExporterHandler(t *testing.T) {
 			}},
 			App: nil,
 		}
-		exporter := New(nil, Client(client))
+		exporter := New(context.Background(), Client(client))
 		exporter.metricsObject = metrics.New(exporter.namespace, exporter.subsystem, []*management.Client{})
 
 		metricsServer := echo.New()
@@ -181,7 +181,7 @@ func TestExporterHandler(t *testing.T) {
 			}},
 			App: nil,
 		}
-		exporter := New(nil, Client(client))
+		exporter := New(context.Background(), Client(client))
 
 		metricsServer := echo.New()
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
