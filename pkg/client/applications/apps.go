@@ -37,9 +37,9 @@ func (l *applicationClient) List(ctx context.Context, args ...interface{}) (inte
 		)
 		switch {
 		case errors.Is(err, errors.QuotaLimitExceeded):
-			return nil, ErrAPIRateLimitReached
+			return allApplications, ErrAPIRateLimitReached
 		case err != nil:
-			return nil, err
+			return allApplications, err
 		}
 		allApplications = append(allApplications, apps.Clients...)
 		hasNext = apps.HasNext()

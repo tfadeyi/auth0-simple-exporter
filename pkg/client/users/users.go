@@ -37,9 +37,9 @@ func (l *usersClient) List(ctx context.Context, args ...interface{}) (interface{
 		)
 		switch {
 		case errors.Is(err, errors.QuotaLimitExceeded):
-			return nil, ErrAPIRateLimitReached
+			return allUsers, ErrAPIRateLimitReached
 		case err != nil:
-			return nil, err
+			return allUsers, err
 		}
 		allUsers = append(allUsers, users.Users...)
 		hasNext = users.HasNext()
