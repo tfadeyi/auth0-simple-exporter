@@ -2,12 +2,15 @@ package applications
 
 import (
 	"context"
+
 	"github.com/auth0/go-auth0/management"
 	"github.com/juju/errors"
 	"go.uber.org/multierr"
 )
 
 //go:generate moq -out apps_mock.go . Client
+
+const ItemCountPerPage = 100
 
 var ErrAPIRateLimitReached = errors.New("client reached api rate limit")
 
@@ -29,7 +32,7 @@ func (l *applicationClient) List(ctx context.Context, args ...interface{}) (inte
 		apps, err := l.mgmt.List(
 			ctx,
 			management.IncludeFields("name"),
-			management.PerPage(100),
+			management.PerPage(ItemCountPerPage),
 			management.Page(page),
 		)
 		switch {

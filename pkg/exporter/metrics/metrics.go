@@ -3,14 +3,7 @@ package metrics
 import (
 	"github.com/auth0/go-auth0/management"
 	"github.com/juju/errors"
-	"github.com/labstack/echo/v4"
 	"github.com/prometheus/client_golang/prometheus"
-)
-
-const (
-	namespaceCtxKey = "metrics-namespace"
-	subsystemCtxKey = "metrics-subsystem"
-	ListCtxKey      = "metrics-list"
 )
 
 var (
@@ -65,7 +58,7 @@ type (
 		changePasswordRequestTotalCounter *prometheus.CounterVec
 		changePasswordRequestFailCounter  *prometheus.CounterVec
 
-		monthlyActiveUsersCounterMetric *prometheus.Counter
+		monthlyActiveUsersGaugeMetric *prometheus.Gauge
 	}
 
 	LogEventFunc func(m *Metrics, log *management.Log) error
@@ -118,7 +111,7 @@ func New(namespace, subsystem string, applications []*management.Client) *Metric
 		changePasswordRequestTotalCounter: changePasswordRequestTotalCounterMetric(namespace, subsystem, applications),
 		changePasswordRequestFailCounter:  changePasswordRequestFailCounterMetric(namespace, subsystem, applications),
 
-		monthlyActiveUsersCounterMetric: monthlyActiveUsersCounterMetric(namespace, subsystem, applications),
+		monthlyActiveUsersGaugeMetric: monthlyActiveUsersGaugeMetric(namespace, subsystem, applications),
 	}
 	return m
 }
@@ -188,7 +181,7 @@ func (m *Metrics) List() []prometheus.Collector {
 		m.changePasswordRequestTotalCounter,
 		m.changePasswordRequestFailCounter,
 
-		*m.monthlyActiveUsersCounterMetric,
+		*m.monthlyActiveUsersGaugeMetric,
 	}
 }
 
@@ -209,32 +202,6 @@ func increaseCounter(m *prometheus.CounterVec, labels ...string) {
 
 func initCounter(m *prometheus.CounterVec, labels ...string) {
 	m.WithLabelValues(labels...)
-}
-
-// This will push your metrics object into every request context for later use
-func Middleware(next echo.HandlerFunc, applicationClients []*management.Client) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		namespace := c.Get(namespaceCtxKey).(string)
-		subsystem := c.Get(subsystemCtxKey).(string)
-		c.Set(ListCtxKey, New(namespace, subsystem, applicationClients))
-		return next(c)
-	}
-}
-
-func NamespaceMiddleware(next echo.HandlerFunc, namespace string) echo.HandlerFunc {
-	// propagate exporter namespace and subsystem
-	return func(ctx echo.Context) error {
-		ctx.Set(namespaceCtxKey, namespace)
-		return next(ctx)
-	}
-}
-
-func SubsystemMiddleware(next echo.HandlerFunc, subsystem string) echo.HandlerFunc {
-	// propagate exporter namespace and subsystem
-	return func(ctx echo.Context) error {
-		ctx.Set(subsystemCtxKey, subsystem)
-		return next(ctx)
-	}
 }
 
 func (m *Metrics) ProcessUsers(users []*management.User) error {

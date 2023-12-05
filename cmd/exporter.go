@@ -25,7 +25,7 @@ func serveExporterCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			log := logging.NewPromLoggerWithOpts(opts.LogLevel)
-			from, err := time.Parse("2006-01-02", opts.FromFetchTime)
+			from, err := time.Parse(time.RFC3339, opts.FromFetchTime)
 			if err != nil {
 				return errors.Annotate(err, "failed to parse value in --auth0.from flag")
 			}

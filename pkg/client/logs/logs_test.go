@@ -55,36 +55,23 @@ func TestClient(t *testing.T) {
 
 	t.Run("successfully fetch all logs across multiple pages with client.List", func(t *testing.T) {
 		totalLogNumber := 220
-		take := 1
-		checkpoint := 0
-		firstCall := true
+		taken := 0
 
 		storedLogs := make([]*management.Log, totalLogNumber)
 		for i := 0; i < totalLogNumber; i++ {
 			var code = "f"
 			var logID = fmt.Sprintf("log-%d", i)
-			storedLogs[i] = &management.Log{LogID: &logID, Type: &code}
+			storedLogs[i] = &management.Log{LogID: &logID, Type: &code, Date: &time.Time{}}
 		}
 
 		c := logClient{mgmt: &logManagementMock{
 			ListFunc: func(ctx context.Context, opts ...management.RequestOption) ([]*management.Log, error) {
-				var result []*management.Log
-				if !firstCall {
-					take = 100
-				}
+				take := min(totalLogNumber-taken, ItemCountPerPage)
+				result := storedLogs[taken : taken+take]
 
-				if checkpoint >= totalLogNumber {
-					return result, nil
-				}
-
-				if (checkpoint + take) >= totalLogNumber {
-					result = storedLogs[checkpoint:totalLogNumber]
-				} else {
-					result = storedLogs[checkpoint:(checkpoint + take)]
-				}
-
-				checkpoint += take
-				firstCall = false
+				// the -1 here is to compensate the fact that the c.List
+				// function sacrifices the last item (except on the last call)
+				taken += take - 1
 
 				return result, nil
 			},
@@ -92,50 +79,6 @@ func TestClient(t *testing.T) {
 
 		totalActualLogs, err := c.List(context.Background(), time.Now())
 		require.NoError(t, err)
-		assert.Len(t, totalActualLogs, totalLogNumber-1)
-	})
-}
-
-func TestFindLatestCheckpoint(t *testing.T) {
-	var checkpointID = "foo"
-	t.Run("successfully find latest checkpoint, 2 days before auth0.from", func(t *testing.T) {
-		from := time.Now()
-		maxAttempts := 30
-		expected := &management.Log{LogID: &checkpointID}
-		var globalCounter = 2
-
-		client := logClient{mgmt: &logManagementMock{
-			ListFunc: func(ctx context.Context, opts ...management.RequestOption) ([]*management.Log, error) {
-				var result []*management.Log
-				if globalCounter == 2 {
-					return append(result, &management.Log{LogID: &checkpointID}), nil
-				}
-				return result, nil
-			},
-		}}
-
-		checkpoint, err := client.findLatestCheckpoint(context.TODO(), from, globalCounter, maxAttempts)
-		require.NoError(t, err)
-		assert.EqualValues(t, expected.LogID, checkpoint.LogID)
-	})
-
-	t.Run("fails to find latest checkpoint, max attempt are reached", func(t *testing.T) {
-		from := time.Now()
-		maxAttempts := 10
-		var globalCounter = 12
-
-		client := logClient{mgmt: &logManagementMock{
-			ListFunc: func(ctx context.Context, opts ...management.RequestOption) ([]*management.Log, error) {
-				var result []*management.Log
-				if globalCounter == 2 {
-					return append(result, &management.Log{LogID: &checkpointID}), nil
-				}
-				return result, nil
-			},
-		}}
-
-		_, err := client.findLatestCheckpoint(context.TODO(), from, globalCounter, maxAttempts)
-		require.Error(t, err)
-		assert.ErrorIs(t, err, errLastCheckpointMaxAttemptsReached)
+		assert.Len(t, totalActualLogs, totalLogNumber)
 	})
 }
