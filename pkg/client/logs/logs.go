@@ -22,7 +22,8 @@ type (
 	}
 )
 
-// max number of items returned by Auth0 for each API call
+// max number of items returned by Auth0 for each API call (see
+// https://auth0.com/docs/troubleshoot/product-lifecycle/past-migrations/migrate-to-paginated-queries)
 const ItemCountPerPage = 50
 
 var ErrAPIRateLimitReached = errors.New("client reached api rate limit")
