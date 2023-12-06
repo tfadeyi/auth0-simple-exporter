@@ -103,3 +103,9 @@ func Logger(l logging.Logger) Option {
 		e.logger = l
 	}
 }
+
+func DisableUserMetrics(flag bool) Option {
+	return func(e *exporter) {
+		e.userMetricDisabled = flag
+	}
+}

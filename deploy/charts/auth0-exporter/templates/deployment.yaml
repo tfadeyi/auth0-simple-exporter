@@ -76,7 +76,10 @@ spec:
             - "--web.listen-address"
             - "{{- .Values.exporter.port }}"
             {{- end }}
-            {{- if .Values.exporter.tls.disabled }}
+            {{- if .Values.exporter.metrics.users.disabled }}
+            - "--metrics.users.disabled"
+            {{- end }}
+            {{- if (not .Values.exporter.tls.enabled) }}
             - "--tls.disabled"
             {{- else if .Values.exporter.tls.auto }}
             - "--tls.auto"
@@ -86,7 +89,7 @@ spec:
             - "--tls.cert-file=/etc/tls-certs/cert-file"
             - "--tls.key-file=/etc/tls-certs/key-file"
             {{- end }}
-          {{- if and (not .Values.exporter.tls.disabled) (not .Values.exporter.tls.auto) }}
+          {{- if and .Values.exporter.tls.enabled (default .Values.exporter.tls.auto false) }}
           volumeMounts:
           - name: tls-certs
             mountPath: "/etc/tls-certs/"
@@ -106,9 +109,9 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if and (not .Values.exporter.tls.disabled) (not .Values.exporter.tls.auto) }}
+      {{- if and .Values.exporter.tls.enabled (default .Values.exporter.tls.auto false) }}
       volumes:
         - name: tls-certs
           secret:
-            secretName: {{ include "auth0-exporter.fullname" . }}
+            secretName: {{ .Values.exporter.tls.secretName }}
       {{- end }}

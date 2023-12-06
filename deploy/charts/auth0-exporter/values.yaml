@@ -9,7 +9,7 @@ image:
   repository: ghcr.io/tfadeyi/auth0-simple-exporter
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v0.1.1"
+  tag: "v0.2.6"
 
 # -- specify credentials if pulling from a customer registry
 imagePullSecrets: []
@@ -42,13 +42,20 @@ exporter:
   port: 9301
   logLevel: info
 
+  # -- Exporter's metrics configuration
+  metrics:
+    # -- Tenant Users metrics exported by the exporter
+    users:
+      # -- Stops the exporter from fetching user info from the Auth0 tenant
+      disabled: false
+
   # -- Exporter's TLS configuration
   tls:
     # -- Allow the exporter to use autocert to renew its certificates with letsencrypt.
     # (can only be used if the exporter is publicly accessible by the internet)
     auto: false
     # -- Run exporter without TLS.
-    disabled: false
+    enabled: true
     # -- The different allowed hosts for the exporter. Only works when --tls.auto has been enabled.
     hosts: []
     createSecret: false
@@ -94,11 +101,11 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-   cpu: 100m
-   memory: 128Mi
+    cpu: 100m
+    memory: 128Mi
   requests:
-   cpu: 100m
-   memory: 128Mi
+    cpu: 100m
+    memory: 128Mi
 
 nodeSelector: {}
 

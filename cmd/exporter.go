@@ -47,6 +47,7 @@ func serveExporterCmd() *cobra.Command {
 				exporter.ProbePort(opts.ProbePort),
 				exporter.From(from),
 				exporter.Logger(log),
+				exporter.DisableUserMetrics(opts.UserMetricDisabled),
 			)
 			return e.Export()
 		},

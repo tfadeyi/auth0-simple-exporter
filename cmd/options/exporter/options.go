@@ -19,8 +19,9 @@ type (
 		MetricsEndpoint  string
 		HostPort         int
 		// LogLevel used by the exporter's logger (debug, info, warn, error)
-		LogLevel      string
-		FromFetchTime string
+		LogLevel           string
+		FromFetchTime      string
+		UserMetricDisabled bool
 
 		// probe
 		ProbePort int
@@ -206,5 +207,11 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		"probe.path",
 		"probe",
 		"URL Path under which to expose the probe metrics.",
+	)
+	fs.BoolVar(
+		&o.UserMetricDisabled,
+		"metrics.users.disabled",
+		false,
+		"Disables the metrics related to the tenant's users.",
 	)
 }

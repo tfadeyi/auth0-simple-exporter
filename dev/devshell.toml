@@ -32,7 +32,8 @@ packages = [
     "prometheus", "moq",
     "goreleaser", "golangci-lint",
     "tmux", "helm-docs",
-    "go-swag", "ko", "gnumake"
+    "go-swag", "ko", "gnumake",
+    "kubernetes-helm"
 ]
 
 [[commands]]
