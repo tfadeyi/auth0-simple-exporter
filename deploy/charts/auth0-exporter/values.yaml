@@ -47,7 +47,7 @@ exporter:
     # -- Tenant Users metrics exported by the exporter
     users:
       # -- Stops the exporter from fetching user info from the Auth0 tenant
-      disabled: false
+      enabled: false
 
   # -- Exporter's TLS configuration
   tls:
@@ -55,7 +55,7 @@ exporter:
     # (can only be used if the exporter is publicly accessible by the internet)
     auto: false
     # -- Run exporter without TLS.
-    enabled: true
+    disabled: false
     # -- The different allowed hosts for the exporter. Only works when --tls.auto has been enabled.
     hosts: []
     createSecret: false
