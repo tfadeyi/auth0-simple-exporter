@@ -62,4 +62,4 @@ jobs:
       with:
         version: 'latest'
     - name: Run chart-testing (install)
-      run: ct install --config chart-testing.yaml --helm-extra-set-args '--set=exporter.tls.enabled=false --set=auth0.domain=${{ secrets.TEST_AUTH0_DOMAIN }} --set=auth0.clientId=${{ secrets.TEST_AUTH0_CLIENT_ID }} --set=auth0.clientSecret=${{ secrets.TEST_AUTH0_CLIENT_SECRET }}'
+      run: ct install --config chart-testing.yaml --helm-extra-set-args '--set=exporter.tls.disabled=true --set=auth0.domain=${{ secrets.TEST_AUTH0_DOMAIN }} --set=auth0.clientId=${{ secrets.TEST_AUTH0_CLIENT_ID }} --set=auth0.clientSecret=${{ secrets.TEST_AUTH0_CLIENT_SECRET }}'
