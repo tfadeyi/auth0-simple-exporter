@@ -28,7 +28,8 @@ type (
 		namespace string
 		subsystem string
 		// checkpoint from where to start fetching logs
-		startTime time.Time
+		startTime          time.Time
+		userMetricDisabled bool
 
 		// webserver TLS
 		tlsDisabled bool
@@ -170,24 +171,24 @@ func (e *exporter) collect(ctx context.Context, m *metrics.Metrics) error {
 	}
 
 	// Process users
-	list, err = e.client.User.List(ctx)
-	switch {
-	case errors.Is(err, context.Canceled):
-		eventUsers := list.([]*management.User)
-		e.logger.V(0).Error(err, "Request was terminated by the client,"+
-			"the exporter could not finish polling the Auth0 user client to fetch the tenant users."+
-			"Please increase the client timeout", "users_found", len(eventUsers))
-	case err != nil:
-		return errors.Annotate(err, "error fetching the users from Auth0")
-	}
-
-	tenantUsers, ok := list.([]*management.User)
-	if !ok {
-		return errors.New("auth0 client users fetch didn't return the expected list of User type")
-	}
-
-	if err := m.ProcessUsers(tenantUsers); err != nil {
-		e.logger.V(0).Error(err, err.Error())
+	if !e.userMetricDisabled {
+		list, err = e.client.User.List(ctx)
+		switch {
+		case errors.Is(err, context.Canceled):
+			eventUsers := list.([]*management.User)
+			e.logger.V(0).Error(err, "Request was terminated by the client,"+
+				"the exporter could not finish polling the Auth0 user client to fetch the tenant users."+
+				"Please increase the client timeout", "users_found", len(eventUsers))
+		case err != nil:
+			return errors.Annotate(err, "error fetching the users from Auth0")
+		}
+		tenantUsers, ok := list.([]*management.User)
+		if !ok {
+			return errors.New("auth0 client users fetch didn't return the expected list of User type")
+		}
+		if err := m.ProcessUsers(tenantUsers); err != nil {
+			e.logger.V(0).Error(err, err.Error())
+		}
 	}
 
 	return nil
