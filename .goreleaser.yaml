@@ -63,8 +63,8 @@ kos:
       - linux/arm64
       - linux/arm
     tags:
-      - latest
       - '{{.Tag}}'
+      - '{{if not .Prerelease}}latest{{end}}'
     sbom: cyclonedx
     bare: true
     base_import_paths: true
@@ -75,6 +75,7 @@ checksum:
 
 release:
   draft: true
+  prerelease: auto
 
 changelog:
   sort: asc
