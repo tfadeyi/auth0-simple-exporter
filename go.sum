@@ -6,8 +6,8 @@ github.com/PuerkitoBio/rehttp v1.3.0 h1:w54Pb72MQn2eJrSdPsvGqXlAfiK1+NMTGDrOJJ4Y
 github.com/PuerkitoBio/rehttp v1.3.0/go.mod h1:LUwKPoDbDIA2RL5wYZCNsQ90cx4OJ4AWBmq6KzWZL1s=
 github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 h1:d+Bc7a5rLufV/sSk/8dngufqelfh6jnri85riMAaF/M=
 github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578/go.mod h1:uGdkoq3SwY9Y+13GIhn11/XLaGBb4BfwItxLd5jeuXE=
-github.com/auth0/go-auth0 v1.3.1 h1:J9QIKOMKs/uE9eo1OvTHfci8inuPau0M4WSgdNmPRaQ=
-github.com/auth0/go-auth0 v1.3.1/go.mod h1:lpfYGQAGw5RFFWCmVc0kJI4c6w9mA1CbEaJfZ7xZycw=
+github.com/auth0/go-auth0 v1.4.0 h1:oZL3xIBBPW2ckLQmp6BSqpx5RV5yuqqOEVEPp4cipR4=
+github.com/auth0/go-auth0 v1.4.0/go.mod h1:X1o5gVvYUYAQltayD5HrLimFZN9tfZUlJDUh+lz8h9I=
 github.com/aybabtme/iocontrol v0.0.0-20150809002002-ad15bcfc95a0 h1:0NmehRCgyk5rljDQLKUO+cRJCnduDyn11+zGZIc9Z48=
 github.com/aybabtme/iocontrol v0.0.0-20150809002002-ad15bcfc95a0/go.mod h1:6L7zgvqo0idzI7IO8de6ZC051AfXb5ipkIJ7bIA2tGA=
 github.com/benbjohnson/clock v1.1.0 h1:Q92kusRqC1XV2MjkWETPvjJVqKetz1OzxZB7mHJLju8=
