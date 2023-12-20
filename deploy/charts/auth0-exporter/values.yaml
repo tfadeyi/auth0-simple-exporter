@@ -41,6 +41,8 @@ exporter:
   # -- Port where the server will listen.
   port: 9301
   logLevel: info
+  # -- Exporter Request timeout. (0h0m0s) Note: setting 0, tells the exporter to have no timeout
+  timeout: 2m0s
 
   # -- Exporter's metrics configuration
   metrics:
