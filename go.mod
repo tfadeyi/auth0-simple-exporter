@@ -3,7 +3,7 @@ module github.com/tfadeyi/auth0-simple-exporter
 go 1.21
 
 require (
-	github.com/auth0/go-auth0 v1.3.1
+	github.com/auth0/go-auth0 v1.4.0
 	github.com/go-kit/log v0.2.1
 	github.com/go-logr/logr v1.3.0
 	github.com/juju/errors v1.0.0
@@ -18,7 +18,7 @@ require (
 	github.com/swaggo/swag v1.16.2
 	github.com/tonglil/gokitlogr v1.0.0
 	go.uber.org/multierr v1.11.0
-	golang.org/x/crypto v0.16.0
+	golang.org/x/crypto v0.17.0
 	golang.org/x/sync v0.5.0
 )
 

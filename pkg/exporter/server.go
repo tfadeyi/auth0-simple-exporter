@@ -18,7 +18,7 @@ import (
 )
 
 //	@title			Auth0 simple exporter
-//	@version		0.2.6
+//	@version		0.3.0
 //	@description	A simple Prometheus exporter for Auth0 log [events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs),
 //	@description	which allows you to collect metrics from Auth0 and expose them in a format that can be consumed by Prometheus.
 
@@ -54,7 +54,14 @@ func (e *exporter) Export() error {
 	server.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return logging.Middleware(next, log)
 	})
-	server.Use(middleware.Timeout())
+	server.Use(middleware.TimeoutWithConfig(middleware.TimeoutConfig{
+		Skipper: middleware.DefaultSkipper,
+		ErrorMessage: `The exporter was not able to collect all Auth0 metrics in the given request timeout. Possible actions: 
+* Try increasing the --web.timeout or set it to 0 (no timeout).
+* Try extending the prometheus scrape period.
+* Try adding the --metrics.user.disabled.`,
+		Timeout: e.requestTimeout,
+	}))
 	server.HideBanner = true
 	server.HidePort = true
 
