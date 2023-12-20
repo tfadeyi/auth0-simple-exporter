@@ -18,6 +18,7 @@ type (
 		ProfilingPort    int
 		MetricsEndpoint  string
 		HostPort         int
+		RequestTimeout   time.Duration
 		// LogLevel used by the exporter's logger (debug, info, warn, error)
 		LogLevel           string
 		FromFetchTime      string
@@ -93,7 +94,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		"warn",
 		"Only log messages with the given severity or above. One of: [debug, info, warn, error]",
 	)
-
+	// pprof flags
 	fs.IntVar(
 		&o.ProfilingPort,
 		"pprof.listen-address",
@@ -106,7 +107,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		false,
 		"Enabled pprof profiling on the exporter on port :6060. (help: https://jvns.ca/blog/2017/09/24/profiling-go-with-pprof/).",
 	)
-
+	// exporter TLS flags options
 	fs.BoolVar(
 		&o.TLSDisabled,
 		"tls.disabled",
@@ -138,7 +139,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		[]string{},
 		"The different allowed hosts for the exporter. Only works when --tls.auto has been enabled.",
 	)
-
+	// Auth0 client flag options
 	fs.StringVar(
 		&o.FromFetchTime,
 		"auth0.from",
@@ -169,7 +170,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		os.Getenv(envClientSecret),
 		"Auth0 management api client-secret.",
 	)
-
+	// exporter flag options
 	fs.StringVar(
 		&o.Namespace,
 		"namespace",
@@ -182,7 +183,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		"",
 		"Exporter's subsystem.",
 	)
-
+	// exporter internal client flag options
 	fs.IntVar(
 		&o.HostPort,
 		"web.listen-address",
@@ -195,7 +196,13 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		"metrics",
 		"URL Path under which to expose the collected auth0 metrics.",
 	)
-
+	fs.DurationVar(
+		&o.RequestTimeout,
+		"web.timeout",
+		2*time.Minute,
+		"Exporter webserver request timeout.",
+	)
+	// probe server flag options
 	fs.IntVar(
 		&o.ProbePort,
 		"probe.listen-address",
@@ -208,6 +215,7 @@ func (o *Options) addAppFlags(fs *pflag.FlagSet) {
 		"probe",
 		"URL Path under which to expose the probe metrics.",
 	)
+	// exporter metrics options
 	fs.BoolVar(
 		&o.UserMetricDisabled,
 		"metrics.users.disabled",

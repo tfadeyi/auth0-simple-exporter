@@ -21,6 +21,7 @@ type (
 		// webserver
 		metricsAddr      string
 		hostPort         int
+		requestTimeout   time.Duration
 		profilingEnabled bool
 		profilingPort    int
 
@@ -146,9 +147,12 @@ func (e *exporter) collect(ctx context.Context, m *metrics.Metrics) error {
 	switch {
 	case errors.Is(err, context.Canceled):
 		eventLogs := list.([]*management.Log)
-		e.logger.V(0).Error(err, "Request was terminated by the client,"+
-			"the exporter could not finish polling the Auth0 log client to fetch the tenant logs."+
-			"Please increase the client timeout or try adding the --auth0.from flag", "logs_events_found", len(eventLogs), "from", e.startTime)
+		e.logger.V(0).Error(err, "Request was terminated by Prometheus. The exporter could not finish polling the Auth0 log client to fetch the tenant logs."+
+			"Please try increase the prometheus scrape period", "logs_events_found", len(eventLogs), "from", e.startTime)
+	case errors.Is(err, context.DeadlineExceeded):
+		eventLogs := list.([]*management.Log)
+		e.logger.V(0).Error(err, "Request could not be completed in the current request timeout. The exporter could not finish polling the Auth0 log client to fetch the tenant logs."+
+			"Please increase the --web.timeout flag.", "logs_events_found", len(eventLogs), "from", e.startTime, "timeout", e.requestTimeout)
 	case err != nil:
 		return errors.Annotate(err, "error fetching the log events from Auth0")
 	}
@@ -176,9 +180,12 @@ func (e *exporter) collect(ctx context.Context, m *metrics.Metrics) error {
 		switch {
 		case errors.Is(err, context.Canceled):
 			eventUsers := list.([]*management.User)
-			e.logger.V(0).Error(err, "Request was terminated by the client,"+
-				"the exporter could not finish polling the Auth0 user client to fetch the tenant users."+
-				"Please increase the client timeout", "users_found", len(eventUsers))
+			e.logger.V(0).Error(err, "Request was terminated by Prometheus. The exporter could not finish polling the Auth0 user client to fetch the tenant users."+
+				"Please increase the prometheus scrape period ", "users_found", len(eventUsers))
+		case errors.Is(err, context.DeadlineExceeded):
+			eventUsers := list.([]*management.User)
+			e.logger.V(0).Error(err, "Request could not be completed in the current request timeout. The exporter could not finish polling the Auth0 user client to fetch the tenant users."+
+				"Please increase the --web.timeout flag. Please increase the prometheus scrape period ", "users_found", len(eventUsers))
 		case err != nil:
 			return errors.Annotate(err, "error fetching the users from Auth0")
 		}
