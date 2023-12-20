@@ -32,6 +32,7 @@ func serveExporterCmd() *cobra.Command {
 
 			e := exporter.New(
 				ctx,
+				exporter.RequestTimeout(opts.RequestTimeout),
 				exporter.Port(opts.HostPort),
 				exporter.MetricsAddr(opts.MetricsEndpoint),
 				exporter.Profiling(opts.ProfilingEnabled),

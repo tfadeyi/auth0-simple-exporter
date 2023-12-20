@@ -25,6 +25,12 @@ func MetricsAddr(addr string) Option {
 	}
 }
 
+func RequestTimeout(timeout time.Duration) Option {
+	return func(e *exporter) {
+		e.requestTimeout = timeout
+	}
+}
+
 func Port(port int) Option {
 	return func(e *exporter) {
 		e.hostPort = port
