@@ -75,6 +75,10 @@ func (e *exporter) Export() error {
 			</html>`, e.metricsAddr))
 	})
 	server.GET("/healthz", func(ctx echo.Context) error {
+		// check if the exporter might be stuck
+		if e.state.IsBadState() {
+			return echo.ErrInternalServerError
+		}
 		return ctx.JSON(http.StatusOK, "ok")
 	})
 
@@ -112,6 +116,9 @@ func (e *exporter) Export() error {
 			return server.Start(fmt.Sprintf(":%d", e.hostPort))
 		})
 	}
+	grp.Go(func() error {
+		return e.state.Start(ctx)
+	})
 	grp.Go(func() error {
 		<-ctx.Done()
 		return server.Shutdown(context.Background())
