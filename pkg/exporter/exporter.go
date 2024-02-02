@@ -10,6 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/tfadeyi/auth0-simple-exporter/pkg/barrier"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/client"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/client/logs"
 	"github.com/tfadeyi/auth0-simple-exporter/pkg/exporter/metrics"
@@ -28,6 +29,8 @@ type (
 		// exporter
 		namespace string
 		subsystem string
+		// detects whether the exporter is in a bad state
+		state *barrier.Barrier
 		// checkpoint from where to start fetching logs
 		startTime          time.Time
 		userMetricDisabled bool
@@ -63,6 +66,7 @@ func New(ctx context.Context, opts ...Option) *exporter {
 		namespace: "auth0",
 		subsystem: "",
 		ctx:       ctx,
+		state:     barrier.New(10, 5*time.Minute),
 		startTime: time.Now(),
 		targetScrapeRequestErrors: prometheus.NewCounter(
 			prometheus.CounterOpts{
@@ -149,6 +153,7 @@ func (e *exporter) collect(ctx context.Context, m *metrics.Metrics) error {
 		eventLogs := list.([]*management.Log)
 		e.logger.V(0).Error(err, "Request was terminated by Prometheus. The exporter could not finish polling the Auth0 log client to fetch the tenant logs."+
 			"Please try increase the prometheus scrape period", "logs_events_found", len(eventLogs), "from", e.startTime)
+		e.state.RecordBadEvent()
 	case errors.Is(err, context.DeadlineExceeded):
 		eventLogs := list.([]*management.Log)
 		e.logger.V(0).Error(err, "Request could not be completed in the current request timeout. The exporter could not finish polling the Auth0 log client to fetch the tenant logs."+
@@ -182,6 +187,7 @@ func (e *exporter) collect(ctx context.Context, m *metrics.Metrics) error {
 			eventUsers := list.([]*management.User)
 			e.logger.V(0).Error(err, "Request was terminated by Prometheus. The exporter could not finish polling the Auth0 user client to fetch the tenant users."+
 				"Please increase the prometheus scrape period ", "users_found", len(eventUsers))
+			e.state.RecordBadEvent()
 		case errors.Is(err, context.DeadlineExceeded):
 			eventUsers := list.([]*management.User)
 			e.logger.V(0).Error(err, "Request could not be completed in the current request timeout. The exporter could not finish polling the Auth0 user client to fetch the tenant users."+
