@@ -112,8 +112,8 @@ github.com/swaggo/files/v2 v2.0.0 h1:hmAt8Dkynw7Ssz46F6pn8ok6YmGZqHSVLZ+HQM7i0kw
 github.com/swaggo/files/v2 v2.0.0/go.mod h1:24kk2Y9NYEJ5lHuCra6iVwkMjIekMCaFq/0JQj66kyM=
 github.com/swaggo/swag v1.16.2 h1:28Pp+8DkQoV+HLzLx8RGJZXNGKbFqnuvSbAAtoxiY04=
 github.com/swaggo/swag v1.16.2/go.mod h1:6YzXnDcpr0767iOejs318CwYkCQqyGer6BizOg03f+E=
-github.com/tonglil/gokitlogr v1.0.0 h1:G/YR5dh4K+ha6WZqxEfV1bQ1RzfjmDxT0HXKEEq8zpw=
-github.com/tonglil/gokitlogr v1.0.0/go.mod h1:gW0u2QY46T2eO0g55cLrA8ollu/XJalV3TuA55w+TG8=
+github.com/tonglil/gokitlogr v1.1.1 h1:xgcVGVigGP/uC3Wi3JpkhrZEYNZfpZjdk03khhrNh4U=
+github.com/tonglil/gokitlogr v1.1.1/go.mod h1:9xd2AMNxRRCiU1RvW/aFR0ND/ONxeYeeFJRFJOzoKQ4=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=
 github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc=
 github.com/valyala/fasttemplate v1.2.1/go.mod h1:KHLXt3tVN2HBp8eijSv/kGJopbvo7S+qRAEEKiv+SiQ=

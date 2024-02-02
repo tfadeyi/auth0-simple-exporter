@@ -16,7 +16,7 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/swaggo/echo-swagger v1.4.1
 	github.com/swaggo/swag v1.16.2
-	github.com/tonglil/gokitlogr v1.0.0
+	github.com/tonglil/gokitlogr v1.1.1
 	go.uber.org/multierr v1.11.0
 	golang.org/x/crypto v0.17.0
 	golang.org/x/sync v0.6.0
