@@ -18,7 +18,7 @@ import (
 )
 
 //	@title			Auth0 simple exporter
-//	@version		0.3.0
+//	@version		0.4.0
 //	@description	A simple Prometheus exporter for Auth0 log [events](https://auth0.com/docs/api/management/v2#!/Logs/get_logs),
 //	@description	which allows you to collect metrics from Auth0 and expose them in a format that can be consumed by Prometheus.
 

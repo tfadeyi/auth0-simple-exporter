@@ -76,11 +76,10 @@ spec:
             - "--web.listen-address"
             - "{{- .Values.exporter.port }}"
             {{- end }}
-{{/*            TODO add back in new release*/}}
-{{/*            {{- if .Values.exporter.timeout }}*/}}
-{{/*            - "--web.timeout"*/}}
-{{/*            - {{ .Values.exporter.timeout }}*/}}
-{{/*            {{- end }}*/}}
+            {{- if .Values.exporter.timeout }}
+            - "--web.timeout"
+            - {{ .Values.exporter.timeout }}
+            {{- end }}
             {{- if (not .Values.exporter.metrics.users.enabled) }}
             - "--metrics.users.disabled"
             {{- end }}

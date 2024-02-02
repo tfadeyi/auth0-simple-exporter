@@ -14,8 +14,8 @@ schema = 3
     version = "v0.0.0-20170810143723-de5bf2ad4578"
     hash = "sha256-nL0/0QM0Pec83vBlwXvQ8g5SvvZnCQgzD1apxfHNGlg="
   [mod."github.com/auth0/go-auth0"]
-    version = "v1.3.1"
-    hash = "sha256-XQpkj/k1oyxdCfzCc5r+8/wRf8Gk6J9N4gah2taedZA="
+    version = "v1.4.0"
+    hash = "sha256-c1RN1ofVGpjyKH9pYmt4JhV8jWxdQfdxVNMIKOVdwpQ="
   [mod."github.com/beorn7/perks"]
     version = "v1.0.1"
     hash = "sha256-h75GUqfwJKngCJQVE5Ao5wnO3cfKD9lSIteoLp/3xJ4="
@@ -35,8 +35,8 @@ schema = 3
     version = "v0.5.1"
     hash = "sha256-t50m9ffvW8PiGvO+2svnLI+N/XaWaBS+ZlhwrEQn2gU="
   [mod."github.com/go-logr/logr"]
-    version = "v1.3.0"
-    hash = "sha256-N8JYtQlwpLWTaCczfhfA/YmHExko0ObPMYVGw8JwbSw="
+    version = "v1.4.1"
+    hash = "sha256-WM4badoqxXlBmqCRrnmtNce63dLlr/FJav3BJSYHvaY="
   [mod."github.com/go-openapi/jsonpointer"]
     version = "v0.19.5"
     hash = "sha256-rLyvUdTMeQGeWiVsz2ZeyyFjHomeqd0x+ZR77mxi8Ss="
@@ -86,8 +86,8 @@ schema = 3
     version = "v1.0.0"
     hash = "sha256-/FtmHnaGjdvEIKAJtrUfEhV7EVo5A/eYrtdnUkuxLDA="
   [mod."github.com/prometheus/client_golang"]
-    version = "v1.17.0"
-    hash = "sha256-FIIzCuNqHdVzpbyH7yAp7Tcu+1tPxEMS5g6KfsGQBGE="
+    version = "v1.18.0"
+    hash = "sha256-kuC6WUg2j7A+9qnSp5VZSYo+oltgLvj/70TpqlCJIdE="
   [mod."github.com/prometheus/client_model"]
     version = "v0.5.0"
     hash = "sha256-/sXlngf8AoEIeLIiaLg6Y7uYPVq7tI0qnLt0mUyKid4="
@@ -95,8 +95,8 @@ schema = 3
     version = "v0.45.0"
     hash = "sha256-N7CDcekAW8InquaVHHkuZ6gNCoW8J0yDlH5A+dj3cfE="
   [mod."github.com/prometheus/procfs"]
-    version = "v0.11.1"
-    hash = "sha256-yphZ7NZtYC/tb0HVag2T58SuN64Ial9sBo/TdCEQx6Q="
+    version = "v0.12.0"
+    hash = "sha256-Y4ZZmxIpVCO67zN3pGwSk2TcI88zvmGJkgwq9DRTwFw="
   [mod."github.com/spf13/cobra"]
     version = "v1.8.0"
     hash = "sha256-oAE+fEaRfZPE541IPWE0GMeBBYgH2DMhtZNxzp7DFlY="
@@ -116,8 +116,8 @@ schema = 3
     version = "v1.16.2"
     hash = "sha256-KBC/L2/pIjhrhUbf0jGLVO7J+TKu/MNMXEEibf9iYkk="
   [mod."github.com/tonglil/gokitlogr"]
-    version = "v1.0.0"
-    hash = "sha256-MnIddosmhYQ8dCmLH9Q0cbRktCjj6uRkLBv3IbpfnOg="
+    version = "v1.1.1"
+    hash = "sha256-OQ6GzkHk1cr6vqB/g6eeZg+fX+30NZdWPCcAoTGEy5s="
   [mod."github.com/valyala/bytebufferpool"]
     version = "v1.0.0"
     hash = "sha256-I9FPZ3kCNRB+o0dpMwBnwZ35Fj9+ThvITn8a3Jr8mAY="
@@ -128,8 +128,8 @@ schema = 3
     version = "v1.11.0"
     hash = "sha256-Lb6rHHfR62Ozg2j2JZy3MKOMKdsfzd1IYTR57r3Mhp0="
   [mod."golang.org/x/crypto"]
-    version = "v0.16.0"
-    hash = "sha256-DgSVOnXRK8GF01p5rLtq4qPBcglwEoOk8qhW2EGfJfA="
+    version = "v0.17.0"
+    hash = "sha256-/vzBaeD/Ymyc7cpjBvSfJfuZ57zWa9LOaZM7b33eIx0="
   [mod."golang.org/x/net"]
     version = "v0.19.0"
     hash = "sha256-3M5rKEvJx4cO/q+06cGjR5sxF5JpnUWY0+fQttrWdT4="
@@ -137,8 +137,8 @@ schema = 3
     version = "v0.15.0"
     hash = "sha256-exA/abu6WOR7Cwqa41LpnTD2xQNRZMYU5CnBKvXHx8Y="
   [mod."golang.org/x/sync"]
-    version = "v0.5.0"
-    hash = "sha256-EAKeODSsct5HhXPmpWJfulKSCkuUu6kkDttnjyZMNcI="
+    version = "v0.6.0"
+    hash = "sha256-LLims/wjDZtIqlYCVHREewcUOX4hwRwplEuZKPOJ/HI="
   [mod."golang.org/x/sys"]
     version = "v0.15.0"
     hash = "sha256-n7TlABF6179RzGq3gctPDKDPRtDfnwPdjNCMm8ps2KY="

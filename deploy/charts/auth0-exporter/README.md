@@ -39,14 +39,14 @@ on the `/metrics` endpoint.
 | auth0.clientSecret | string | `""` | Auth0 management api client-secret. (do not set if static token is already set) |
 | auth0.domain | string | `"<change_me>.eu.auth0.com"` | Auth0 tenant's domain. (i.e: <tenant_name>.eu.auth0.com) |
 | auth0.token | string | `""` | Auth0 management api static token. (the token can be used instead of client credentials) |
-| exporter | object | `{"logLevel":"info","metrics":{"users":{"enabled":false}},"metricsEndpoint":"metrics","namespace":"","port":9301,"pprof":false,"timeout":"2m0s","tls":{"auto":false,"certFile":"","createSecret":false,"disabled":false,"hosts":[],"keyFile":"","secretKey":"","secretName":""}}` | Exporter's configuration |
-| exporter.metrics | object | `{"users":{"enabled":false}}` | Exporter's metrics configuration |
-| exporter.metrics.users | object | `{"enabled":false}` | Tenant Users metrics exported by the exporter |
-| exporter.metrics.users.enabled | bool | `false` | Stops the exporter from fetching user info from the Auth0 tenant |
+| exporter | object | `{"logLevel":"info","metrics":{"users":{"enabled":true}},"metricsEndpoint":"metrics","namespace":"","port":9301,"pprof":false,"timeout":"2m0s","tls":{"auto":false,"certFile":"","createSecret":false,"disabled":false,"hosts":[],"keyFile":"","secretKey":"","secretName":""}}` | Exporter's configuration |
+| exporter.metrics | object | `{"users":{"enabled":true}}` | Exporter's metrics configuration |
+| exporter.metrics.users | object | `{"enabled":true}` | Tenant Users metrics exported by the exporter |
+| exporter.metrics.users.enabled | bool | `true` | Stops the exporter from fetching user info from the Auth0 tenant |
 | exporter.metricsEndpoint | string | `"metrics"` | URL Path under which to expose the collected auth0 metrics. |
 | exporter.port | int | `9301` | Port where the server will listen. |
 | exporter.pprof | bool | `false` | Enabled pprof profiling on the exporter on port :6060. (help: https://jvns.ca/blog/2017/09/24/profiling-go-with-pprof/) |
-| exporter.timeout | string | `"2m0s"` | Exporter Request timeout. (0h0m0s) |
+| exporter.timeout | string | `"2m0s"` | Exporter Request timeout. (0h0m0s) Note: setting 0, tells the exporter to have no timeout |
 | exporter.tls | object | `{"auto":false,"certFile":"","createSecret":false,"disabled":false,"hosts":[],"keyFile":"","secretKey":"","secretName":""}` | Exporter's TLS configuration |
 | exporter.tls.auto | bool | `false` | Allow the exporter to use autocert to renew its certificates with letsencrypt. (can only be used if the exporter is publicly accessible by the internet) |
 | exporter.tls.certFile | string | `""` | The certificate file for the exporter TLS connection. |
