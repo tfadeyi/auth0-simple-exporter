@@ -61,9 +61,8 @@ export DOMAIN="< auth0 tenant domain >"
 ```shell
   # Installing by passing in secret directly
   helm repo add auth0-exporter https://tfadeyi.github.io/auth0-simple-exporter
-  helm upgrade --install --create-namespace -n auth0-exporter auth0-exporter/auth0-exporter \
-  --set auth0.domain="$DOMAIN" --set auth0.token="$TOKEN" \
-  --set exporter.tls.disabled=true
+  helm upgrade prod auth0-exporter/auth0-exporter --install --create-namespace -n auth0-exporter \
+  --set auth0.domain="$DOMAIN" --set auth0.token="$TOKEN" --set exporter.tls.disabled=true
 ```
 This will install the exporter running with TLS disabled.
 
