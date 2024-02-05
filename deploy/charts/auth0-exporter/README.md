@@ -24,7 +24,7 @@ on the `/metrics` endpoint.
     ```shell
     # Installing by passing in secret directly
     helm repo add auth0-exporter https://tfadeyi.github.io/auth0-simple-exporter
-    helm upgrade --install --create-namespace -n auth0-exporter auth0-exporter/auth0-exporter \
+    helm upgrade prod auth0-exporter/auth0-exporter --install --create-namespace -n auth0-exporter \
       --set auth0.domain="$DOMAIN" --set auth0.token="$TOKEN" \
       --set exporter.tls.disabled=true
     ```
@@ -53,7 +53,7 @@ on the `/metrics` endpoint.
 | exporter.tls.disabled | bool | `false` | Run exporter without TLS. |
 | exporter.tls.keyFile | string | `""` | The key file for the exporter TLS connection. |
 | fullnameOverride | string | `""` | Helm default setting, use this to shorten install name |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/tfadeyi/auth0-simple-exporter","tag":"v0.2.6"}` | image settings |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"ghcr.io/tfadeyi/auth0-simple-exporter","tag":""}` | image settings |
 | imagePullSecrets | list | `[]` | specify credentials if pulling from a customer registry |
 | labels | object | `{}` |  |
 | nameOverride | string | `""` | Helm default setting to override release name, leave blank |
