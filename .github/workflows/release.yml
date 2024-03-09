@@ -109,7 +109,7 @@ jobs:
         run: make generate
 
       - name: Install Helm
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@v4
 
       - name: Configure Git
         run: |
