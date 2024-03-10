@@ -3,7 +3,7 @@ module github.com/tfadeyi/auth0-simple-exporter
 go 1.21
 
 require (
-	github.com/auth0/go-auth0 v1.4.0
+	github.com/auth0/go-auth0 v1.4.1
 	github.com/go-kit/log v0.2.1
 	github.com/go-logr/logr v1.4.1
 	github.com/juju/errors v1.0.0
@@ -13,12 +13,12 @@ require (
 	github.com/prometheus/common v0.48.0
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	github.com/swaggo/echo-swagger v1.4.1
 	github.com/swaggo/swag v1.16.3
 	github.com/tonglil/gokitlogr v1.1.1
 	go.uber.org/multierr v1.11.0
-	golang.org/x/crypto v0.19.0
+	golang.org/x/crypto v0.21.0
 	golang.org/x/sync v0.6.0
 )
 
@@ -49,9 +49,9 @@ require (
 	github.com/swaggo/files/v2 v2.0.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
-	golang.org/x/net v0.20.0 // indirect
-	golang.org/x/oauth2 v0.16.0 // indirect
-	golang.org/x/sys v0.17.0 // indirect
+	golang.org/x/net v0.21.0 // indirect
+	golang.org/x/oauth2 v0.17.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	golang.org/x/tools v0.7.0 // indirect
