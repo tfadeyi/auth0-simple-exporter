@@ -18,7 +18,7 @@ jobs:
           output: swagger-ui
           spec-file: pkg/docs/swagger.json
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: swagger-ui-pages  # default: gh-pages
