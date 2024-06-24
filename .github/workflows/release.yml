@@ -47,7 +47,7 @@ jobs:
         uses: sigstore/cosign-installer@v3.5.0
 
       - name: Setup ko
-        uses: ko-build/setup-ko@v0.6
+        uses: ko-build/setup-ko@v0.7
 
 #      - name: Install Crane
 #        uses: imjasonh/setup-crane@v0.3
