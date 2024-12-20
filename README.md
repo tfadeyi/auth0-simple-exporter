@@ -92,6 +92,79 @@ This will install the exporter running with TLS disabled.
     ```shell
     $ docker pull ghcr.io/tfadeyi/auth0-simple-exporter:[TAG]
     ```
+ 
+## Docker compose
+To integrate the exporter with Docker Compose, follow these steps:
+
+- Create a ```.env``` file (ideally named to match the tenant, e.g., .env.tenant1) and define the following variables:
+```
+TOKEN=< auth0 management API static static token >
+DOMAIN=< auth0 tenant domain >"
+CLIENT_SECRET=<auth0 management API client-secret>
+CLIENT_ID=<auth0 management API client-id>
+```
+
+- Update your ```docker-compose.yaml``` file to include the exporter as a service. Below is an example configuration for a single exporter setup:
+```
+services:
+  metric-exporter:
+    image: ghcr.io/tfadeyi/auth0-simple-exporter:latest
+    container_name: metric-exporter
+    env_file:
+      - .env.tenant1
+    command: export --tls.disabled
+    ports:
+      - "9301:9301"
+```
+
+- For a multi-tenant setup, you can configure multiple exporter services pointing to different ```.env``` files:
+```
+services:
+  metric-exporter:
+    image: ghcr.io/tfadeyi/auth0-simple-exporter:latest
+    container_name: metric-exporter
+    env_file:
+      - .env
+    command: export --tls.disabled
+    ports:
+      - "9301:9301"
+  
+  metric-exporter2:
+    image: ghcr.io/tfadeyi/auth0-simple-exporter:latest
+    container_name: metric-exporter2
+    env_file:
+      - .env.tenant1
+    command: export --tls.disabled
+    ports:
+      - "9302:9301"
+```
+
+- Configure Prometheus to scrape metrics from the exporters. Below is an example ```prometheus.yaml``` configuration (this assumes you are running Prometheus in the same docker network as the exporter):
+```
+  - job_name: auth0_exporter1
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['metric-exporter:9301']
+    relabel_configs:
+      - source_labels: [ __address__ ]
+        target_label: __param_target
+      - source_labels: [ __param_target ]
+        target_label: instance
+      - target_label: __address__
+        replacement: metric-exporter:9301
+  
+  - job_name: auth0_exporter2
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['metric-exporter2:9302']
+    relabel_configs:
+      - source_labels: [ __address__ ]
+        target_label: __param_target
+      - source_labels: [ __param_target ]
+        target_label: instance
+      - target_label: __address__
+        replacement: metric-exporter2:9302
+```
 
 * ### Helm
     This shows a simple installation of the exporter helm chart, running with TLS disabled.
