@@ -93,7 +93,7 @@ This will install the exporter running with TLS disabled.
     $ docker pull ghcr.io/tfadeyi/auth0-simple-exporter:[TAG]
     ```
  
-## Docker compose
+* ### Docker compose
 To integrate the exporter with Docker Compose, follow these steps:
 
 - Create a ```.env``` file (ideally named to match the tenant, e.g., .env.tenant1) and define the following variables:
